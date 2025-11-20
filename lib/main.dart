@@ -4,13 +4,29 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'app/utils/themes.dart';
 import 'app/views/splash/splash_view.dart';
-import 'app/views/home/home_view.dart';
+import 'app/views/auth/login_view.dart';
+import 'app/views/auth/signup_view.dart';
+import 'app/views/auth/phone_auth_view.dart';
+import 'app/views/auth/email_otp_view.dart';
+import 'app/bindings/auth_binding.dart';
+import 'app/bindings/phone_auth_binding.dart';
+import 'app/bindings/email_otp_binding.dart';
+import 'app/bindings/home_binding.dart';
+import 'app/views/navigation/main_navigation_view.dart';
+import 'app/services/user_service.dart';
+import 'app/services/auth_service.dart';
+import 'app/services/workout_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Services
+  await Get.putAsync(() => UserService().init());
+  await Get.putAsync(() => AuthService().init());
+  await Get.putAsync(() => WorkoutService().init());
 
   runApp(const FitTrackApp());
 }
@@ -40,8 +56,35 @@ class FitTrackApp extends StatelessWidget {
           transition: Transition.fade,
         ),
         GetPage(
+          name: '/login',
+          page: () => const LoginView(),
+          binding: AuthBinding(),
+          transition: Transition.fadeIn,
+          preventDuplicates: true,
+        ),
+        GetPage(
+          name: '/signup',
+          page: () => const SignupView(),
+          binding: AuthBinding(),
+          transition: Transition.rightToLeft,
+          preventDuplicates: true,
+        ),
+        GetPage(
+          name: '/phone-auth',
+          page: () => const PhoneAuthView(),
+          binding: PhoneAuthBinding(),
+          transition: Transition.rightToLeft,
+        ),
+        GetPage(
+          name: '/email-otp',
+          page: () => const EmailOTPView(),
+          binding: EmailOTPBinding(),
+          transition: Transition.rightToLeft,
+        ),
+        GetPage(
           name: '/home',
-          page: () => const HomeView(),
+          page: () => const MainNavigationView(),
+          binding: HomeBinding(),
           transition: Transition.fadeIn,
         ),
       ],

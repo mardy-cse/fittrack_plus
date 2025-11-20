@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import '../../utils/themes.dart';
+import '../../services/auth_service.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -35,12 +36,28 @@ class _SplashViewState extends State<SplashView>
 
     _animationController.forward();
 
-    // Navigate to next screen after delay
+    // Check authentication and navigate
     Timer(const Duration(seconds: 3), () {
-      // This will be replaced with proper navigation logic
-      // For now, we'll just show a placeholder
-      Get.offAllNamed('/home');
+      _checkAuthAndNavigate();
     });
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    try {
+      final authService = Get.find<AuthService>();
+      
+      // Check if user is logged in
+      if (authService.isLoggedIn && authService.currentUser != null) {
+        // User is logged in, go to home
+        Get.offAllNamed('/home');
+      } else {
+        // User is not logged in, go to login
+        Get.offAllNamed('/login');
+      }
+    } catch (e) {
+      // If auth service not found, go to login
+      Get.offAllNamed('/login');
+    }
   }
 
   @override

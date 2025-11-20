@@ -1,0 +1,212 @@
+[
+  {
+    "id": "workout_1",
+    "title": "Morning Yoga Flow",
+    "description": "Start your day with a refreshing yoga session to improve flexibility and mindfulness",
+    "imageUrl": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+    "videoUrl": "https://sample-videos.com/yoga",
+    "durationSeconds": 1800,
+    "level": "Beginner",
+    "tags": ["yoga", "flexibility", "morning", "mindfulness"],
+    "calories": 120,
+    "category": "Yoga",
+    "exercises": [
+      "Sun Salutation",
+      "Downward Dog",
+      "Warrior Pose",
+      "Tree Pose",
+      "Savasana"
+    ],
+    "createdAt": "2025-01-15T08:00:00Z",
+    "isPremium": false
+  },
+  {
+    "id": "workout_2",
+    "title": "HIIT Cardio Blast",
+    "description": "High-intensity interval training to burn calories and boost metabolism",
+    "imageUrl": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800",
+    "videoUrl": "https://sample-videos.com/hiit",
+    "durationSeconds": 1200,
+    "level": "Advanced",
+    "tags": ["hiit", "cardio", "fat-burn", "intense"],
+    "calories": 350,
+    "category": "Cardio",
+    "exercises": [
+      "Burpees",
+      "Mountain Climbers",
+      "Jump Squats",
+      "High Knees",
+      "Box Jumps"
+    ],
+    "createdAt": "2025-01-14T10:00:00Z",
+    "isPremium": true
+  },
+  {
+    "id": "workout_3",
+    "title": "Strength Training - Upper Body",
+    "description": "Build muscle and strength in your chest, back, shoulders, and arms",
+    "imageUrl": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800",
+    "videoUrl": "https://sample-videos.com/strength",
+    "durationSeconds": 2700,
+    "level": "Intermediate",
+    "tags": ["strength", "upper-body", "muscle", "weights"],
+    "calories": 280,
+    "category": "Strength",
+    "exercises": [
+      "Push-ups",
+      "Dumbbell Rows",
+      "Shoulder Press",
+      "Bicep Curls",
+      "Tricep Dips"
+    ],
+    "createdAt": "2025-01-13T14:00:00Z",
+    "isPremium": false
+  },
+  {
+    "id": "workout_4",
+    "title": "Core Crusher",
+    "description": "Targeted ab workout to strengthen your core and improve stability",
+    "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800",
+    "videoUrl": "https://sample-videos.com/core",
+    "durationSeconds": 900,
+    "level": "Beginner",
+    "tags": ["core", "abs", "stability", "bodyweight"],
+    "calories": 150,
+    "category": "Core",
+    "exercises": [
+      "Plank",
+      "Bicycle Crunches",
+      "Russian Twists",
+      "Leg Raises",
+      "Mountain Climbers"
+    ],
+    "createdAt": "2025-01-12T09:00:00Z",
+    "isPremium": false
+  },
+  {
+    "id": "workout_5",
+    "title": "Full Body Power",
+    "description": "Complete full-body workout combining strength and cardio for maximum results",
+    "imageUrl": "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800",
+    "videoUrl": "https://sample-videos.com/fullbody",
+    "durationSeconds": 3600,
+    "level": "Advanced",
+    "tags": ["full-body", "strength", "cardio", "intense"],
+    "calories": 450,
+    "category": "Full Body",
+    "exercises": [
+      "Squats",
+      "Deadlifts",
+      "Bench Press",
+      "Pull-ups",
+      "Kettlebell Swings"
+    ],
+    "createdAt": "2025-01-11T16:00:00Z",
+    "isPremium": true
+  },
+  {
+    "id": "workout_6",
+    "title": "Pilates Basics",
+    "description": "Low-impact workout focusing on core strength, flexibility, and posture",
+    "imageUrl": "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800",
+    "videoUrl": "https://sample-videos.com/pilates",
+    "durationSeconds": 2400,
+    "level": "Beginner",
+    "tags": ["pilates", "core", "flexibility", "low-impact"],
+    "calories": 180,
+    "category": "Pilates",
+    "exercises": [
+      "The Hundred",
+      "Roll Up",
+      "Single Leg Stretch",
+      "Double Leg Stretch",
+      "Spine Stretch"
+    ],
+    "createdAt": "2025-01-10T11:00:00Z",
+    "isPremium": false
+  },
+  {
+    "id": "workout_7",
+    "title": "Leg Day Intensity",
+    "description": "Heavy leg workout to build strength and muscle in your lower body",
+    "imageUrl": "https://images.unsplash.com/photo-1434682772747-f16d3ea162c3?w=800",
+    "videoUrl": "https://sample-videos.com/legs",
+    "durationSeconds": 3000,
+    "level": "Intermediate",
+    "tags": ["legs", "strength", "lower-body", "muscle"],
+    "calories": 320,
+    "category": "Strength",
+    "exercises": [
+      "Squats",
+      "Lunges",
+      "Leg Press",
+      "Hamstring Curls",
+      "Calf Raises"
+    ],
+    "createdAt": "2025-01-09T13:00:00Z",
+    "isPremium": false
+  },
+  {
+    "id": "workout_8",
+    "title": "Stretching & Mobility",
+    "description": "Improve flexibility and range of motion with guided stretching exercises",
+    "imageUrl": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
+    "videoUrl": "https://sample-videos.com/stretch",
+    "durationSeconds": 1500,
+    "level": "Beginner",
+    "tags": ["stretching", "flexibility", "mobility", "recovery"],
+    "calories": 80,
+    "category": "Flexibility",
+    "exercises": [
+      "Hamstring Stretch",
+      "Hip Flexor Stretch",
+      "Shoulder Stretch",
+      "Cat-Cow Stretch",
+      "Child's Pose"
+    ],
+    "createdAt": "2025-01-08T07:00:00Z",
+    "isPremium": false
+  },
+  {
+    "id": "workout_9",
+    "title": "Boxing Cardio",
+    "description": "High-energy boxing workout to improve cardio, coordination, and power",
+    "imageUrl": "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800",
+    "videoUrl": "https://sample-videos.com/boxing",
+    "durationSeconds": 2100,
+    "level": "Intermediate",
+    "tags": ["boxing", "cardio", "coordination", "power"],
+    "calories": 380,
+    "category": "Cardio",
+    "exercises": [
+      "Jab-Cross Combo",
+      "Hook Punches",
+      "Uppercuts",
+      "Speed Bag",
+      "Jump Rope"
+    ],
+    "createdAt": "2025-01-07T15:00:00Z",
+    "isPremium": true
+  },
+  {
+    "id": "workout_10",
+    "title": "Evening Meditation",
+    "description": "Wind down your day with calming meditation and breathing exercises",
+    "imageUrl": "https://images.unsplash.com/photo-1545389336-cf090694435e?w=800",
+    "videoUrl": "https://sample-videos.com/meditation",
+    "durationSeconds": 1200,
+    "level": "Beginner",
+    "tags": ["meditation", "relaxation", "mindfulness", "evening"],
+    "calories": 50,
+    "category": "Mindfulness",
+    "exercises": [
+      "Breathing Exercises",
+      "Body Scan",
+      "Guided Visualization",
+      "Loving-Kindness Meditation",
+      "Savasana"
+    ],
+    "createdAt": "2025-01-06T19:00:00Z",
+    "isPremium": false
+  }
+]
