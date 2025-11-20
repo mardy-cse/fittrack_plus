@@ -46,8 +46,8 @@ class EmailOTPView extends GetView<EmailOTPController> {
                 'Verify Your Email',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
 
               const SizedBox(height: 12),
@@ -57,9 +57,9 @@ class EmailOTPView extends GetView<EmailOTPController> {
                 () => Text(
                   'We sent a 6-digit OTP to\n${controller.email}',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
                 ),
               ),
 
@@ -118,9 +118,9 @@ class EmailOTPView extends GetView<EmailOTPController> {
                   return Text(
                     'Resend OTP in ${controller.remainingTime.value}s',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                   );
                 }
               }),
@@ -130,12 +130,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
               // Clear Button
               TextButton(
                 onPressed: controller.clearOTP,
-                child: Text(
-                  'Clear',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                  ),
-                ),
+                child: Text('Clear', style: TextStyle(color: Colors.grey[600])),
               ),
             ],
           ),
@@ -155,12 +150,10 @@ class EmailOTPView extends GetView<EmailOTPController> {
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
+        style: Theme.of(
+          context,
+        ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: InputDecoration(
           counterText: '',
           filled: true,
@@ -180,10 +173,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: Colors.grey[300]!,
-              width: 1,
-            ),
+            borderSide: BorderSide(color: Colors.grey[300]!, width: 1),
           ),
         ),
         onChanged: (value) {

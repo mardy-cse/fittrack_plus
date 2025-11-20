@@ -17,18 +17,12 @@ class ToolsTabView extends GetView<HomeController> {
               // Header
               const Text(
                 'Fitness Tools',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
                 'Track your health metrics',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
 
               const SizedBox(height: 32),
@@ -179,10 +173,7 @@ class ToolsTabView extends GetView<HomeController> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -211,10 +202,7 @@ class ToolsTabView extends GetView<HomeController> {
             children: [
               const Text(
                 'BMI Calculator',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),
               TextField(
@@ -241,43 +229,45 @@ class ToolsTabView extends GetView<HomeController> {
                 ),
               ),
               const SizedBox(height: 24),
-              Obx(() => bmiResult.value.isNotEmpty
-                  ? Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Your BMI',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
+              Obx(
+                () => bmiResult.value.isNotEmpty
+                    ? Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Your BMI',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            bmiResult.value,
-                            style: const TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                            const SizedBox(height: 8),
+                            Text(
+                              bmiResult.value,
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            bmiCategory.value,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                            const SizedBox(height: 8),
+                            Text(
+                              bmiCategory.value,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox.shrink()),
+                          ],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
               const SizedBox(height: 24),
               Row(
                 children: [
@@ -305,7 +295,8 @@ class ToolsTabView extends GetView<HomeController> {
                             height > 0 &&
                             weight > 0) {
                           final heightInMeters = height / 100;
-                          final bmi = weight / (heightInMeters * heightInMeters);
+                          final bmi =
+                              weight / (heightInMeters * heightInMeters);
                           bmiResult.value = bmi.toStringAsFixed(1);
 
                           if (bmi < 18.5) {

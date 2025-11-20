@@ -24,12 +24,18 @@ class ProfileTabView extends GetView<HomeController> {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.blue.withOpacity(0.1),
-                      backgroundImage: user?.photoUrl != null &&
-                              user!.photoUrl!.isNotEmpty
+                      backgroundImage:
+                          user?.photoUrl != null && user!.photoUrl!.isNotEmpty
                           ? NetworkImage(user.photoUrl!)
                           : null,
-                      child: user?.photoUrl == null || user?.photoUrl?.isEmpty == true
-                          ? const Icon(Icons.person, size: 50, color: Colors.blue)
+                      child:
+                          user?.photoUrl == null ||
+                              user?.photoUrl?.isEmpty == true
+                          ? const Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.blue,
+                            )
                           : null,
                     ),
                     const SizedBox(height: 16),
@@ -43,12 +49,8 @@ class ProfileTabView extends GetView<HomeController> {
                     const SizedBox(height: 4),
                     Text(
                       user?.email ?? '',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
-
                   ],
                 );
               }),
@@ -61,15 +63,24 @@ class ProfileTabView extends GetView<HomeController> {
                 return Row(
                   children: [
                     Expanded(
-                      child: _buildStatCard('Height', user?.height != null ? '${user!.height} cm' : '--'),
+                      child: _buildStatCard(
+                        'Height',
+                        user?.height != null ? '${user!.height} cm' : '--',
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildStatCard('Weight', user?.weight != null ? '${user!.weight} kg' : '--'),
+                      child: _buildStatCard(
+                        'Weight',
+                        user?.weight != null ? '${user!.weight} kg' : '--',
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _buildStatCard('Age', user?.age != null ? '${user!.age}' : '--'),
+                      child: _buildStatCard(
+                        'Age',
+                        user?.age != null ? '${user!.age}' : '--',
+                      ),
                     ),
                   ],
                 );
@@ -78,56 +89,32 @@ class ProfileTabView extends GetView<HomeController> {
               const SizedBox(height: 32),
 
               // Menu Items
-              _buildMenuItem(
-                'Edit Profile',
-                Icons.edit,
-                () {
-                  _showEditProfileDialog(context);
-                },
-              ),
-              _buildMenuItem(
-                'Fitness Goals',
-                Icons.flag,
-                () {
-                  _showFitnessGoalsDialog(context);
-                },
-              ),
-              _buildMenuItem(
-                'Achievements',
-                Icons.emoji_events,
-                () {
-                  Get.snackbar(
-                    'Achievements',
-                    'View your badges',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                },
-              ),
-              _buildMenuItem(
-                'Settings',
-                Icons.settings,
-                () {
-                  _showSettingsDialog(context);
-                },
-              ),
-              _buildMenuItem(
-                'Help & Support',
-                Icons.help,
-                () {
-                  Get.snackbar(
-                    'Help & Support',
-                    'Get help',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                },
-              ),
-              _buildMenuItem(
-                'About Us',
-                Icons.info,
-                () {
-                  _showAboutDialog(context);
-                },
-              ),
+              _buildMenuItem('Edit Profile', Icons.edit, () {
+                _showEditProfileDialog(context);
+              }),
+              _buildMenuItem('Fitness Goals', Icons.flag, () {
+                _showFitnessGoalsDialog(context);
+              }),
+              _buildMenuItem('Achievements', Icons.emoji_events, () {
+                Get.snackbar(
+                  'Achievements',
+                  'View your badges',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }),
+              _buildMenuItem('Settings', Icons.settings, () {
+                _showSettingsDialog(context);
+              }),
+              _buildMenuItem('Help & Support', Icons.help, () {
+                Get.snackbar(
+                  'Help & Support',
+                  'Get help',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }),
+              _buildMenuItem('About Us', Icons.info, () {
+                _showAboutDialog(context);
+              }),
 
               const SizedBox(height: 16),
 
@@ -169,10 +156,7 @@ class ProfileTabView extends GetView<HomeController> {
                   ),
                   child: const Text(
                     'Logout',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -182,10 +166,7 @@ class ProfileTabView extends GetView<HomeController> {
               // App Version
               Text(
                 'Version 1.0.0',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[500],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
               ),
             ],
           ),
@@ -212,19 +193,10 @@ class ProfileTabView extends GetView<HomeController> {
         children: [
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
+          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
         ],
       ),
     );
@@ -256,24 +228,31 @@ class ProfileTabView extends GetView<HomeController> {
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 16,
+          color: Colors.grey[400],
         ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 
   void _showEditProfileDialog(BuildContext context) {
-    final nameController = TextEditingController(text: controller.userProfile.value?.name);
-    final heightController = TextEditingController(text: controller.userProfile.value?.height?.toString() ?? '');
-    final weightController = TextEditingController(text: controller.userProfile.value?.weight?.toString() ?? '');
-    final ageController = TextEditingController(text: controller.userProfile.value?.age?.toString() ?? '');
+    final nameController = TextEditingController(
+      text: controller.userProfile.value?.name,
+    );
+    final heightController = TextEditingController(
+      text: controller.userProfile.value?.height?.toString() ?? '',
+    );
+    final weightController = TextEditingController(
+      text: controller.userProfile.value?.weight?.toString() ?? '',
+    );
+    final ageController = TextEditingController(
+      text: controller.userProfile.value?.age?.toString() ?? '',
+    );
 
     showDialog(
       context: context,
@@ -321,10 +300,7 @@ class ProfileTabView extends GetView<HomeController> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () async {
               final userId = Get.find<AuthService>().currentUserId;
@@ -355,8 +331,12 @@ class ProfileTabView extends GetView<HomeController> {
 
   void _showFitnessGoalsDialog(BuildContext context) {
     final user = controller.userProfile.value;
-    final weeklyGoalController = TextEditingController(text: user?.weeklyWorkoutGoal?.toString() ?? '5');
-    final dailyCaloriesController = TextEditingController(text: user?.dailyCalorieGoal?.toString() ?? '500');
+    final weeklyGoalController = TextEditingController(
+      text: user?.weeklyWorkoutGoal?.toString() ?? '5',
+    );
+    final dailyCaloriesController = TextEditingController(
+      text: user?.dailyCalorieGoal?.toString() ?? '500',
+    );
 
     showDialog(
       context: context,
@@ -387,17 +367,16 @@ class ProfileTabView extends GetView<HomeController> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           ElevatedButton(
             onPressed: () async {
               final userId = Get.find<AuthService>().currentUserId;
               if (userId != null) {
                 await controller.userService.updateUserFields(userId, {
                   'weeklyWorkoutGoal': int.tryParse(weeklyGoalController.text),
-                  'dailyCalorieGoal': int.tryParse(dailyCaloriesController.text),
+                  'dailyCalorieGoal': int.tryParse(
+                    dailyCaloriesController.text,
+                  ),
                 });
                 await controller.loadUserProfile();
                 Get.back();
@@ -504,10 +483,7 @@ class ProfileTabView extends GetView<HomeController> {
             const SizedBox(height: 16),
             Text(
               '© 2025 FitTrack+',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
             ),
           ],
         ),

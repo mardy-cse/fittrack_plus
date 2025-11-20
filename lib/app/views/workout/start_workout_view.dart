@@ -55,40 +55,45 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         // Progress Bar
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Obx(() => LinearProgressIndicator(
-                value: controller.progressPercentage,
-                backgroundColor: Colors.grey[800],
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-                minHeight: 8,
-              ),
+          child: Obx(
+            () => LinearProgressIndicator(
+              value: controller.progressPercentage,
+              backgroundColor: Colors.grey[800],
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+              minHeight: 8,
+            ),
           ),
         ),
 
         const SizedBox(height: 32),
 
         // Current Exercise / Rest Indicator
-        Obx(() => Text(
-              controller.isResting.value ? 'REST TIME' : 'EXERCISE',
-              style: TextStyle(
-                color: controller.isResting.value ? Colors.orange : Colors.green,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
-            )),
+        Obx(
+          () => Text(
+            controller.isResting.value ? 'REST TIME' : 'EXERCISE',
+            style: TextStyle(
+              color: controller.isResting.value ? Colors.orange : Colors.green,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
+          ),
+        ),
 
         const SizedBox(height: 16),
 
         // Exercise Name
-        Obx(() => Text(
-              controller.currentExerciseName,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            )),
+        Obx(
+          () => Text(
+            controller.currentExerciseName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
 
         const Spacer(),
 
@@ -103,21 +108,27 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Obx(() => _buildStatCard(
-                    'Time',
-                    controller.formatDuration(controller.totalSeconds.value),
-                    Icons.timer,
-                  )),
-              Obx(() => _buildStatCard(
-                    'Exercises',
-                    '${controller.exercisesCompleted.value}/${controller.workout.exercises.length}',
-                    Icons.fitness_center,
-                  )),
-              Obx(() => _buildStatCard(
-                    'Calories',
-                    '${controller.caloriesBurned.value}',
-                    Icons.local_fire_department,
-                  )),
+              Obx(
+                () => _buildStatCard(
+                  'Time',
+                  controller.formatDuration(controller.totalSeconds.value),
+                  Icons.timer,
+                ),
+              ),
+              Obx(
+                () => _buildStatCard(
+                  'Exercises',
+                  '${controller.exercisesCompleted.value}/${controller.workout.exercises.length}',
+                  Icons.fitness_center,
+                ),
+              ),
+              Obx(
+                () => _buildStatCard(
+                  'Calories',
+                  '${controller.caloriesBurned.value}',
+                  Icons.local_fire_department,
+                ),
+              ),
             ],
           ),
         ),
@@ -174,10 +185,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
               ),
               const Text(
                 'seconds',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.white70, fontSize: 16),
               ),
             ],
           ),
@@ -202,10 +210,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 12,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
         ),
       ],
     );
@@ -255,11 +260,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 100,
-          ),
+          const Icon(Icons.check_circle, color: Colors.green, size: 100),
           const SizedBox(height: 24),
           const Text(
             'Workout Complete!',
@@ -270,17 +271,21 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
             ),
           ),
           const SizedBox(height: 32),
-          Obx(() => _buildStatCard(
-                'Duration',
-                controller.formatDuration(controller.totalSeconds.value),
-                Icons.timer,
-              )),
+          Obx(
+            () => _buildStatCard(
+              'Duration',
+              controller.formatDuration(controller.totalSeconds.value),
+              Icons.timer,
+            ),
+          ),
           const SizedBox(height: 16),
-          Obx(() => _buildStatCard(
-                'Calories',
-                '${controller.caloriesBurned.value} kcal',
-                Icons.local_fire_department,
-              )),
+          Obx(
+            () => _buildStatCard(
+              'Calories',
+              '${controller.caloriesBurned.value} kcal',
+              Icons.local_fire_department,
+            ),
+          ),
         ],
       ),
     );

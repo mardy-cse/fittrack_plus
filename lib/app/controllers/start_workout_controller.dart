@@ -14,7 +14,7 @@ class StartWorkoutController extends GetxController {
 
   // Workout data
   late Workout workout;
-  
+
   // Session tracking
   final Rx<WorkoutSession?> currentSession = Rx<WorkoutSession?>(null);
   String? sessionId;
@@ -27,11 +27,11 @@ class StartWorkoutController extends GetxController {
   final RxBool isResting = false.obs;
   final RxBool isPaused = false.obs;
   final RxBool isCompleted = false.obs;
-  
+
   // Stats
   final RxInt caloriesBurned = 0.obs;
   final RxInt exercisesCompleted = 0.obs;
-  
+
   Timer? _timer;
   final int exerciseDuration = 40; // seconds per exercise
   final int restDuration = 20; // seconds rest between exercises
@@ -85,14 +85,16 @@ class StartWorkoutController extends GetxController {
     );
 
     // Save initial session
-    sessionId = await _workoutLogService.saveWorkoutSession(currentSession.value!);
+    sessionId = await _workoutLogService.saveWorkoutSession(
+      currentSession.value!,
+    );
   }
 
   // Start workout
   void _startWorkout() {
     isPaused.value = false;
     _speak("Let's begin your ${workout.title} workout. Get ready!");
-    
+
     // Start first exercise after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       if (!isPaused.value) {
@@ -110,7 +112,7 @@ class StartWorkoutController extends GetxController {
 
     isResting.value = false;
     currentExerciseSeconds.value = exerciseDuration;
-    
+
     final exercise = workout.exercises[currentExerciseIndex.value];
     _speak("Start ${exercise}");
 
@@ -118,7 +120,7 @@ class StartWorkoutController extends GetxController {
       if (!isPaused.value) {
         totalSeconds.value++;
         currentExerciseSeconds.value--;
-        
+
         // Calculate calories (approximate: 5 calories per minute)
         if (totalSeconds.value % 12 == 0) {
           caloriesBurned.value++;
@@ -230,7 +232,9 @@ class StartWorkoutController extends GetxController {
           children: [
             Text('Duration: ${formatDuration(totalSeconds.value)}'),
             const SizedBox(height: 8),
-            Text('Exercises: ${exercisesCompleted.value}/${workout.exercises.length}'),
+            Text(
+              'Exercises: ${exercisesCompleted.value}/${workout.exercises.length}',
+            ),
             const SizedBox(height: 8),
             Text('Calories Burned: ${caloriesBurned.value} kcal'),
           ],
@@ -254,16 +258,15 @@ class StartWorkoutController extends GetxController {
     Get.dialog(
       AlertDialog(
         title: const Text('Quit Workout?'),
-        content: const Text('Are you sure you want to quit this workout? Your progress will be saved.'),
+        content: const Text(
+          'Are you sure you want to quit this workout? Your progress will be saved.',
+        ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
           TextButton(
             onPressed: () async {
               _timer?.cancel();
-              
+
               // Save partial session
               if (sessionId != null && currentSession.value != null) {
                 final partialSession = currentSession.value!.copyWith(

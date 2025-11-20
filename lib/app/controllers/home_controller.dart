@@ -47,10 +47,10 @@ class HomeController extends GetxController {
   Future<void> loadWorkouts() async {
     try {
       isLoading.value = true;
-      
+
       // First try to get from Firestore
       final fetchedWorkouts = await _workoutService.getAllWorkouts();
-      
+
       // If Firestore is empty, load from local JSON
       if (fetchedWorkouts.isEmpty) {
         final localWorkouts = await _workoutService.loadLocalWorkouts();
@@ -84,8 +84,9 @@ class HomeController extends GetxController {
     if (level == 'All') {
       filteredWorkouts.value = workouts;
     } else {
-      filteredWorkouts.value =
-          workouts.where((workout) => workout.level == level).toList();
+      filteredWorkouts.value = workouts
+          .where((workout) => workout.level == level)
+          .toList();
     }
   }
 
@@ -113,9 +114,6 @@ class HomeController extends GetxController {
 
   // Refresh data
   Future<void> refreshData() async {
-    await Future.wait([
-      loadUserProfile(),
-      loadWorkouts(),
-    ]);
+    await Future.wait([loadUserProfile(), loadWorkouts()]);
   }
 }

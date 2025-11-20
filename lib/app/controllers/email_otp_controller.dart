@@ -7,8 +7,10 @@ class EmailOTPController extends GetxController {
   final AuthService _authService = Get.find<AuthService>();
 
   // OTP input controllers
-  final List<TextEditingController> otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   // Signup data
@@ -106,10 +108,7 @@ class EmailOTPController extends GetxController {
       isLoading.value = true;
 
       // Verify OTP
-      final isValid = await _authService.verifyEmailOTP(
-        email: email,
-        otp: otp,
-      );
+      final isValid = await _authService.verifyEmailOTP(email: email, otp: otp);
 
       if (isValid) {
         // Complete signup

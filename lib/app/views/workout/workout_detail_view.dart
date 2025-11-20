@@ -95,11 +95,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                               Icons.category,
                             ),
                             if (workout.isPremium)
-                              _buildBadge(
-                                'Premium',
-                                Colors.amber,
-                                Icons.star,
-                              ),
+                              _buildBadge('Premium', Colors.amber, Icons.star),
                           ],
                         ),
                       ],
@@ -218,9 +214,9 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                                     width: 32,
                                     height: 32,
                                     decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withValues(alpha: 0.1),
+                                      color: Theme.of(
+                                        context,
+                                      ).primaryColor.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Center(
@@ -364,10 +360,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                   SizedBox(width: 8),
                   Text(
                     'Start Workout',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -440,10 +433,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
             const SizedBox(height: 8),
             Text(
               workout.title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -454,10 +444,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                 const SizedBox(width: 4),
                 Text(
                   '${workout.duration} min',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
               ],
             ),

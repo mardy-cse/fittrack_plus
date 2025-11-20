@@ -88,10 +88,10 @@ class Workout {
       calories: map['calories'] ?? 0,
       category: map['category'] ?? '',
       exercises: List<String>.from(map['exercises'] ?? []),
-      createdAt: map['createdAt'] != null 
-          ? (map['createdAt'] is Timestamp 
-              ? (map['createdAt'] as Timestamp).toDate() 
-              : DateTime.parse(map['createdAt']))
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] is Timestamp
+                ? (map['createdAt'] as Timestamp).toDate()
+                : DateTime.parse(map['createdAt']))
           : DateTime.now(),
       isPremium: map['isPremium'] ?? false,
     );

@@ -84,7 +84,7 @@ class AuthController extends GetxController {
   // Sign up with email and password (with OTP verification)
   Future<void> signUp() async {
     if (isLoading.value) return;
-    
+
     try {
       isLoading.value = true;
 
@@ -111,14 +111,13 @@ class AuthController extends GetxController {
       );
 
       // Navigate to email OTP screen
-      Get.toNamed('/email-otp', arguments: {
-        'email': email,
-        'password': password,
-        'name': name,
-      });
+      Get.toNamed(
+        '/email-otp',
+        arguments: {'email': email, 'password': password, 'name': name},
+      );
     } catch (e) {
       isLoading.value = false;
-      
+
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),

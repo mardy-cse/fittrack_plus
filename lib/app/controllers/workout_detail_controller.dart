@@ -49,7 +49,9 @@ class WorkoutDetailController extends GetxController {
       // For demo purposes, using a sample video URL
       // Replace with actual workout.value!.videoUrl in production
       videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+        Uri.parse(
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+        ),
       );
 
       await videoPlayerController!.initialize();
@@ -94,10 +96,12 @@ class WorkoutDetailController extends GetxController {
       final allWorkouts = await _workoutService.getAllWorkouts();
 
       relatedWorkouts.value = allWorkouts
-          .where((w) =>
-              w.id != workout.value!.id &&
-              (w.level == workout.value!.level ||
-                  w.category == workout.value!.category))
+          .where(
+            (w) =>
+                w.id != workout.value!.id &&
+                (w.level == workout.value!.level ||
+                    w.category == workout.value!.category),
+          )
           .take(5)
           .toList();
     } catch (e) {
@@ -120,9 +124,6 @@ class WorkoutDetailController extends GetxController {
     disposeVideoPlayer();
 
     // Navigate to new workout detail
-    Get.off(
-      () => const WorkoutDetailView(),
-      arguments: relatedWorkout,
-    );
+    Get.off(() => const WorkoutDetailView(), arguments: relatedWorkout);
   }
 }

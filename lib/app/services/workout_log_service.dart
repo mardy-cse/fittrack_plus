@@ -13,8 +13,9 @@ class WorkoutLogService extends GetxService {
   // Save workout session
   Future<String?> saveWorkoutSession(WorkoutSession session) async {
     try {
-      final docRef =
-          await _firestore.collection('workout_sessions').add(session.toMap());
+      final docRef = await _firestore
+          .collection('workout_sessions')
+          .add(session.toMap());
       return docRef.id;
     } catch (e) {
       print('Error saving workout session: $e');
@@ -24,7 +25,9 @@ class WorkoutLogService extends GetxService {
 
   // Update workout session
   Future<bool> updateWorkoutSession(
-      String sessionId, Map<String, dynamic> updates) async {
+    String sessionId,
+    Map<String, dynamic> updates,
+  ) async {
     try {
       await _firestore
           .collection('workout_sessions')
@@ -49,9 +52,9 @@ class WorkoutLogService extends GetxService {
       final sessions = snapshot.docs
           .map((doc) => WorkoutSession.fromDocument(doc))
           .toList();
-      
+
       sessions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      
+
       return sessions;
     } catch (e) {
       print('Error fetching workout sessions: $e');
@@ -73,9 +76,9 @@ class WorkoutLogService extends GetxService {
           .map((doc) => WorkoutSession.fromDocument(doc))
           .where((session) => session.createdAt.isAfter(sevenDaysAgo))
           .toList();
-      
+
       sessions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      
+
       return sessions;
     } catch (e) {
       print('Error fetching recent workout sessions: $e');
@@ -87,9 +90,12 @@ class WorkoutLogService extends GetxService {
   Future<Map<String, int>> getUserStats(String userId) async {
     try {
       final sessions = await getUserWorkoutSessions(userId);
-      
+
       int totalWorkouts = sessions.where((s) => s.isCompleted).length;
-      int totalMinutes = sessions.fold(0, (sum, s) => sum + (s.durationSeconds ~/ 60));
+      int totalMinutes = sessions.fold(
+        0,
+        (sum, s) => sum + (s.durationSeconds ~/ 60),
+      );
       int totalCalories = sessions.fold(0, (sum, s) => sum + s.caloriesBurned);
 
       return {
@@ -99,11 +105,7 @@ class WorkoutLogService extends GetxService {
       };
     } catch (e) {
       print('Error calculating user stats: $e');
-      return {
-        'totalWorkouts': 0,
-        'totalMinutes': 0,
-        'totalCalories': 0,
-      };
+      return {'totalWorkouts': 0, 'totalMinutes': 0, 'totalCalories': 0};
     }
   }
 

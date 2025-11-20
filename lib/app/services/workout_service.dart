@@ -15,8 +15,9 @@ class WorkoutService extends GetxService {
   // Load workouts from local JSON file
   Future<List<Workout>> loadLocalWorkouts() async {
     try {
-      final String response =
-          await rootBundle.loadString('assets/data/sample_workouts.json');
+      final String response = await rootBundle.loadString(
+        'assets/data/sample_workouts.json',
+      );
       final List<dynamic> data = json.decode(response);
       return data.map((json) => Workout.fromJson(json)).toList();
     } catch (e) {
@@ -89,8 +90,10 @@ class WorkoutService extends GetxService {
         .collection('workouts')
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Workout.fromDocument(doc)).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Workout.fromDocument(doc)).toList(),
+        );
   }
 
   // Stream workouts by level (real-time)
@@ -100,8 +103,10 @@ class WorkoutService extends GetxService {
         .where('level', isEqualTo: level)
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Workout.fromDocument(doc)).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => Workout.fromDocument(doc)).toList(),
+        );
   }
 
   // Search workouts by title
@@ -111,9 +116,11 @@ class WorkoutService extends GetxService {
 
       return snapshot.docs
           .map((doc) => Workout.fromDocument(doc))
-          .where((workout) =>
-              workout.title.toLowerCase().contains(query.toLowerCase()) ||
-              workout.description.toLowerCase().contains(query.toLowerCase()))
+          .where(
+            (workout) =>
+                workout.title.toLowerCase().contains(query.toLowerCase()) ||
+                workout.description.toLowerCase().contains(query.toLowerCase()),
+          )
           .toList();
     } catch (e) {
       throw Exception('Failed to search workouts: $e');
@@ -138,7 +145,9 @@ class WorkoutService extends GetxService {
   // Create new workout (Admin function)
   Future<String> createWorkout(Workout workout) async {
     try {
-      final docRef = await _firestore.collection('workouts').add(workout.toMap());
+      final docRef = await _firestore
+          .collection('workouts')
+          .add(workout.toMap());
       return docRef.id;
     } catch (e) {
       throw Exception('Failed to create workout: $e');

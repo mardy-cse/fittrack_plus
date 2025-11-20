@@ -12,16 +12,16 @@ class ProgressController extends GetxController {
   final RxList<WorkoutSession> recentSessions = <WorkoutSession>[].obs;
   final RxList<WorkoutSession> allSessions = <WorkoutSession>[].obs;
   final RxBool isLoading = false.obs;
-  
+
   // Stats
   final RxInt totalWorkouts = 0.obs;
   final RxInt totalCalories = 0.obs;
   final RxInt totalMinutes = 0.obs;
   final RxInt currentStreak = 0.obs;
-  
+
   // Weekly chart data (7 days)
   final RxList<double> weeklyWorkouts = <double>[0, 0, 0, 0, 0, 0, 0].obs;
-  
+
   // Calendar
   final Rx<DateTime> selectedDate = DateTime.now().obs;
   final RxList<WorkoutSession> selectedDateSessions = <WorkoutSession>[].obs;
@@ -37,7 +37,7 @@ class ProgressController extends GetxController {
     try {
       isLoading.value = true;
       final userId = _authService.currentUserId;
-      
+
       if (userId == null) {
         print('ProgressController: User ID is null');
         isLoading.value = false;
@@ -45,22 +45,25 @@ class ProgressController extends GetxController {
       }
 
       print('ProgressController: Loading sessions for user: $userId');
-      
+
       // Load all sessions
-      allSessions.value = await _workoutLogService.getUserWorkoutSessions(userId);
-      
+      allSessions.value = await _workoutLogService.getUserWorkoutSessions(
+        userId,
+      );
+
       print('ProgressController: Loaded ${allSessions.length} sessions');
-      
+
       // Load recent sessions (last 10)
       recentSessions.value = allSessions.take(10).toList();
-      
+
       // Calculate stats
       _calculateStats();
       _calculateWeeklyData();
       _calculateStreak();
-      
-      print('ProgressController: Stats - Workouts: ${totalWorkouts.value}, Calories: ${totalCalories.value}, Streak: ${currentStreak.value}');
-      
+
+      print(
+        'ProgressController: Stats - Workouts: ${totalWorkouts.value}, Calories: ${totalCalories.value}, Streak: ${currentStreak.value}',
+      );
     } catch (e) {
       print('Error loading progress data: $e');
       Get.snackbar(
@@ -76,25 +79,32 @@ class ProgressController extends GetxController {
   // Calculate total stats
   void _calculateStats() {
     final completedSessions = allSessions.where((s) => s.isCompleted).toList();
-    
+
     totalWorkouts.value = completedSessions.length;
-    totalCalories.value = completedSessions.fold(0, (sum, s) => sum + s.caloriesBurned);
-    totalMinutes.value = completedSessions.fold(0, (sum, s) => sum + (s.durationSeconds ~/ 60));
+    totalCalories.value = completedSessions.fold(
+      0,
+      (sum, s) => sum + s.caloriesBurned,
+    );
+    totalMinutes.value = completedSessions.fold(
+      0,
+      (sum, s) => sum + (s.durationSeconds ~/ 60),
+    );
   }
 
   // Calculate weekly workout data for chart
   void _calculateWeeklyData() {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1)); // Monday
-    
+
     // Reset weekly data
     weeklyWorkouts.value = [0, 0, 0, 0, 0, 0, 0];
-    
+
     // Count workouts for each day of the week
     for (var session in allSessions.where((s) => s.isCompleted)) {
       final daysDiff = session.createdAt.difference(weekStart).inDays;
       if (daysDiff >= 0 && daysDiff < 7) {
-        weeklyWorkouts[daysDiff] = weeklyWorkouts[daysDiff] + (session.durationSeconds / 60);
+        weeklyWorkouts[daysDiff] =
+            weeklyWorkouts[daysDiff] + (session.durationSeconds / 60);
       }
     }
   }
@@ -114,25 +124,25 @@ class ProgressController extends GetxController {
 
     // Sort by date descending
     completedSessions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    
+
     int streak = 0;
     DateTime checkDate = DateTime.now();
-    
+
     for (var session in completedSessions) {
       final sessionDate = DateTime(
         session.createdAt.year,
         session.createdAt.month,
         session.createdAt.day,
       );
-      
+
       final checkDateOnly = DateTime(
         checkDate.year,
         checkDate.month,
         checkDate.day,
       );
-      
+
       final diff = checkDateOnly.difference(sessionDate).inDays;
-      
+
       if (diff == 0 || diff == 1) {
         streak++;
         checkDate = sessionDate;
@@ -140,16 +150,16 @@ class ProgressController extends GetxController {
         break;
       }
     }
-    
+
     currentStreak.value = streak;
   }
 
   // Load sessions for selected date
   void loadSessionsForDate(DateTime date) {
     selectedDate.value = date;
-    
+
     final dateOnly = DateTime(date.year, date.month, date.day);
-    
+
     selectedDateSessions.value = allSessions.where((session) {
       final sessionDate = DateTime(
         session.createdAt.year,
@@ -163,7 +173,7 @@ class ProgressController extends GetxController {
   // Get sessions for a specific date (for calendar markers)
   bool hasWorkoutOnDate(DateTime date) {
     final dateOnly = DateTime(date.year, date.month, date.day);
-    
+
     return allSessions.any((session) {
       final sessionDate = DateTime(
         session.createdAt.year,
@@ -191,7 +201,7 @@ class ProgressController extends GetxController {
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
     final dateOnly = DateTime(date.year, date.month, date.day);
-    
+
     if (dateOnly == today) {
       return 'Today';
     } else if (dateOnly == yesterday) {

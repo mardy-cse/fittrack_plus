@@ -45,7 +45,7 @@ class _SplashViewState extends State<SplashView>
   Future<void> _checkAuthAndNavigate() async {
     try {
       final authService = Get.find<AuthService>();
-      
+
       // Check if user is logged in
       if (authService.isLoggedIn && authService.currentUser != null) {
         // User is logged in, go to home
