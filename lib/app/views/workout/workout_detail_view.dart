@@ -220,7 +220,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                                     decoration: BoxDecoration(
                                       color: Theme.of(context)
                                           .primaryColor
-                                          .withOpacity(0.1),
+                                          .withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Center(
@@ -340,7 +340,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, -5),
               ),
@@ -382,7 +382,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

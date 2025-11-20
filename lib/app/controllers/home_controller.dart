@@ -7,7 +7,7 @@ import '../services/auth_service.dart';
 
 class HomeController extends GetxController {
   final WorkoutService _workoutService = Get.find<WorkoutService>();
-  final UserService _userService = Get.find<UserService>();
+  final UserService userService = Get.find<UserService>();
   final AuthService _authService = Get.find<AuthService>();
 
   // Observable variables
@@ -35,7 +35,7 @@ class HomeController extends GetxController {
     try {
       final uid = _authService.currentUserId;
       if (uid != null) {
-        final profile = await _userService.getUserProfile(uid);
+        final profile = await userService.getUserProfile(uid);
         userProfile.value = profile;
       }
     } catch (e) {

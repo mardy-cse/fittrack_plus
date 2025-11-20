@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
 import '../home/home_tab_view.dart';
+import '../progress/progress_tab_view.dart';
+import '../tools/tools_tab_view.dart';
+import '../profile/profile_tab_view.dart';
 
 class MainNavigationView extends GetView<HomeController> {
   const MainNavigationView({super.key});
@@ -49,41 +52,13 @@ class MainNavigationView extends GetView<HomeController> {
       case 0:
         return const HomeTabView();
       case 1:
-        return _buildPlaceholder('Progress', Icons.trending_up);
+        return const ProgressTabView();
       case 2:
-        return _buildPlaceholder('Tools', Icons.fitness_center);
+        return const ToolsTabView();
       case 3:
-        return _buildPlaceholder('Profile', Icons.person);
+        return const ProfileTabView();
       default:
         return const HomeTabView();
     }
-  }
-
-  Widget _buildPlaceholder(String title, IconData icon) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 80, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            '$title Screen',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Coming Soon',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

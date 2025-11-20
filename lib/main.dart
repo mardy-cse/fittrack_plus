@@ -13,11 +13,14 @@ import 'app/bindings/phone_auth_binding.dart';
 import 'app/bindings/email_otp_binding.dart';
 import 'app/bindings/home_binding.dart';
 import 'app/bindings/workout_detail_binding.dart';
+import 'app/bindings/start_workout_binding.dart';
 import 'app/views/navigation/main_navigation_view.dart';
 import 'app/views/workout/workout_detail_view.dart';
+import 'app/views/workout/start_workout_view.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
+import 'app/services/workout_log_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +32,7 @@ void main() async {
   await Get.putAsync(() => UserService().init());
   await Get.putAsync(() => AuthService().init());
   await Get.putAsync(() => WorkoutService().init());
+  await Get.putAsync(() => WorkoutLogService().init());
 
   runApp(const FitTrackApp());
 }
@@ -93,6 +97,12 @@ class FitTrackApp extends StatelessWidget {
           name: '/workout-detail',
           page: () => const WorkoutDetailView(),
           binding: WorkoutDetailBinding(),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/start-workout',
+          page: () => const StartWorkoutView(),
+          binding: StartWorkoutBinding(),
           transition: Transition.fadeIn,
         ),
       ],

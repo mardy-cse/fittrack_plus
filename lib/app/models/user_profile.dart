@@ -10,6 +10,10 @@ class UserProfile {
   final String? gender;
   final String? photoUrl;
   final DateTime createdAt;
+  final int? weeklyWorkoutGoal;
+  final int? dailyCalorieGoal;
+  final bool? notificationsEnabled;
+  final bool? darkModeEnabled;
 
   UserProfile({
     required this.uid,
@@ -21,6 +25,10 @@ class UserProfile {
     this.gender,
     this.photoUrl,
     required this.createdAt,
+    this.weeklyWorkoutGoal,
+    this.dailyCalorieGoal,
+    this.notificationsEnabled,
+    this.darkModeEnabled,
   });
 
   // Convert from Firestore document
@@ -35,6 +43,10 @@ class UserProfile {
       gender: map['gender'] as String?,
       photoUrl: map['photoUrl'] as String?,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      weeklyWorkoutGoal: map['weeklyWorkoutGoal'] as int?,
+      dailyCalorieGoal: map['dailyCalorieGoal'] as int?,
+      notificationsEnabled: map['notificationsEnabled'] as bool?,
+      darkModeEnabled: map['darkModeEnabled'] as bool?,
     );
   }
 
@@ -56,6 +68,10 @@ class UserProfile {
       'gender': gender,
       'photoUrl': photoUrl,
       'createdAt': Timestamp.fromDate(createdAt),
+      'weeklyWorkoutGoal': weeklyWorkoutGoal,
+      'dailyCalorieGoal': dailyCalorieGoal,
+      'notificationsEnabled': notificationsEnabled,
+      'darkModeEnabled': darkModeEnabled,
     };
   }
 

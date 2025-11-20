@@ -109,12 +109,9 @@ class WorkoutDetailController extends GetxController {
 
   // Start workout
   void startWorkout() {
-    Get.snackbar(
-      'Starting Workout',
-      'Starting ${workout.value?.title}...',
-      snackPosition: SnackPosition.BOTTOM,
-    );
-    // TODO: Navigate to workout session screen
+    if (workout.value != null) {
+      Get.toNamed('/start-workout', arguments: workout.value);
+    }
   }
 
   // Navigate to related workout
