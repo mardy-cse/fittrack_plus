@@ -47,15 +47,32 @@ class HomeController extends GetxController {
   Future<void> loadWorkouts() async {
     try {
       isLoading.value = true;
+      
+      // First try to get from Firestore
       final fetchedWorkouts = await _workoutService.getAllWorkouts();
-      workouts.value = fetchedWorkouts;
-      filteredWorkouts.value = fetchedWorkouts;
+      
+      // If Firestore is empty, load from local JSON
+      if (fetchedWorkouts.isEmpty) {
+        final localWorkouts = await _workoutService.loadLocalWorkouts();
+        workouts.value = localWorkouts;
+        filteredWorkouts.value = localWorkouts;
+      } else {
+        workouts.value = fetchedWorkouts;
+        filteredWorkouts.value = fetchedWorkouts;
+      }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to load workouts: $e',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // If Firestore fails, try local JSON
+      try {
+        final localWorkouts = await _workoutService.loadLocalWorkouts();
+        workouts.value = localWorkouts;
+        filteredWorkouts.value = localWorkouts;
+      } catch (localError) {
+        Get.snackbar(
+          'Error',
+          'Failed to load workouts',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } finally {
       isLoading.value = false;
     }

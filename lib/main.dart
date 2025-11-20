@@ -12,7 +12,9 @@ import 'app/bindings/auth_binding.dart';
 import 'app/bindings/phone_auth_binding.dart';
 import 'app/bindings/email_otp_binding.dart';
 import 'app/bindings/home_binding.dart';
+import 'app/bindings/workout_detail_binding.dart';
 import 'app/views/navigation/main_navigation_view.dart';
+import 'app/views/workout/workout_detail_view.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
@@ -85,6 +87,12 @@ class FitTrackApp extends StatelessWidget {
           name: '/home',
           page: () => const MainNavigationView(),
           binding: HomeBinding(),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/workout-detail',
+          page: () => const WorkoutDetailView(),
+          binding: WorkoutDetailBinding(),
           transition: Transition.fadeIn,
         ),
       ],

@@ -279,40 +279,39 @@ class HomeTabView extends GetView<HomeController> {
       ),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to workout details
-          Get.snackbar(
-            'Workout',
-            'Opening ${workout.title}',
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          // Navigate to workout details with hero animation
+          Get.toNamed('/workout-detail', arguments: workout);
         },
         borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Workout Image
+            // Workout Image with Hero Animation
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                  image: workout.imageUrl.isNotEmpty
-                      ? DecorationImage(
-                          image: NetworkImage(workout.imageUrl),
-                          fit: BoxFit.cover,
+              child: Hero(
+                tag: 'workout-${workout.id}',
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(16)),
+                    image: workout.imageUrl.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(workout.imageUrl),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: workout.imageUrl.isEmpty
+                      ? const Center(
+                          child: Icon(
+                            Icons.fitness_center,
+                            size: 48,
+                            color: Colors.grey,
+                          ),
                         )
                       : null,
                 ),
-                child: workout.imageUrl.isEmpty
-                    ? const Center(
-                        child: Icon(
-                          Icons.fitness_center,
-                          size: 48,
-                          color: Colors.grey,
-                        ),
-                      )
-                    : null,
               ),
             ),
 
