@@ -57,11 +57,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.water_drop,
-                size: 120,
-                color: Colors.cyan,
-              ),
+              const Icon(Icons.water_drop, size: 120, color: Colors.cyan),
               const SizedBox(height: 32),
               Text(
                 '$waterGlasses / $dailyGoal',
@@ -73,10 +69,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
               const SizedBox(height: 8),
               const Text(
                 'glasses',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 20, color: Colors.grey),
               ),
               const SizedBox(height: 32),
               LinearProgressIndicator(
@@ -89,10 +82,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
               const SizedBox(height: 16),
               Text(
                 '${getProgressPercentage()}% of daily goal',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
               const SizedBox(height: 48),
               Row(
@@ -136,10 +126,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                     const SizedBox(height: 8),
                     Text(
                       '$dailyGoal glasses (2 liters)',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[700],
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                     ),
                   ],
                 ),
