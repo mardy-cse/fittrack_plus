@@ -9,49 +9,61 @@ class HomeTabView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: controller.refreshData,
-          child: CustomScrollView(
-            slivers: [
-              // App Bar with greeting
-              SliverAppBar(
-                floating: true,
-                snap: true,
-                elevation: 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title: Obx(
-                  () => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        controller.getGreeting(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                      Text(
-                        controller.getUserName(),
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+      appBar: AppBar(
+        title: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                controller.getGreeting(),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  fontWeight: FontWeight.normal,
                 ),
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_outlined),
-                    onPressed: () {
-                      // TODO: Navigate to notifications
-                    },
-                  ),
-                ],
               ),
+              Text(
+                controller.getUserName(),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: isDark ? Colors.black : Colors.white,
+        elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(
+              Icons.menu,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.notifications_outlined,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            onPressed: () {
+              // TODO: Navigate to notifications
+            },
+          ),
+        ],
+      ),
+      drawer: _buildDrawer(context),
+      body: RefreshIndicator(
+        onRefresh: controller.refreshData,
+        child: CustomScrollView(
+          slivers: [
 
               // Daily Summary Cards
               SliverToBoxAdapter(
@@ -105,54 +117,65 @@ class HomeTabView extends GetView<HomeController> {
                               ],
                             ),
                             if (controller.currentStreak.value > 0) ...[
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 16),
                               Container(
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(20),
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.purple.shade400,
-                                      Colors.deepPurple.shade600,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(16),
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? const Color(0xFF1C1C1E)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.purple.withOpacity(0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
+                                      color: Colors.black.withOpacity(
+                                          Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.05),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(
-                                      Icons.local_fire_department,
-                                      color: Colors.white,
-                                      size: 32,
+                                    Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF6B6B).withOpacity(0.15),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.local_fire_department_rounded,
+                                        color: Color(0xFFFF6B6B),
+                                        size: 30,
+                                      ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${controller.currentStreak.value} Day Streak!',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${controller.currentStreak.value} Day Streak',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.black87,
+                                            ),
                                           ),
-                                        ),
-                                        const Text(
-                                          'Keep it up! 🔥',
-                                          style: TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 14,
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Great work! Keep it up',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.grey[400]
+                                                  : Colors.grey[600],
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -275,7 +298,6 @@ class HomeTabView extends GetView<HomeController> {
             ],
           ),
         ),
-      ),
       // Floating Action Button (Disabled for emulator - for steps testing)
       // floatingActionButton: FloatingActionButton.extended(
       //   onPressed: () {
@@ -304,26 +326,57 @@ class HomeTabView extends GetView<HomeController> {
     IconData icon,
     Color color,
   ) {
+    // Samsung Health style: circular progress with centered content
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
+        color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: 50,
+                height: 50,
+                child: CircularProgressIndicator(
+                  value: 0.7,
+                  strokeWidth: 4,
+                  backgroundColor: color.withOpacity(0.2),
+                  valueColor: AlwaysStoppedAnimation<Color>(color),
+                ),
+              ),
+              Icon(icon, color: color, size: 22),
+            ],
+          ),
+          const SizedBox(height: 12),
           Text(
             value,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: color,
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+          ),
         ],
       ),
     );
@@ -331,19 +384,34 @@ class HomeTabView extends GetView<HomeController> {
 
   Widget _buildLevelChip(String level) {
     final isSelected = controller.selectedLevel.value == level;
-    return FilterChip(
-      label: Text(level),
-      selected: isSelected,
-      onSelected: (selected) {
-        controller.filterByLevel(level);
-      },
-      backgroundColor: Colors.grey[200],
-      selectedColor: Theme.of(Get.context!).primaryColor,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Colors.black87,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    final isDark = Theme.of(Get.context!).brightness == Brightness.dark;
+    return GestureDetector(
+      onTap: () => controller.filterByLevel(level),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFF4A90E2)
+              : (isDark ? const Color(0xFF2C2C2E) : Colors.grey[100]),
+          borderRadius: BorderRadius.circular(20),
+          border: isSelected
+              ? null
+              : Border.all(
+                  color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                  width: 1,
+                ),
+        ),
+        child: Text(
+          level,
+          style: TextStyle(
+            color: isSelected
+                ? Colors.white
+                : (isDark ? Colors.grey[300] : Colors.black87),
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            fontSize: 14,
+          ),
+        ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
   }
 
@@ -451,6 +519,144 @@ class HomeTabView extends GetView<HomeController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Drawer(
+      backgroundColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF4A90E2),
+                  const Color(0xFF50C878),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CircleAvatar(
+                  radius: 32,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.person,
+                    size: 32,
+                    color: const Color(0xFF4A90E2),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Obx(() => Text(
+                  controller.getUserName(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+                const SizedBox(height: 4),
+                Text(
+                  controller.getGreeting(),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home, color: const Color(0xFF4A90E2)),
+            title: Text('Home', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () => Navigator.pop(context),
+          ),
+          ListTile(
+            leading: Icon(Icons.person, color: const Color(0xFF4A90E2)),
+            title: Text('Profile', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigate to profile tab
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.fitness_center, color: const Color(0xFF4A90E2)),
+            title: Text('Workouts', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigate to workouts tab
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.trending_up, color: const Color(0xFF4A90E2)),
+            title: Text('Progress', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigate to progress tab
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.build, color: const Color(0xFF4A90E2)),
+            title: Text('Tools', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () {
+              Navigator.pop(context);
+              // Navigate to tools tab
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.settings, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+            title: Text('Settings', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () {
+              Navigator.pop(context);
+              // TODO: Navigate to settings
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.help_outline, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+            title: Text('Help & Support', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            onTap: () {
+              Navigator.pop(context);
+              // TODO: Navigate to help
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout, color: Colors.red),
+            title: Text('Logout', style: TextStyle(color: Colors.red)),
+            onTap: () {
+              Navigator.pop(context);
+              // TODO: Handle logout
+              Get.dialog(
+                AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.back();
+                        // TODO: Implement logout
+                      },
+                      child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

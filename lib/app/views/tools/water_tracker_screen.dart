@@ -46,9 +46,14 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey[50],
       appBar: AppBar(
         title: const Text('Water Tracker'),
-        backgroundColor: Colors.cyan,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFF64FFDA),
         foregroundColor: Colors.white,
       ),
       body: Center(
@@ -57,7 +62,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.water_drop, size: 120, color: Colors.cyan),
+              const Icon(Icons.water_drop, size: 120, color: Colors.white),
               const SizedBox(height: 32),
               Text(
                 '$waterGlasses / $dailyGoal',
@@ -75,7 +80,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
               LinearProgressIndicator(
                 value: getProgress(),
                 backgroundColor: Colors.grey[300],
-                color: Colors.cyan,
+                color: const Color(0xFF4A90E2),
                 minHeight: 20,
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -91,14 +96,14 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                   FloatingActionButton(
                     heroTag: 'remove_water_btn',
                     onPressed: removeGlass,
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color(0xFF4A90E2),
                     child: const Icon(Icons.remove, color: Colors.white),
                   ),
                   const SizedBox(width: 32),
                   FloatingActionButton.extended(
                     heroTag: 'add_water_btn',
                     onPressed: addGlass,
-                    backgroundColor: Colors.cyan,
+                    backgroundColor: const Color(0xFF4A90E2),
                     icon: const Icon(Icons.add, color: Colors.white),
                     label: const Text(
                       'Add Glass',

@@ -8,6 +8,8 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       body: Obx(() {
         final workout = controller.workout.value;
@@ -21,33 +23,56 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
             SliverAppBar(
               expandedHeight: 300,
               pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Hero(
-                  tag: 'workout-${workout.id}',
-                  child: workout.imageUrl.isNotEmpty
-                      ? Image.network(
-                          workout.imageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
+              backgroundColor: isDark ? Colors.black : Colors.white,
+              foregroundColor: isDark ? Colors.white : Colors.black,
+              flexibleSpace: LayoutBuilder(
+                builder: (context, constraints) {
+                  final top = constraints.biggest.height;
+                  final isCollapsed = top <= kToolbarHeight + MediaQuery.of(context).padding.top + 20;
+                  
+                  return FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      opacity: isCollapsed ? 1.0 : 0.0,
+                      child: Text(
+                        workout.title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                    ),
+                    titlePadding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                    background: Hero(
+                      tag: 'workout-${workout.id}',
+                      child: workout.imageUrl.isNotEmpty
+                          ? Image.network(
+                              workout.imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[300],
+                                  child: const Icon(
+                                    Icons.fitness_center,
+                                    size: 80,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
                               color: Colors.grey[300],
                               child: const Icon(
                                 Icons.fitness_center,
                                 size: 80,
                                 color: Colors.grey,
                               ),
-                            );
-                          },
-                        )
-                      : Container(
-                          color: Colors.grey[300],
-                          child: const Icon(
-                            Icons.fitness_center,
-                            size: 80,
-                            color: Colors.grey,
-                          ),
-                        ),
-                ),
+                            ),
+                    ),
+                  );
+                },
               ),
             ),
 
@@ -266,8 +291,22 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                             runSpacing: 8,
                             children: workout.tags.map((tag) {
                               return Chip(
-                                label: Text(tag),
-                                backgroundColor: Colors.grey[200],
+                                label: Text(
+                                  tag,
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                backgroundColor: isDark 
+                                    ? const Color(0xFF1C1C1E) 
+                                    : const Color(0xFF4A90E2).withOpacity(0.1),
+                                side: BorderSide(
+                                  color: isDark 
+                                      ? Colors.grey[700]! 
+                                      : const Color(0xFF4A90E2).withOpacity(0.3),
+                                  width: 1,
+                                ),
                               );
                             }).toList(),
                           ),

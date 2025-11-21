@@ -93,9 +93,14 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey[50],
       appBar: AppBar(
         title: const Text('Workout Planner'),
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFFFF6B6B),
         foregroundColor: Colors.white,
         actions: [
           IconButton(icon: const Icon(Icons.save), onPressed: _saveWorkoutPlan),
@@ -106,10 +111,10 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
-            color: Colors.red.withOpacity(0.1),
+            color: const Color(0xFF4A90E2).withOpacity(0.1),
             child: Column(
               children: [
-                const Icon(Icons.calendar_month, size: 60, color: Colors.red),
+                const Icon(Icons.calendar_month, size: 60, color: Colors.white),
                 const SizedBox(height: 16),
                 const Text(
                   'Plan Your Week',
@@ -137,13 +142,13 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                       child: ListTile(
                         contentPadding: const EdgeInsets.all(16),
                         tileColor: workoutPlan[day] != null
-                            ? Colors.red.withOpacity(0.1)
+                            ? const Color(0xFF4A90E2).withOpacity(0.2)
                             : null,
                         leading: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: workoutPlan[day] != null
-                                ? Colors.red
+                                ? const Color(0xFF4A90E2)
                                 : Colors.grey[300],
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -167,7 +172,7 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                           workoutPlan[day] ?? 'Rest day - Tap to add workout',
                           style: TextStyle(
                             color: workoutPlan[day] != null
-                                ? Colors.red
+                                ? const Color(0xFF4A90E2)
                                 : Colors.grey,
                             fontSize: 14,
                           ),
@@ -176,7 +181,7 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                           workoutPlan[day] != null
                               ? Icons.edit
                               : Icons.add_circle,
-                          color: Colors.red,
+                          color: Colors.white,
                           size: 28,
                         ),
                         onTap: () {
@@ -189,7 +194,7 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                 children: [
                                   const Icon(
                                     Icons.fitness_center,
-                                    color: Colors.red,
+                                    color: Colors.white,
                                   ),
                                   const SizedBox(width: 12),
                                   Text('Plan for $day'),
@@ -238,11 +243,11 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                     },
                                     icon: const Icon(
                                       Icons.delete,
-                                      color: Colors.red,
+                                      color: Colors.white,
                                     ),
                                     label: const Text(
                                       'Remove',
-                                      style: TextStyle(color: Colors.red),
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                   ),
                                 TextButton(
@@ -267,7 +272,7 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: const Color(0xFF4A90E2),
                                     foregroundColor: Colors.white,
                                   ),
                                   icon: const Icon(Icons.check),

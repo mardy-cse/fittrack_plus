@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import '../models/user_profile.dart';
 import '../services/user_service.dart';
 import '../services/auth_service.dart';
@@ -21,6 +19,7 @@ class ProfileController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxBool isEditMode = false.obs;
   final RxBool isUploadingPhoto = false.obs;
+  final RxString backgroundImagePath = ''.obs;
 
   // Form controllers
   final nameController = TextEditingController();
@@ -167,24 +166,33 @@ class ProfileController extends GetxController {
         imageQuality: 75,
       );
 
-      if (image == null) return;
+      if (image == null) {
+        print('No image selected');
+        return;
+      }
 
       isUploadingPhoto.value = true;
 
       final userId = _authService.currentUserId;
-      if (userId == null) return;
+      if (userId == null) {
+        Get.snackbar(
+          'Error',
+          'User not logged in',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
 
-      // Upload to Firebase Storage
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('profile_photos')
-          .child('$userId.jpg');
+      print('Saving image locally for user: $userId');
 
-      final uploadTask = await storageRef.putFile(File(image.path));
-      final photoUrl = await uploadTask.ref.getDownloadURL();
+      // Save to local storage instead of Firebase Storage (to avoid billing)
+      final photoUrl = image.path;
 
-      // Update profile with photo URL
+      // Update profile with local photo path
       await _userService.updateUserFields(userId, {'photoUrl': photoUrl});
+      print('Profile updated in Firestore with local path');
 
       // Update local profile
       if (userProfile.value != null) {
@@ -193,15 +201,55 @@ class ProfileController extends GetxController {
 
       Get.snackbar(
         'Success',
-        'Profile photo updated',
+        'Profile photo updated successfully!',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
     } catch (e) {
-      Get.snackbar('Error', 'Failed to upload photo: $e');
+      print('Error saving photo: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to save photo: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 5),
+      );
     } finally {
       isUploadingPhoto.value = false;
+    }
+  }
+
+  /// Pick and save background image
+  Future<void> pickBackgroundImage() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1920,
+        maxHeight: 1080,
+        imageQuality: 85,
+      );
+
+      if (image == null) return;
+
+      backgroundImagePath.value = image.path;
+
+      Get.snackbar(
+        'Success',
+        'Background image updated!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to select image',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 

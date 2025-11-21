@@ -18,6 +18,7 @@ import 'app/views/navigation/main_navigation_view.dart';
 import 'app/views/workout/workout_detail_view.dart';
 import 'app/views/workout/start_workout_view.dart';
 import 'app/views/tools/bmi_screen.dart';
+import 'app/views/progress/all_workouts_screen.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
@@ -25,8 +26,8 @@ import 'app/services/workout_log_service.dart';
 import 'app/services/workout_planner_service.dart';
 import 'app/services/bmi_storage_service.dart';
 import 'app/services/notification_service.dart';
-// import 'app/services/steps_service.dart'; // Disabled for emulator
-// import 'app/controllers/steps_controller.dart'; // Disabled for emulator
+// import 'app/services/steps_service.dart'; // Enable for real device
+// import 'app/controllers/steps_controller.dart'; // Enable for real device
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +46,7 @@ void main() async {
   // await Get.putAsync(() => StepsService().init()); // Disabled for emulator
 
   // Initialize Controllers
-  // Get.put(StepsController()); // Disabled for emulator - works on real device
+  // Get.put(StepsController()); // Disabled for emulator
 
   runApp(const FitTrackApp());
 }
@@ -117,6 +118,11 @@ class FitTrackApp extends StatelessWidget {
           page: () => const StartWorkoutView(),
           binding: StartWorkoutBinding(),
           transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/all-workouts',
+          page: () => const AllWorkoutsScreen(),
+          transition: Transition.rightToLeft,
         ),
         GetPage(
           name: '/bmi',

@@ -25,9 +25,14 @@ class CalorieCalculatorScreen extends StatelessWidget {
     final calorieResult = ''.obs;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey[50],
       appBar: AppBar(
         title: const Text('Calorie Calculator'),
-        backgroundColor: Colors.orange,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFFFFA726),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -35,7 +40,7 @@ class CalorieCalculatorScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(Icons.restaurant, size: 80, color: Colors.orange),
+            const Icon(Icons.restaurant, size: 80, color: Colors.white),
             const SizedBox(height: 24),
             const Text(
               'Calculate your daily calorie needs',
@@ -171,7 +176,7 @@ class CalorieCalculatorScreen extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
+                backgroundColor: const Color(0xFF4A90E2),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),

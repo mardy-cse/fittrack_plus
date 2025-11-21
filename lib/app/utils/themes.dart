@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Primary Colors
-  static const Color primaryColor = Color(0xFF6C63FF);
-  static const Color secondaryColor = Color(0xFF03DAC6);
-  static const Color accentColor = Color(0xFFFF6584);
+  // Samsung Health Color Palette
+  static const Color primaryColor = Color(0xFF4A90E2); // Soft Blue
+  static const Color secondaryColor = Color(0xFF50C878); // Emerald Green
+  static const Color accentColor = Color(0xFFFF6B6B); // Coral Red
+  static const Color warningColor = Color(0xFFFFA726); // Soft Orange
+  static const Color purpleAccent = Color(0xFF9C88FF); // Soft Purple
   
   // Background Colors
-  static const Color lightBackground = Color(0xFFF5F7FA);
-  static const Color darkBackground = Color(0xFF121212);
+  static const Color lightBackground = Color(0xFFF8F9FA); // Almost White
+  static const Color darkBackground = Color(0xFF000000); // Pure Black (Samsung Health style)
   
   // Card Colors
   static const Color lightCardColor = Colors.white;
-  static const Color darkCardColor = Color(0xFF1E1E1E);
+  static const Color darkCardColor = Color(0xFF1C1C1E); // Dark Gray
   
   // Text Colors
-  static const Color lightTextPrimary = Color(0xFF2D3436);
-  static const Color darkTextPrimary = Color(0xFFE8EAED);
+  static const Color lightTextPrimary = Color(0xFF000000);
+  static const Color lightTextSecondary = Color(0xFF6C757D);
+  static const Color darkTextPrimary = Color(0xFFFFFFFF);
+  static const Color darkTextSecondary = Color(0xFFADB5BD);
   
   // Light Theme
   static ThemeData lightTheme = ThemeData(
@@ -45,14 +49,14 @@ class AppTheme {
       ),
     ),
     
-    // Card Theme
+    // Card Theme - Samsung Health style (minimal elevation, softer shadows)
     cardTheme: CardThemeData(
-      elevation: 2,
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
       ),
       color: lightCardColor,
-      shadowColor: Colors.black12,
+      shadowColor: Colors.black.withOpacity(0.05),
     ),
     
     // Elevated Button Theme

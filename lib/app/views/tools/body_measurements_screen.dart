@@ -34,9 +34,14 @@ class BodyMeasurementsScreen extends StatelessWidget {
     };
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey[50],
       appBar: AppBar(
         title: const Text('Body Measurements'),
-        backgroundColor: Colors.purple,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFF50C878),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -44,7 +49,7 @@ class BodyMeasurementsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(Icons.straighten, size: 80, color: Colors.purple),
+            const Icon(Icons.straighten, size: 80, color: Colors.white),
             const SizedBox(height: 24),
             const Text(
               'Track your body progress',
@@ -62,7 +67,7 @@ class BodyMeasurementsScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     labelText: '$key ($unit)',
                     border: const OutlineInputBorder(),
-                    prefixIcon: Icon(icons[key], color: Colors.purple),
+                    prefixIcon: Icon(icons[key], color: Colors.white),
                     helperText: key == 'Weight' ? 'From your profile' : null,
                   ),
                 ),
@@ -96,7 +101,7 @@ class BodyMeasurementsScreen extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
+                backgroundColor: const Color(0xFF4A90E2),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
@@ -109,12 +114,12 @@ class BodyMeasurementsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.purple.withOpacity(0.1),
+                color: const Color(0xFF4A90E2).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 children: [
-                  const Icon(Icons.info_outline, color: Colors.purple),
+                  const Icon(Icons.info_outline, color: Colors.white),
                   const SizedBox(height: 8),
                   Text(
                     'Tip: Measure at the same time each week for accurate tracking',

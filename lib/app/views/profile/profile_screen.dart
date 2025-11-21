@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -47,23 +49,108 @@ class ProfileScreen extends StatelessWidget {
                   controller.isEditMode.value ? 'Edit Profile' : 'Profile',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                background: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.purple.shade400, Colors.purple.shade700],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Obx(() {
+                      if (controller.backgroundImagePath.value.isNotEmpty) {
+                        return GestureDetector(
+                          onTap: () {
+                            // Show image in dialog with blur
+                            Get.dialog(
+                              BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                child: Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  insetPadding: const EdgeInsets.all(20),
+                                  child: Container(
+                                    constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black87,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(20),
+                                          child: InteractiveViewer(
+                                            minScale: 0.5,
+                                            maxScale: 4.0,
+                                            child: Center(
+                                              child: Image.file(
+                                                File(controller.backgroundImagePath.value),
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 8,
+                                          right: 8,
+                                          child: IconButton(
+                                            icon: Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                color: Colors.black54,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: const Icon(Icons.close, color: Colors.white, size: 24),
+                                            ),
+                                            onPressed: () => Get.back(),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              barrierColor: Colors.black54,
+                            );
+                          },
+                          child: Image.file(
+                            File(controller.backgroundImagePath.value),
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? const Color(0xFF1C1C1E)
+                              : const Color(0xFF50C878),
+                        ),
+                      );
+                    }),
+                    if (controller.isEditMode.value)
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: GestureDetector(
+                          onTap: controller.pickBackgroundImage,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.wallpaper,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 40),
+                          _buildProfilePhoto(controller, profile),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(height: 40),
-                        _buildProfilePhoto(controller, profile),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -71,7 +158,7 @@ class ProfileScreen extends StatelessWidget {
             // Content
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -137,22 +224,94 @@ class ProfileScreen extends StatelessWidget {
             );
           }
 
-          return CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.white,
-            backgroundImage: profile.photoUrl != null
-                ? CachedNetworkImageProvider(profile.photoUrl!)
+          final photoUrl = profile.photoUrl;
+          ImageProvider? imageProvider;
+          
+          if (photoUrl != null) {
+            // Check if it's a local file path or network URL
+            if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+              imageProvider = CachedNetworkImageProvider(photoUrl);
+            } else if (photoUrl.startsWith('/')) {
+              // Local file path
+              imageProvider = FileImage(File(photoUrl));
+            }
+          }
+          
+          return GestureDetector(
+            onTap: imageProvider != null
+                ? () {
+                    // Show image in dialog with blur
+                    Get.dialog(
+                      BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Dialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: const EdgeInsets.all(20),
+                          child: Container(
+                            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 400),
+                            decoration: BoxDecoration(
+                              color: Colors.black87,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: InteractiveViewer(
+                                    minScale: 0.5,
+                                    maxScale: 4.0,
+                                    child: Center(
+                                      child: photoUrl.startsWith('/')
+                                          ? Image.file(
+                                              File(photoUrl),
+                                              fit: BoxFit.contain,
+                                            )
+                                          : CachedNetworkImage(
+                                              imageUrl: photoUrl,
+                                              fit: BoxFit.contain,
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: IconButton(
+                                    icon: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black54,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.close, color: Colors.white, size: 24),
+                                    ),
+                                    onPressed: () => Get.back(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      barrierColor: Colors.black54,
+                    );
+                  }
                 : null,
-            child: profile.photoUrl == null
-                ? Text(
-                    profile.name[0].toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.purple,
-                    ),
-                  )
-                : null,
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.white,
+              backgroundImage: imageProvider,
+              child: imageProvider == null
+                  ? Text(
+                      profile.name[0].toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF4A90E2),
+                      ),
+                    )
+                  : null,
+            ),
           );
         }),
         if (controller.isEditMode.value)
@@ -164,7 +323,7 @@ class ProfileScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: Colors.purple,
+                  color: const Color(0xFF4A90E2),
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
@@ -203,6 +362,7 @@ class ProfileScreen extends StatelessWidget {
               controller.userProfile.value!.name,
               Icons.person,
             ),
+            const SizedBox(height: 12),
             _buildInfoCard(
               'Email',
               controller.userProfile.value!.email,
@@ -358,13 +518,16 @@ class ProfileScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF1C1C1E)
+                  : Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
+                  color: Colors.black.withOpacity(
+                      Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -373,12 +536,12 @@ class ProfileScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.purple.shade50,
+                    color: const Color(0xFF4A90E2).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(
-                    Icons.notifications_active,
-                    color: Colors.purple.shade700,
+                  child: const Icon(
+                    Icons.notifications_active_rounded,
+                    color: Color(0xFF4A90E2),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -391,7 +554,7 @@ class ProfileScreen extends StatelessWidget {
                 Switch(
                   value: controller.notificationsEnabled.value,
                   onChanged: controller.toggleNotifications,
-                  activeColor: Colors.purple,
+                  activeColor: const Color(0xFF4A90E2),
                 ),
               ],
             ),
@@ -438,7 +601,7 @@ class ProfileScreen extends StatelessWidget {
                     label: const Text('Test Now'),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: Colors.purple),
+                      side: const BorderSide(color: Color(0xFF4A90E2)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -510,21 +673,24 @@ class ProfileScreen extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
+      child: Builder(
+        builder: (context) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          return Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Row(
-          children: [
+            child: Row(
+              children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -555,96 +721,125 @@ class ProfileScreen extends StatelessWidget {
             Icon(Icons.access_time, color: color, size: 20),
           ],
         ),
+      );
+        },
       ),
     );
   }
 
   /// Info card
   Widget _buildInfoCard(String label, String value, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.purple.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: Colors.purple.shade700),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4A90E2).withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Icon(icon, color: const Color(0xFF4A90E2)),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   /// BMI card
   Widget _buildBMICard(profile) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.purple.shade400, Colors.purple.shade600],
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.favorite, color: Colors.white, size: 32),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Body Mass Index',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${profile.bmi!.toStringAsFixed(1)} - ${profile.bmiCategory}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.favorite,
+                color: const Color(0xFF4A90E2),
+                size: 32,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Body Mass Index',
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${profile.bmi!.toStringAsFixed(1)} - ${profile.bmiCategory}',
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black87,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -655,40 +850,50 @@ class ProfileScreen extends StatelessWidget {
     required IconData icon,
     TextInputType? keyboardType,
   }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-        filled: true,
-        fillColor: Colors.white,
-      ),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            labelText: label,
+            prefixIcon: Icon(icon),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            filled: true,
+            fillColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+          ),
+        );
+      },
     );
   }
 
   /// Gender selector
   Widget _buildGenderSelector(ProfileController controller) {
-    return Obx(
-      () => DropdownButtonFormField<String>(
-        value: controller.selectedGender.value,
-        decoration: InputDecoration(
-          labelText: 'Gender',
-          prefixIcon: const Icon(Icons.wc),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        items: ['Male', 'Female', 'Other'].map((gender) {
-          return DropdownMenuItem(value: gender, child: Text(gender));
-        }).toList(),
-        onChanged: (value) {
-          if (value != null) {
-            controller.selectedGender.value = value;
-          }
-        },
-      ),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Obx(
+          () => DropdownButtonFormField<String>(
+            value: controller.selectedGender.value,
+            decoration: InputDecoration(
+              labelText: 'Gender',
+              prefixIcon: const Icon(Icons.wc),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+            ),
+            items: ['Male', 'Female', 'Other'].map((gender) {
+              return DropdownMenuItem(value: gender, child: Text(gender));
+            }).toList(),
+            onChanged: (value) {
+              if (value != null) {
+                controller.selectedGender.value = value;
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -697,8 +902,11 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.amber.shade400, Colors.orange.shade600],
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFFFFA726),
+            Color(0xFFFF6B6B),
+          ],
         ),
         borderRadius: BorderRadius.circular(16),
       ),
@@ -740,7 +948,7 @@ class ProfileScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: controller.isLoading.value ? null : controller.saveProfile,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.purple,
+            backgroundColor: const Color(0xFF4A90E2),
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),

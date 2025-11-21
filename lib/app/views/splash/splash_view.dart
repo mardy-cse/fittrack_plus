@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
-import '../../utils/themes.dart';
 import '../../services/auth_service.dart';
 
 class SplashView extends StatefulWidget {
@@ -68,96 +67,92 @@ class _SplashViewState extends State<SplashView>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppTheme.primaryColor.withOpacity(0.8),
-              AppTheme.secondaryColor.withOpacity(0.8),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Animated Logo
-              AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, child) {
-                  return FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: ScaleTransition(
-                      scale: _scaleAnimation,
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.fitness_center,
-                          size: 60,
-                          color: AppTheme.primaryColor,
-                        ),
+      backgroundColor: isDark ? Colors.black : Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Samsung Health style simple logo animation
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4A90E2),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF4A90E2).withOpacity(0.3),
+                            blurRadius: 30,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.favorite_rounded,
+                        size: 50,
+                        color: Colors.white,
                       ),
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 30),
-
-              // App Name
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: const Text(
-                  'FitTrack+',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
                   ),
+                );
+              },
+            ),
+            const SizedBox(height: 30),
+
+            // App Name - Samsung Health minimalist style
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Text(
+                'FitTrack+',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white : Colors.black87,
+                  letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: 10),
+            ),
+            const SizedBox(height: 8),
 
-              // Tagline
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Text(
-                  'Your Fitness Journey Starts Here',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white.withOpacity(0.9),
-                    fontWeight: FontWeight.w400,
-                  ),
+            // Tagline - subtle
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Text(
+                'Stay healthy, stay active',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isDark ? Colors.grey[500] : Colors.grey[600],
+                  fontWeight: FontWeight.normal,
                 ),
               ),
-              const SizedBox(height: 60),
+            ),
+            const SizedBox(height: 60),
 
-              // Loading Indicator
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            // Loading Indicator - Samsung Health style
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                    Color(0xFF4A90E2),
+                  ),
                   strokeWidth: 3,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

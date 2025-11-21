@@ -13,9 +13,14 @@ class BMIScreen extends StatelessWidget {
     final controller = Get.put(BMIController());
 
     return Scaffold(
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.grey[50],
       appBar: AppBar(
         title: const Text('BMI Calculator'),
-        backgroundColor: Colors.purple,
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : const Color(0xFF4A90E2),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -61,7 +66,7 @@ class BMIScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: controller.calculateBMI,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
+                backgroundColor: const Color(0xFF4A90E2),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -80,23 +85,28 @@ class BMIScreen extends StatelessWidget {
             Obx(() {
               final record = controller.currentRecord.value;
               if (record == null) {
-                return Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Column(
-                    children: [
-                      Icon(Icons.monitor_weight, size: 60, color: Colors.grey),
-                      SizedBox(height: 16),
-                      Text(
-                        'Enter your details to calculate BMI',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                return Builder(
+                  builder: (context) {
+                    final isDark = Theme.of(context).brightness == Brightness.dark;
+                    return Container(
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1C1C1E) : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                    ],
-                  ),
+                      child: Column(
+                        children: [
+                          Icon(Icons.monitor_weight, size: 60, color: isDark ? Colors.white : Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Enter your details to calculate BMI',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: isDark ? Colors.white : Colors.grey, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               }
 
@@ -161,7 +171,7 @@ class BMIScreen extends StatelessWidget {
           decoration: const InputDecoration(
             labelText: 'Height (cm)',
             border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.height, color: Colors.purple),
+            prefixIcon: Icon(Icons.height, color: Colors.white),
           ),
         ),
         const SizedBox(height: 16),
@@ -171,7 +181,7 @@ class BMIScreen extends StatelessWidget {
           decoration: const InputDecoration(
             labelText: 'Weight (kg)',
             border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.monitor_weight, color: Colors.purple),
+            prefixIcon: Icon(Icons.monitor_weight, color: Colors.white),
           ),
         ),
         const SizedBox(height: 16),
@@ -181,7 +191,7 @@ class BMIScreen extends StatelessWidget {
           decoration: const InputDecoration(
             labelText: 'Age (years)',
             border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.cake, color: Colors.purple),
+            prefixIcon: Icon(Icons.cake, color: Colors.white),
           ),
         ),
         const SizedBox(height: 16),
@@ -200,7 +210,7 @@ class BMIScreen extends StatelessWidget {
                   onChanged: (value) =>
                       controller.selectedGender.value = value!,
                   title: const Text('Male'),
-                  activeColor: Colors.purple,
+                  activeColor: const Color(0xFF4A90E2),
                 ),
               ),
               Expanded(
@@ -210,7 +220,7 @@ class BMIScreen extends StatelessWidget {
                   onChanged: (value) =>
                       controller.selectedGender.value = value!,
                   title: const Text('Female'),
-                  activeColor: Colors.purple,
+                  activeColor: const Color(0xFF4A90E2),
                 ),
               ),
             ],
@@ -285,56 +295,112 @@ class BMIScreen extends StatelessWidget {
   Widget _buildWeightChart(BMIController controller) {
     final weights = controller.weightHistory;
 
-    return Container(
-      height: 200,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(show: true, drawVerticalLine: false),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          height: 200,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
             ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                getTitlesWidget: (value, meta) {
-                  return Text(
-                    (value.toInt() + 1).toString(),
-                    style: const TextStyle(fontSize: 12),
+          ),
+          child: LineChart(
+            LineChartData(
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: false,
+                getDrawingHorizontalLine: (value) {
+                  return FlLine(
+                    color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                    strokeWidth: 1,
                   );
                 },
               ),
+              titlesData: FlTitlesData(
+                show: true,
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    getTitlesWidget: (value, meta) {
+                      return Text(
+                        (value.toInt() + 1).toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark ? Colors.grey[400] : Colors.black87,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 40,
+                    getTitlesWidget: (value, meta) {
+                      return Text(
+                        value.toInt().toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: isDark ? Colors.grey[400] : Colors.black87,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(
+                  color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                ),
+              ),
+              lineBarsData: [
+                LineChartBarData(
+                  spots: weights.asMap().entries.map((e) {
+                    return FlSpot(e.key.toDouble(), e.value);
+                  }).toList(),
+                  isCurved: true,
+                  color: const Color(0xFF4A90E2),
+                  barWidth: 3,
+                  dotData: FlDotData(
+                    show: true,
+                    getDotPainter: (spot, percent, barData, index) {
+                      return FlDotCirclePainter(
+                        radius: 4,
+                        color: const Color(0xFF4A90E2),
+                        strokeWidth: 2,
+                        strokeColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+                      );
+                    },
+                  ),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF4A90E2).withOpacity(0.3),
+                        const Color(0xFF4A90E2).withOpacity(0.0),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          borderData: FlBorderData(show: true),
-          lineBarsData: [
-            LineChartBarData(
-              spots: weights.asMap().entries.map((e) {
-                return FlSpot(e.key.toDouble(), e.value);
-              }).toList(),
-              isCurved: true,
-              color: Colors.purple,
-              barWidth: 3,
-              dotData: const FlDotData(show: true),
-              belowBarData: BarAreaData(
-                show: true,
-                color: Colors.purple.withOpacity(0.1),
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
