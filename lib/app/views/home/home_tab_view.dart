@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
+// import '../../controllers/steps_controller.dart'; // Disabled for emulator
+// import '../../widgets/steps_card.dart'; // Disabled for emulator
 
 class HomeTabView extends GetView<HomeController> {
   const HomeTabView({super.key});
@@ -67,37 +69,95 @@ class HomeTabView extends GetView<HomeController> {
                       ),
                       const SizedBox(height: 16),
                       Obx(
-                        () => Row(
+                        () => Column(
                           children: [
-                            Expanded(
-                              child: _buildStatCard(
-                                context,
-                                'Steps',
-                                controller.todaySteps.value.toString(),
-                                Icons.directions_walk,
-                                Colors.blue,
-                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildStatCard(
+                                    context,
+                                    'Steps',
+                                    controller.todaySteps.value.toString(),
+                                    Icons.directions_walk,
+                                    Colors.blue,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildStatCard(
+                                    context,
+                                    'Calories',
+                                    '${controller.todayCalories.value}',
+                                    Icons.local_fire_department,
+                                    Colors.orange,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildStatCard(
+                                    context,
+                                    'Workouts',
+                                    controller.todayWorkouts.value.toString(),
+                                    Icons.fitness_center,
+                                    Colors.green,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildStatCard(
-                                context,
-                                'Calories',
-                                '${controller.todayCalories.value}',
-                                Icons.local_fire_department,
-                                Colors.orange,
+                            if (controller.currentStreak.value > 0) ...[
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.purple.shade400,
+                                      Colors.deepPurple.shade600,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.purple.withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.local_fire_department,
+                                      color: Colors.white,
+                                      size: 32,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${controller.currentStreak.value} Day Streak!',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Text(
+                                          'Keep it up! 🔥',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: _buildStatCard(
-                                context,
-                                'Workouts',
-                                controller.todayWorkouts.value.toString(),
-                                Icons.fitness_center,
-                                Colors.green,
-                              ),
-                            ),
+                            ],
                           ],
                         ),
                       ),
@@ -105,6 +165,14 @@ class HomeTabView extends GetView<HomeController> {
                   ),
                 ),
               ),
+
+              // Steps Counter Card (Disabled for emulator - works on real device)
+              // const SliverToBoxAdapter(
+              //   child: Padding(
+              //     padding: EdgeInsets.symmetric(horizontal: 16),
+              //     child: StepsCard(),
+              //   ),
+              // ),
 
               // Level Filter Chips
               SliverToBoxAdapter(
@@ -208,6 +276,24 @@ class HomeTabView extends GetView<HomeController> {
           ),
         ),
       ),
+      // Floating Action Button (Disabled for emulator - for steps testing)
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     final stepsController = Get.find<StepsController>();
+      //     stepsController.addManualSteps(100);
+      //     Get.snackbar(
+      //       '✅ Steps Added',
+      //       '+100 steps added for testing',
+      //       snackPosition: SnackPosition.BOTTOM,
+      //       duration: const Duration(seconds: 2),
+      //       backgroundColor: Colors.green,
+      //       colorText: Colors.white,
+      //     );
+      //   },
+      //   icon: const Icon(Icons.add),
+      //   label: const Text('Add Steps'),
+      //   backgroundColor: Colors.blue,
+      // ),
     );
   }
 

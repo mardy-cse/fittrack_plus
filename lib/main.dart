@@ -17,11 +17,15 @@ import 'app/bindings/start_workout_binding.dart';
 import 'app/views/navigation/main_navigation_view.dart';
 import 'app/views/workout/workout_detail_view.dart';
 import 'app/views/workout/start_workout_view.dart';
+import 'app/views/tools/bmi_screen.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
 import 'app/services/workout_log_service.dart';
 import 'app/services/workout_planner_service.dart';
+import 'app/services/bmi_storage_service.dart';
+// import 'app/services/steps_service.dart'; // Disabled for emulator
+// import 'app/controllers/steps_controller.dart'; // Disabled for emulator
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +39,11 @@ void main() async {
   await Get.putAsync(() => WorkoutService().init());
   await Get.putAsync(() => WorkoutLogService().init());
   await Get.putAsync(() => WorkoutPlannerService().init());
+  await Get.putAsync(() => BMIStorageService().init());
+  // await Get.putAsync(() => StepsService().init()); // Disabled for emulator
+
+  // Initialize Controllers
+  // Get.put(StepsController()); // Disabled for emulator - works on real device
 
   runApp(const FitTrackApp());
 }
@@ -106,6 +115,11 @@ class FitTrackApp extends StatelessWidget {
           page: () => const StartWorkoutView(),
           binding: StartWorkoutBinding(),
           transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/bmi',
+          page: () => const BMIScreen(),
+          transition: Transition.rightToLeft,
         ),
       ],
 

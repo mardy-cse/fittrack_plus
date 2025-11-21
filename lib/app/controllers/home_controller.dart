@@ -4,6 +4,8 @@ import '../models/user_profile.dart';
 import '../services/workout_service.dart';
 import '../services/user_service.dart';
 import '../services/auth_service.dart';
+import 'progress_controller.dart';
+// import 'steps_controller.dart'; // Disabled for emulator
 
 class HomeController extends GetxController {
   final WorkoutService _workoutService = Get.find<WorkoutService>();
@@ -18,17 +20,80 @@ class HomeController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxInt currentNavIndex = 0.obs;
 
-  // Stats
+  // Stats - now synced from ProgressController and StepsController
   final RxInt todaySteps = 0.obs;
   final RxInt todayCalories = 0.obs;
   final RxInt todayWorkouts = 0.obs;
+  final RxInt currentStreak = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadUserProfile();
     loadWorkouts();
+    _syncProgressStats();
+    // _syncStepsData(); // Disabled for emulator
   }
+
+  // Sync stats from ProgressController
+  void _syncProgressStats() {
+    try {
+      final progressController = Get.find<ProgressController>();
+
+      // Listen to changes in progress stats
+      ever(progressController.totalWorkouts, (_) => _updateTodayStats());
+      ever(progressController.totalCalories, (_) => _updateTodayStats());
+      ever(progressController.currentStreak, (_) {
+        currentStreak.value = progressController.currentStreak.value;
+      });
+
+      // Initial load
+      _updateTodayStats();
+    } catch (e) {
+      print('Progress sync error: $e');
+    }
+  }
+
+  // Calculate today's stats from recent sessions
+  void _updateTodayStats() {
+    try {
+      final progressController = Get.find<ProgressController>();
+      final today = DateTime.now();
+
+      // Filter today's sessions
+      final todaySessions = progressController.allSessions.where((session) {
+        return session.createdAt.year == today.year &&
+            session.createdAt.month == today.month &&
+            session.createdAt.day == today.day;
+      }).toList();
+
+      // Calculate stats
+      todayWorkouts.value = todaySessions.length;
+      todayCalories.value = todaySessions.fold(
+        0,
+        (sum, session) => sum + session.caloriesBurned,
+      );
+    } catch (e) {
+      print('Today stats update error: $e');
+    }
+  }
+
+  // Sync steps data from StepsController (Disabled for emulator)
+  // void _syncStepsData() {
+  //   try {
+  //     final stepsController = Get.find<StepsController>();
+  //
+  //     // Listen to changes in steps
+  //     ever(stepsController.todaySteps, (_) {
+  //       todaySteps.value = stepsController.todaySteps.value;
+  //     });
+  //
+  //     // Initial load
+  //     todaySteps.value = stepsController.todaySteps.value;
+  //   } catch (e) {
+  //     print('Steps sync error: $e');
+  //   }
+  // }
 
   // Load user profile
   Future<void> loadUserProfile() async {

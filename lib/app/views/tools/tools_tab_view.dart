@@ -51,7 +51,7 @@ class ToolsTabView extends GetView<HomeController> {
                 Icons.calculate,
                 Colors.green,
                 () {
-                  _showBMICalculator(context);
+                  Get.toNamed('/bmi');
                 },
               ),
 
@@ -171,10 +171,34 @@ class ToolsTabView extends GetView<HomeController> {
   }
 
   void _showBMICalculator(BuildContext context) {
-    final heightController = TextEditingController();
-    final weightController = TextEditingController();
+    final user = controller.userProfile.value;
+
+    // Auto-fill from profile
+    final heightController = TextEditingController(
+      text: user?.height?.toInt().toString() ?? '',
+    );
+    final weightController = TextEditingController(
+      text: user?.weight?.toInt().toString() ?? '',
+    );
     final RxString bmiResult = ''.obs;
     final RxString bmiCategory = ''.obs;
+
+    // Auto-calculate if data exists
+    if (user?.height != null && user?.weight != null) {
+      final heightInMeters = user!.height! / 100;
+      final bmi = user.weight! / (heightInMeters * heightInMeters);
+      bmiResult.value = bmi.toStringAsFixed(1);
+
+      if (bmi < 18.5) {
+        bmiCategory.value = 'Underweight';
+      } else if (bmi < 25) {
+        bmiCategory.value = 'Normal weight';
+      } else if (bmi < 30) {
+        bmiCategory.value = 'Overweight';
+      } else {
+        bmiCategory.value = 'Obese';
+      }
+    }
 
     Get.dialog(
       Dialog(

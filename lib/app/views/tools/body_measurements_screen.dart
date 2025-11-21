@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controllers/home_controller.dart';
 
 class BodyMeasurementsScreen extends StatelessWidget {
   const BodyMeasurementsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get profile data for reference
+    final controller = Get.find<HomeController>();
+    final user = controller.userProfile.value;
+
     final measurements = {
+      'Weight': TextEditingController(
+        text: user?.weight?.toInt().toString() ?? '',
+      ),
       'Chest': TextEditingController(),
       'Waist': TextEditingController(),
       'Hips': TextEditingController(),
@@ -16,6 +24,7 @@ class BodyMeasurementsScreen extends StatelessWidget {
     };
 
     final icons = {
+      'Weight': Icons.monitor_weight,
       'Chest': Icons.fitness_center,
       'Waist': Icons.straighten,
       'Hips': Icons.accessibility_new,
@@ -44,15 +53,17 @@ class BodyMeasurementsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             ...measurements.keys.map((key) {
+              final unit = key == 'Weight' ? 'kg' : 'cm';
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: TextField(
                   controller: measurements[key],
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: '$key (cm)',
+                    labelText: '$key ($unit)',
                     border: const OutlineInputBorder(),
                     prefixIcon: Icon(icons[key], color: Colors.purple),
+                    helperText: key == 'Weight' ? 'From your profile' : null,
                   ),
                 ),
               );

@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controllers/home_controller.dart';
 
 class CalorieCalculatorScreen extends StatelessWidget {
   const CalorieCalculatorScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ageController = TextEditingController();
-    final weightController = TextEditingController();
-    final heightController = TextEditingController();
-    final gender = 'male'.obs;
+    final controller = Get.find<HomeController>();
+    final user = controller.userProfile.value;
+
+    // Auto-fill from profile
+    final ageController = TextEditingController(
+      text: user?.age?.toString() ?? '',
+    );
+    final weightController = TextEditingController(
+      text: user?.weight?.toInt().toString() ?? '',
+    );
+    final heightController = TextEditingController(
+      text: user?.height?.toInt().toString() ?? '',
+    );
+    final gender = (user?.gender?.toLowerCase() ?? 'male').obs;
     final activityLevel = 'moderate'.obs;
     final calorieResult = ''.obs;
 
