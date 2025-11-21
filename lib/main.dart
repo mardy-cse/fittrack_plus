@@ -24,6 +24,7 @@ import 'app/services/workout_service.dart';
 import 'app/services/workout_log_service.dart';
 import 'app/services/workout_planner_service.dart';
 import 'app/services/bmi_storage_service.dart';
+import 'app/services/notification_service.dart';
 // import 'app/services/steps_service.dart'; // Disabled for emulator
 // import 'app/controllers/steps_controller.dart'; // Disabled for emulator
 
@@ -40,6 +41,7 @@ void main() async {
   await Get.putAsync(() => WorkoutLogService().init());
   await Get.putAsync(() => WorkoutPlannerService().init());
   await Get.putAsync(() => BMIStorageService().init());
+  await Get.putAsync(() => NotificationService().init());
   // await Get.putAsync(() => StepsService().init()); // Disabled for emulator
 
   // Initialize Controllers

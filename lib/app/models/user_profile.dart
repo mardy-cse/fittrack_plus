@@ -12,8 +12,14 @@ class UserProfile {
   final DateTime createdAt;
   final int? weeklyWorkoutGoal;
   final int? dailyCalorieGoal;
+  final int? dailyStepGoal;
   final bool? notificationsEnabled;
   final bool? darkModeEnabled;
+  final int? workoutReminderHour;
+  final int? workoutReminderMinute;
+  final int? waterReminderHour;
+  final int? waterReminderMinute;
+  final bool? isPremium;
 
   UserProfile({
     required this.uid,
@@ -27,8 +33,14 @@ class UserProfile {
     required this.createdAt,
     this.weeklyWorkoutGoal,
     this.dailyCalorieGoal,
+    this.dailyStepGoal,
     this.notificationsEnabled,
     this.darkModeEnabled,
+    this.workoutReminderHour,
+    this.workoutReminderMinute,
+    this.waterReminderHour,
+    this.waterReminderMinute,
+    this.isPremium,
   });
 
   // Convert from Firestore document
@@ -45,8 +57,14 @@ class UserProfile {
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       weeklyWorkoutGoal: map['weeklyWorkoutGoal'] as int?,
       dailyCalorieGoal: map['dailyCalorieGoal'] as int?,
-      notificationsEnabled: map['notificationsEnabled'] as bool?,
-      darkModeEnabled: map['darkModeEnabled'] as bool?,
+      dailyStepGoal: map['dailyStepGoal'] as int? ?? 10000,
+      notificationsEnabled: map['notificationsEnabled'] as bool? ?? true,
+      darkModeEnabled: map['darkModeEnabled'] as bool? ?? false,
+      workoutReminderHour: map['workoutReminderHour'] as int? ?? 8,
+      workoutReminderMinute: map['workoutReminderMinute'] as int? ?? 0,
+      waterReminderHour: map['waterReminderHour'] as int? ?? 10,
+      waterReminderMinute: map['waterReminderMinute'] as int? ?? 0,
+      isPremium: map['isPremium'] as bool? ?? false,
     );
   }
 
@@ -70,8 +88,14 @@ class UserProfile {
       'createdAt': Timestamp.fromDate(createdAt),
       'weeklyWorkoutGoal': weeklyWorkoutGoal,
       'dailyCalorieGoal': dailyCalorieGoal,
+      'dailyStepGoal': dailyStepGoal,
       'notificationsEnabled': notificationsEnabled,
       'darkModeEnabled': darkModeEnabled,
+      'workoutReminderHour': workoutReminderHour,
+      'workoutReminderMinute': workoutReminderMinute,
+      'waterReminderHour': waterReminderHour,
+      'waterReminderMinute': waterReminderMinute,
+      'isPremium': isPremium,
     };
   }
 
@@ -86,6 +110,16 @@ class UserProfile {
     String? gender,
     String? photoUrl,
     DateTime? createdAt,
+    int? weeklyWorkoutGoal,
+    int? dailyCalorieGoal,
+    int? dailyStepGoal,
+    bool? notificationsEnabled,
+    bool? darkModeEnabled,
+    int? workoutReminderHour,
+    int? workoutReminderMinute,
+    int? waterReminderHour,
+    int? waterReminderMinute,
+    bool? isPremium,
   }) {
     return UserProfile(
       uid: uid ?? this.uid,
@@ -97,6 +131,17 @@ class UserProfile {
       gender: gender ?? this.gender,
       photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
+      weeklyWorkoutGoal: weeklyWorkoutGoal ?? this.weeklyWorkoutGoal,
+      dailyCalorieGoal: dailyCalorieGoal ?? this.dailyCalorieGoal,
+      dailyStepGoal: dailyStepGoal ?? this.dailyStepGoal,
+      notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      darkModeEnabled: darkModeEnabled ?? this.darkModeEnabled,
+      workoutReminderHour: workoutReminderHour ?? this.workoutReminderHour,
+      workoutReminderMinute:
+          workoutReminderMinute ?? this.workoutReminderMinute,
+      waterReminderHour: waterReminderHour ?? this.waterReminderHour,
+      waterReminderMinute: waterReminderMinute ?? this.waterReminderMinute,
+      isPremium: isPremium ?? this.isPremium,
     );
   }
 
