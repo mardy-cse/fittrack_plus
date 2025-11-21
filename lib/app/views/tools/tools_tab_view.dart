@@ -13,15 +13,12 @@ class ToolsTabView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Fitness Tools',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         backgroundColor: isDark ? Colors.black : Colors.white,
         foregroundColor: isDark ? Colors.white : Colors.black87,
@@ -42,80 +39,80 @@ class ToolsTabView extends GetView<HomeController> {
 
             const SizedBox(height: 32),
 
-              // Tools Grid
-              _buildToolCard(
-                'Workout Timer',
-                'Set intervals for exercises',
-                Icons.timer,
-                Colors.blue,
-                () {
-                  _showWorkoutTimer(context);
-                },
-              ),
+            // Tools Grid
+            _buildToolCard(
+              'Workout Timer',
+              'Set intervals for exercises',
+              Icons.timer,
+              Colors.blue,
+              () {
+                _showWorkoutTimer(context);
+              },
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _buildToolCard(
-                'BMI Calculator',
-                'Calculate your body mass index',
-                Icons.calculate,
-                Colors.green,
-                () {
-                  Get.toNamed('/bmi');
-                },
-              ),
+            _buildToolCard(
+              'BMI Calculator',
+              'Calculate your body mass index',
+              Icons.calculate,
+              Colors.green,
+              () {
+                Get.toNamed('/bmi');
+              },
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _buildToolCard(
-                'Water Tracker',
-                'Monitor daily water intake',
-                Icons.water_drop,
-                Colors.cyan,
-                () {
-                  Get.to(() => const WaterTrackerScreen());
-                },
-              ),
+            _buildToolCard(
+              'Water Tracker',
+              'Monitor daily water intake',
+              Icons.water_drop,
+              Colors.cyan,
+              () {
+                Get.to(() => const WaterTrackerScreen());
+              },
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _buildToolCard(
-                'Calorie Calculator',
-                'Calculate daily calorie needs',
-                Icons.restaurant,
-                Colors.orange,
-                () {
-                  Get.to(() => const CalorieCalculatorScreen());
-                },
-              ),
+            _buildToolCard(
+              'Calorie Calculator',
+              'Calculate daily calorie needs',
+              Icons.restaurant,
+              Colors.orange,
+              () {
+                Get.to(() => const CalorieCalculatorScreen());
+              },
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _buildToolCard(
-                'Body Measurements',
-                'Track your body progress',
-                Icons.straighten,
-                Colors.purple,
-                () {
-                  Get.to(() => const BodyMeasurementsScreen());
-                },
-              ),
+            _buildToolCard(
+              'Body Measurements',
+              'Track your body progress',
+              Icons.straighten,
+              Colors.purple,
+              () {
+                Get.to(() => const BodyMeasurementsScreen());
+              },
+            ),
 
-              const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
-              _buildToolCard(
-                'Workout Planner',
-                'Plan your weekly workouts',
-                Icons.calendar_month,
-                Colors.red,
-                () {
-                  Get.to(() => const WorkoutPlannerScreen());
-                },
-              ),
-            ],
-          ),
+            _buildToolCard(
+              'Workout Planner',
+              'Plan your weekly workouts',
+              Icons.calendar_month,
+              Colors.red,
+              () {
+                Get.to(() => const WorkoutPlannerScreen());
+              },
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildToolCard(
@@ -128,7 +125,7 @@ class ToolsTabView extends GetView<HomeController> {
     return Builder(
       builder: (context) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        
+
         return InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),

@@ -12,7 +12,7 @@ class MainNavigationView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       body: Obx(() => _getPage(controller.currentNavIndex.value)),
       bottomNavigationBar: Obx(
@@ -84,7 +84,7 @@ class MainNavigationView extends GetView<HomeController> {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     const primaryColor = Color(0xFF4A90E2); // Samsung Health blue
-    
+
     return Expanded(
       child: InkWell(
         onTap: () => controller.changeNavIndex(index),

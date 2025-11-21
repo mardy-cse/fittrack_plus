@@ -7,21 +7,23 @@ class AppTheme {
   static const Color accentColor = Color(0xFFFF6B6B); // Coral Red
   static const Color warningColor = Color(0xFFFFA726); // Soft Orange
   static const Color purpleAccent = Color(0xFF9C88FF); // Soft Purple
-  
+
   // Background Colors
   static const Color lightBackground = Color(0xFFF8F9FA); // Almost White
-  static const Color darkBackground = Color(0xFF000000); // Pure Black (Samsung Health style)
-  
+  static const Color darkBackground = Color(
+    0xFF000000,
+  ); // Pure Black (Samsung Health style)
+
   // Card Colors
   static const Color lightCardColor = Colors.white;
   static const Color darkCardColor = Color(0xFF1C1C1E); // Dark Gray
-  
+
   // Text Colors
   static const Color lightTextPrimary = Color(0xFF000000);
   static const Color lightTextSecondary = Color(0xFF6C757D);
   static const Color darkTextPrimary = Color(0xFFFFFFFF);
   static const Color darkTextSecondary = Color(0xFFADB5BD);
-  
+
   // Light Theme
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
@@ -35,7 +37,7 @@ class AppTheme {
       surface: lightCardColor,
       background: lightBackground,
     ),
-    
+
     // AppBar Theme
     appBarTheme: const AppBarTheme(
       elevation: 0,
@@ -48,17 +50,15 @@ class AppTheme {
         fontWeight: FontWeight.w600,
       ),
     ),
-    
+
     // Card Theme - Samsung Health style (minimal elevation, softer shadows)
     cardTheme: CardThemeData(
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       color: lightCardColor,
       shadowColor: Colors.black.withOpacity(0.05),
     ),
-    
+
     // Elevated Button Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -66,16 +66,11 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
-    
+
     // Input Decoration Theme
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -98,7 +93,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
-    
+
     // Bottom Navigation Bar Theme
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
@@ -107,7 +102,7 @@ class AppTheme {
       type: BottomNavigationBarType.fixed,
       elevation: 8,
     ),
-    
+
     // Text Theme
     textTheme: const TextTheme(
       displayLarge: TextStyle(
@@ -145,17 +140,11 @@ class AppTheme {
         fontWeight: FontWeight.w500,
         color: lightTextPrimary,
       ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: lightTextPrimary,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: lightTextPrimary,
-      ),
+      bodyLarge: TextStyle(fontSize: 16, color: lightTextPrimary),
+      bodyMedium: TextStyle(fontSize: 14, color: lightTextPrimary),
     ),
   );
-  
+
   // Dark Theme
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
@@ -169,7 +158,7 @@ class AppTheme {
       surface: darkCardColor,
       background: darkBackground,
     ),
-    
+
     // AppBar Theme
     appBarTheme: const AppBarTheme(
       elevation: 0,
@@ -182,17 +171,15 @@ class AppTheme {
         fontWeight: FontWeight.w600,
       ),
     ),
-    
+
     // Card Theme
     cardTheme: CardThemeData(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: darkCardColor,
       shadowColor: Colors.black45,
     ),
-    
+
     // Elevated Button Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -200,16 +187,11 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
-    
+
     // Input Decoration Theme
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -232,7 +214,7 @@ class AppTheme {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     ),
-    
+
     // Bottom Navigation Bar Theme
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: darkCardColor,
@@ -241,7 +223,7 @@ class AppTheme {
       type: BottomNavigationBarType.fixed,
       elevation: 8,
     ),
-    
+
     // Text Theme
     textTheme: const TextTheme(
       displayLarge: TextStyle(
@@ -279,14 +261,8 @@ class AppTheme {
         fontWeight: FontWeight.w500,
         color: darkTextPrimary,
       ),
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        color: darkTextPrimary,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: darkTextPrimary,
-      ),
+      bodyLarge: TextStyle(fontSize: 16, color: darkTextPrimary),
+      bodyMedium: TextStyle(fontSize: 14, color: darkTextPrimary),
     ),
   );
 }

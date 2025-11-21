@@ -17,20 +17,22 @@ class OnboardingView extends GetView<OnboardingController> {
               _buildPage(
                 context,
                 title: 'Track Your Fitness Journey',
-                description: 'Monitor your workouts, calories, and progress all in one place',
+                description:
+                    'Monitor your workouts, calories, and progress all in one place',
                 image: Icons.fitness_center,
                 color: const Color(0xFF4A90E2),
               ),
               _buildPage(
                 context,
                 title: 'Achieve Your Goals',
-                description: 'Set goals, track your progress, and celebrate your achievements',
+                description:
+                    'Set goals, track your progress, and celebrate your achievements',
                 image: Icons.emoji_events,
                 color: const Color(0xFF50C878),
               ),
             ],
           ),
-          
+
           // Skip button
           Positioned(
             top: 50,
@@ -49,7 +51,7 @@ class OnboardingView extends GetView<OnboardingController> {
               ),
             ),
           ),
-          
+
           // Bottom indicator and button
           Positioned(
             bottom: 50,
@@ -58,55 +60,59 @@ class OnboardingView extends GetView<OnboardingController> {
             child: Column(
               children: [
                 // Page indicator
-                Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    2,
-                    (index) => Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: controller.currentPage.value == index ? 24 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: controller.currentPage.value == index
-                            ? const Color(0xFF4A90E2)
-                            : Colors.grey[400],
-                        borderRadius: BorderRadius.circular(4),
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      2,
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: controller.currentPage.value == index ? 24 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: controller.currentPage.value == index
+                              ? const Color(0xFF4A90E2)
+                              : Colors.grey[400],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ),
                   ),
-                )),
-                
+                ),
+
                 const SizedBox(height: 32),
-                
+
                 // Next/Get Started button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Obx(() => SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: controller.currentPage.value == 1
-                          ? controller.completeOnboarding
-                          : controller.nextPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4A90E2),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  child: Obx(
+                    () => SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: controller.currentPage.value == 1
+                            ? controller.completeOnboarding
+                            : controller.nextPage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF4A90E2),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
                         ),
-                        elevation: 2,
-                      ),
-                      child: Text(
-                        controller.currentPage.value == 1
-                            ? 'Get Started'
-                            : 'Next',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                        child: Text(
+                          controller.currentPage.value == 1
+                              ? 'Get Started'
+                              : 'Next',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  )),
+                  ),
                 ),
               ],
             ),
@@ -124,7 +130,7 @@ class OnboardingView extends GetView<OnboardingController> {
     required Color color,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(40),
       child: Column(
@@ -138,15 +144,11 @@ class OnboardingView extends GetView<OnboardingController> {
               color: color.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              image,
-              size: 100,
-              color: color,
-            ),
+            child: Icon(image, size: 100, color: color),
           ),
-          
+
           const SizedBox(height: 60),
-          
+
           // Title
           Text(
             title,
@@ -157,9 +159,9 @@ class OnboardingView extends GetView<OnboardingController> {
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Description
           Text(
             description,

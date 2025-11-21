@@ -46,10 +46,10 @@ class _SplashViewState extends State<SplashView>
     try {
       final storage = GetStorage();
       final authService = Get.find<AuthService>();
-      
+
       // Check if onboarding is completed
       final onboardingCompleted = storage.read('onboarding_completed') ?? false;
-      
+
       if (!onboardingCompleted) {
         // First time user, show onboarding
         Get.offAllNamed('/onboarding');
@@ -68,7 +68,7 @@ class _SplashViewState extends State<SplashView>
       // If auth service not found, check onboarding and go to login
       final storage = GetStorage();
       final onboardingCompleted = storage.read('onboarding_completed') ?? false;
-      
+
       if (!onboardingCompleted) {
         Get.offAllNamed('/onboarding');
       } else {
@@ -86,7 +86,7 @@ class _SplashViewState extends State<SplashView>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.white,
       body: Center(

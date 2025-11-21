@@ -87,21 +87,31 @@ class BMIScreen extends StatelessWidget {
               if (record == null) {
                 return Builder(
                   builder: (context) {
-                    final isDark = Theme.of(context).brightness == Brightness.dark;
+                    final isDark =
+                        Theme.of(context).brightness == Brightness.dark;
                     return Container(
                       padding: const EdgeInsets.all(32),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF1C1C1E) : Colors.grey.shade100,
+                        color: isDark
+                            ? const Color(0xFF1C1C1E)
+                            : Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Column(
                         children: [
-                          Icon(Icons.monitor_weight, size: 60, color: isDark ? Colors.white : Colors.grey),
+                          Icon(
+                            Icons.monitor_weight,
+                            size: 60,
+                            color: isDark ? Colors.white : Colors.grey,
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             'Enter your details to calculate BMI',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: isDark ? Colors.white : Colors.grey, fontSize: 16),
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.grey,
+                              fontSize: 16,
+                            ),
                           ),
                         ],
                       ),
@@ -380,7 +390,9 @@ class BMIScreen extends StatelessWidget {
                         radius: 4,
                         color: const Color(0xFF4A90E2),
                         strokeWidth: 2,
-                        strokeColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+                        strokeColor: isDark
+                            ? const Color(0xFF1C1C1E)
+                            : Colors.white,
                       );
                     },
                   ),

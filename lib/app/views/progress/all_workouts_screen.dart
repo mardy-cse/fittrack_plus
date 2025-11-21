@@ -90,11 +90,7 @@ class AllWorkoutsScreen extends GetView<ProgressController> {
                 color: color.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                Icons.fitness_center_rounded,
-                color: color,
-                size: 24,
-              ),
+              child: Icon(Icons.fitness_center_rounded, color: color, size: 24),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -122,8 +118,12 @@ class AllWorkoutsScreen extends GetView<ProgressController> {
                     borderRadius: BorderRadius.circular(4),
                     child: LinearProgressIndicator(
                       value: (session.caloriesBurned / 500).clamp(0.0, 1.0),
-                      backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
-                      valueColor: AlwaysStoppedAnimation<Color>(_getWorkoutColor(session.workoutTitle)),
+                      backgroundColor: isDark
+                          ? Colors.grey[800]
+                          : Colors.grey[200],
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        _getWorkoutColor(session.workoutTitle),
+                      ),
                       minHeight: 4,
                     ),
                   ),
@@ -303,7 +303,13 @@ class AllWorkoutsScreen extends GetView<ProgressController> {
     );
   }
 
-  Widget _buildDetailStat(BuildContext context, IconData icon, String value, String label, Color color) {
+  Widget _buildDetailStat(
+    BuildContext context,
+    IconData icon,
+    String value,
+    String label,
+    Color color,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [

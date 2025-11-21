@@ -9,7 +9,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       body: Obx(() {
         final workout = controller.workout.value;
@@ -28,8 +28,10 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
               flexibleSpace: LayoutBuilder(
                 builder: (context, constraints) {
                   final top = constraints.biggest.height;
-                  final isCollapsed = top <= kToolbarHeight + MediaQuery.of(context).padding.top + 20;
-                  
+                  final isCollapsed =
+                      top <=
+                      kToolbarHeight + MediaQuery.of(context).padding.top + 20;
+
                   return FlexibleSpaceBar(
                     centerTitle: true,
                     title: AnimatedOpacity(
@@ -44,7 +46,11 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                         ),
                       ),
                     ),
-                    titlePadding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                    titlePadding: const EdgeInsets.only(
+                      left: 16,
+                      bottom: 16,
+                      right: 16,
+                    ),
                     background: Hero(
                       tag: 'workout-${workout.id}',
                       child: workout.imageUrl.isNotEmpty
@@ -294,17 +300,21 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                                 label: Text(
                                   tag,
                                   style: TextStyle(
-                                    color: isDark ? Colors.white : Colors.black87,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
                                     fontSize: 13,
                                   ),
                                 ),
-                                backgroundColor: isDark 
-                                    ? const Color(0xFF1C1C1E) 
+                                backgroundColor: isDark
+                                    ? const Color(0xFF1C1C1E)
                                     : const Color(0xFF4A90E2).withOpacity(0.1),
                                 side: BorderSide(
-                                  color: isDark 
-                                      ? Colors.grey[700]! 
-                                      : const Color(0xFF4A90E2).withOpacity(0.3),
+                                  color: isDark
+                                      ? Colors.grey[700]!
+                                      : const Color(
+                                          0xFF4A90E2,
+                                        ).withOpacity(0.3),
                                   width: 1,
                                 ),
                               );

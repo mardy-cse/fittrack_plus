@@ -10,7 +10,7 @@ class HomeTabView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Obx(
@@ -64,240 +64,251 @@ class HomeTabView extends GetView<HomeController> {
         onRefresh: controller.refreshData,
         child: CustomScrollView(
           slivers: [
-
-              // Daily Summary Cards
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Today\'s Summary',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+            // Daily Summary Cards
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Today\'s Summary',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 16),
-                      Obx(
-                        () => Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildStatCard(
-                                    context,
-                                    'Steps',
-                                    controller.todaySteps.value.toString(),
-                                    Icons.directions_walk,
-                                    Colors.blue,
-                                  ),
+                    ),
+                    const SizedBox(height: 16),
+                    Obx(
+                      () => Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildStatCard(
+                                  context,
+                                  'Steps',
+                                  controller.todaySteps.value.toString(),
+                                  Icons.directions_walk,
+                                  Colors.blue,
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _buildStatCard(
-                                    context,
-                                    'Calories',
-                                    '${controller.todayCalories.value}',
-                                    Icons.local_fire_department,
-                                    Colors.orange,
-                                  ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildStatCard(
+                                  context,
+                                  'Calories',
+                                  '${controller.todayCalories.value}',
+                                  Icons.local_fire_department,
+                                  Colors.orange,
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _buildStatCard(
-                                    context,
-                                    'Workouts',
-                                    controller.todayWorkouts.value.toString(),
-                                    Icons.fitness_center,
-                                    Colors.green,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (controller.currentStreak.value > 0) ...[
-                              const SizedBox(height: 16),
-                              Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).brightness == Brightness.dark
-                                      ? const Color(0xFF1C1C1E)
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(
-                                          Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 60,
-                                      height: 60,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFF6B6B).withOpacity(0.15),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.local_fire_department_rounded,
-                                        color: Color(0xFFFF6B6B),
-                                        size: 30,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${controller.currentStreak.value} Day Streak',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context).brightness == Brightness.dark
-                                                  ? Colors.white
-                                                  : Colors.black87,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Great work! Keep it up',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Theme.of(context).brightness == Brightness.dark
-                                                  ? Colors.grey[400]
-                                                  : Colors.grey[600],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildStatCard(
+                                  context,
+                                  'Workouts',
+                                  controller.todayWorkouts.value.toString(),
+                                  Icons.fitness_center,
+                                  Colors.green,
                                 ),
                               ),
                             ],
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Steps Counter Card (Disabled for emulator - works on real device)
-              // const SliverToBoxAdapter(
-              //   child: Padding(
-              //     padding: EdgeInsets.symmetric(horizontal: 16),
-              //     child: StepsCard(),
-              //   ),
-              // ),
-
-              // Level Filter Chips
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Workout Levels',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Obx(
-                        () => SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              _buildLevelChip('All'),
-                              const SizedBox(width: 8),
-                              _buildLevelChip('Beginner'),
-                              const SizedBox(width: 8),
-                              _buildLevelChip('Intermediate'),
-                              const SizedBox(width: 8),
-                              _buildLevelChip('Advanced'),
-                            ],
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      const Text(
-                        'Recommended Workouts',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Workout Grid
-              Obx(() {
-                if (controller.isLoading.value) {
-                  return const SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-
-                if (controller.filteredWorkouts.isEmpty) {
-                  return SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.fitness_center,
-                            size: 64,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No workouts available',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey[600],
+                          if (controller.currentStreak.value > 0) ...[
+                            const SizedBox(height: 16),
+                            Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? const Color(0xFF1C1C1E)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? 0.3
+                                          : 0.05,
+                                    ),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 60,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                        0xFFFF6B6B,
+                                      ).withOpacity(0.15),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.local_fire_department_rounded,
+                                      color: Color(0xFFFF6B6B),
+                                      size: 30,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${controller.currentStreak.value} Day Streak',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black87,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Great work! Keep it up',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.grey[400]
+                                                : Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),
-                  );
-                }
+                  ],
+                ),
+              ),
+            ),
 
-                return SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.75,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
+            // Steps Counter Card (Disabled for emulator - works on real device)
+            // const SliverToBoxAdapter(
+            //   child: Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 16),
+            //     child: StepsCard(),
+            //   ),
+            // ),
+
+            // Level Filter Chips
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Workout Levels',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Obx(
+                      () => SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildLevelChip('All'),
+                            const SizedBox(width: 8),
+                            _buildLevelChip('Beginner'),
+                            const SizedBox(width: 8),
+                            _buildLevelChip('Intermediate'),
+                            const SizedBox(width: 8),
+                            _buildLevelChip('Advanced'),
+                          ],
                         ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final workout = controller.filteredWorkouts[index];
-                      return _buildWorkoutCard(context, workout);
-                    }, childCount: controller.filteredWorkouts.length),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Recommended Workouts',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
+            ),
+
+            // Workout Grid
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              if (controller.filteredWorkouts.isEmpty) {
+                return SliverFillRemaining(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.fitness_center,
+                          size: 64,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No workouts available',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
-              }),
+              }
 
-              const SliverToBoxAdapter(child: SizedBox(height: 24)),
-            ],
-          ),
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final workout = controller.filteredWorkouts[index];
+                    return _buildWorkoutCard(context, workout);
+                  }, childCount: controller.filteredWorkouts.length),
+                ),
+              );
+            }),
+
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          ],
         ),
+      ),
       // Floating Action Button (Disabled for emulator - for steps testing)
       // floatingActionButton: FloatingActionButton.extended(
       //   onPressed: () {
@@ -525,7 +536,7 @@ class HomeTabView extends GetView<HomeController> {
 
   Widget _buildDrawer(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Drawer(
       backgroundColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
       child: ListView(
@@ -534,10 +545,7 @@ class HomeTabView extends GetView<HomeController> {
           DrawerHeader(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  const Color(0xFF4A90E2),
-                  const Color(0xFF50C878),
-                ],
+                colors: [const Color(0xFF4A90E2), const Color(0xFF50C878)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -556,33 +564,38 @@ class HomeTabView extends GetView<HomeController> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Obx(() => Text(
-                  controller.getUserName(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                Obx(
+                  () => Text(
+                    controller.getUserName(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                )),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   controller.getGreeting(),
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
                 ),
               ],
             ),
           ),
           ListTile(
             leading: Icon(Icons.home, color: const Color(0xFF4A90E2)),
-            title: Text('Home', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            title: Text(
+              'Home',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () => Navigator.pop(context),
           ),
           ListTile(
             leading: Icon(Icons.person, color: const Color(0xFF4A90E2)),
-            title: Text('Profile', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            title: Text(
+              'Profile',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () {
               Navigator.pop(context);
               // Navigate to profile tab
@@ -590,7 +603,10 @@ class HomeTabView extends GetView<HomeController> {
           ),
           ListTile(
             leading: Icon(Icons.fitness_center, color: const Color(0xFF4A90E2)),
-            title: Text('Workouts', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            title: Text(
+              'Workouts',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () {
               Navigator.pop(context);
               // Navigate to workouts tab
@@ -598,7 +614,10 @@ class HomeTabView extends GetView<HomeController> {
           ),
           ListTile(
             leading: Icon(Icons.trending_up, color: const Color(0xFF4A90E2)),
-            title: Text('Progress', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            title: Text(
+              'Progress',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () {
               Navigator.pop(context);
               // Navigate to progress tab
@@ -606,7 +625,10 @@ class HomeTabView extends GetView<HomeController> {
           ),
           ListTile(
             leading: Icon(Icons.build, color: const Color(0xFF4A90E2)),
-            title: Text('Tools', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            title: Text(
+              'Tools',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () {
               Navigator.pop(context);
               // Navigate to tools tab
@@ -614,16 +636,28 @@ class HomeTabView extends GetView<HomeController> {
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.settings, color: isDark ? Colors.grey[400] : Colors.grey[600]),
-            title: Text('Settings', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            leading: Icon(
+              Icons.settings,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+            title: Text(
+              'Settings',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () {
               Navigator.pop(context);
               // TODO: Navigate to settings
             },
           ),
           ListTile(
-            leading: Icon(Icons.help_outline, color: isDark ? Colors.grey[400] : Colors.grey[600]),
-            title: Text('Help & Support', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
+            leading: Icon(
+              Icons.help_outline,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+            title: Text(
+              'Help & Support',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
             onTap: () {
               Navigator.pop(context);
               // TODO: Navigate to help
@@ -649,7 +683,10 @@ class HomeTabView extends GetView<HomeController> {
                         Get.back();
                         // TODO: Implement logout
                       },
-                      child: const Text('Logout', style: TextStyle(color: Colors.red)),
+                      child: const Text(
+                        'Logout',
+                        style: TextStyle(color: Colors.red),
+                      ),
                     ),
                   ],
                 ),

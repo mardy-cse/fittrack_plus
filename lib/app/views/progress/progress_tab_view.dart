@@ -23,15 +23,12 @@ class ProgressTabView extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, ProgressController controller) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Progress',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         backgroundColor: isDark ? Colors.black : Colors.white,
         foregroundColor: isDark ? Colors.white : Colors.black87,
@@ -48,240 +45,242 @@ class ProgressTabView extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             const SliverToBoxAdapter(child: SizedBox(height: 16)),
-            
+
             // Compact Stats Row
             SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Obx(
-                    () => Row(
-                      children: [
-                        Expanded(
-                          child: _buildCompactStatCard(
-                            context,
-                            '${controller.totalWorkouts.value}',
-                            'Workouts',
-                            Icons.fitness_center_rounded,
-                            const Color(0xFF4A90E2),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildCompactStatCard(
-                            context,
-                            '${controller.totalCalories.value}',
-                            'Calories',
-                            Icons.local_fire_department_rounded,
-                            Colors.orange,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _buildCompactStatCard(
-                            context,
-                            '${controller.totalMinutes.value}',
-                            'Minutes',
-                            Icons.timer_outlined,
-                            const Color(0xFF50C878),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Streak Card
-              SliverToBoxAdapter(
-                child: Obx(() {
-                  if (controller.currentStreak.value > 0) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.local_fire_department_rounded,
-                                color: Colors.red,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${controller.currentStreak.value} Day Streak',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark ? Colors.white : Colors.black87,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Keep going!',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: isDark ? Colors.grey[400] : Colors.grey[600],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Obx(
+                  () => Row(
+                    children: [
+                      Expanded(
+                        child: _buildCompactStatCard(
+                          context,
+                          '${controller.totalWorkouts.value}',
+                          'Workouts',
+                          Icons.fitness_center_rounded,
+                          const Color(0xFF4A90E2),
                         ),
                       ),
-                    );
-                  }
-                  return const SizedBox(height: 8);
-                }),
-              ),
-
-              // Weekly Activity Section
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-                  child: Text(
-                    'Weekly Activity',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : Colors.grey[800],
-                    ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _buildCompactStatCard(
+                          context,
+                          '${controller.totalCalories.value}',
+                          'Calories',
+                          Icons.local_fire_department_rounded,
+                          Colors.orange,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _buildCompactStatCard(
+                          context,
+                          '${controller.totalMinutes.value}',
+                          'Minutes',
+                          Icons.timer_outlined,
+                          const Color(0xFF50C878),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
+            ),
 
-              // Chart
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Obx(
-                    () => Container(
-                      height: 180,
+            // Streak Card
+            SliverToBoxAdapter(
+              child: Obx(() {
+                if (controller.currentStreak.value > 0) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                            color: Colors.black.withOpacity(
+                              isDark ? 0.3 : 0.05,
+                            ),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: _buildBarChart(controller),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Recent Workouts Header
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Recent Workouts',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.grey[800],
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Get.toNamed('/all-workouts');
-                        },
-                        child: const Text('View All'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Workout List
-              Obx(() {
-                if (controller.recentSessions.isEmpty) {
-                  return SliverToBoxAdapter(
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(40),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.fitness_center_outlined,
-                              size: 48,
-                              color: Colors.grey[400],
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'No workouts yet',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey[600],
-                              ),
+                            child: const Icon(
+                              Icons.local_fire_department_rounded,
+                              color: Colors.red,
+                              size: 24,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Start working out to track progress',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey[500],
-                              ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${controller.currentStreak.value} Day Streak',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
+                                  ),
+                                ),
+                                Text(
+                                  'Keep going!',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: isDark
+                                        ? Colors.grey[400]
+                                        : Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   );
                 }
+                return const SizedBox(height: 8);
+              }),
+            ),
 
-                // Show only 3 recent workouts
-                final displaySessions = controller.recentSessions.take(3).toList();
-                
-                return SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final session = displaySessions[index];
-                        return _buildWorkoutHistoryItem(
-                          context,
-                          session,
-                        );
+            // Weekly Activity Section
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                child: Text(
+                  'Weekly Activity',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.grey[800],
+                  ),
+                ),
+              ),
+            ),
+
+            // Chart
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Obx(
+                  () => Container(
+                    height: 180,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: _buildBarChart(controller),
+                  ),
+                ),
+              ),
+            ),
+
+            // Recent Workouts Header
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Recent Workouts',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.grey[800],
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Get.toNamed('/all-workouts');
                       },
-                      childCount: displaySessions.length,
+                      child: const Text('View All'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Workout List
+            Obx(() {
+              if (controller.recentSessions.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(40),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.fitness_center_outlined,
+                            size: 48,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'No workouts yet',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Start working out to track progress',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
-              }),
-            ],
-          ),
+              }
+
+              // Show only 3 recent workouts
+              final displaySessions = controller.recentSessions
+                  .take(3)
+                  .toList();
+
+              return SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final session = displaySessions[index];
+                    return _buildWorkoutHistoryItem(context, session);
+                  }, childCount: displaySessions.length),
+                ),
+              );
+            }),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   Widget _buildCompactStatCard(
@@ -292,7 +291,7 @@ class ProgressTabView extends StatelessWidget {
     Color color,
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
       decoration: BoxDecoration(
@@ -388,14 +387,11 @@ class ProgressTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildWorkoutHistoryItem(
-    BuildContext context,
-    dynamic session,
-  ) {
+  Widget _buildWorkoutHistoryItem(BuildContext context, dynamic session) {
     final controller = Get.find<ProgressController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = _getWorkoutColor(session.workoutTitle);
-    
+
     return InkWell(
       onTap: () {
         _showWorkoutDetail(context, session);
@@ -416,99 +412,97 @@ class ProgressTabView extends StatelessWidget {
           ],
         ),
         child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12),
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.fitness_center_rounded, color: color, size: 22),
             ),
-            child: Icon(
-              Icons.fitness_center_rounded,
-              color: color,
-              size: 22,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    session.workoutTitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    controller.formatDate(session.createdAt),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: (session.caloriesBurned / 500).clamp(0.0, 1.0),
+                      backgroundColor: isDark
+                          ? Colors.grey[800]
+                          : Colors.grey[200],
+                      valueColor: AlwaysStoppedAnimation<Color>(color),
+                      minHeight: 4,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  session.workoutTitle,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white : Colors.black87,
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.timer_outlined,
+                      size: 14,
+                      color: const Color(0xFF4A90E2),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      controller.formatDuration(session.durationSeconds),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF4A90E2),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  controller.formatDate(session.createdAt),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: (session.caloriesBurned / 500).clamp(0.0, 1.0),
-                    backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
-                    valueColor: AlwaysStoppedAnimation<Color>(color),
-                    minHeight: 4,
-                  ),
+                const SizedBox(height: 3),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.local_fire_department_rounded,
+                      size: 14,
+                      color: Colors.orange,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${session.caloriesBurned}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.orange,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.timer_outlined,
-                    size: 14,
-                    color: const Color(0xFF4A90E2),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    controller.formatDuration(session.durationSeconds),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF4A90E2),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 3),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.local_fire_department_rounded,
-                    size: 14,
-                    color: Colors.orange,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${session.caloriesBurned}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.orange,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+          ],
         ),
       ),
     );
@@ -766,7 +760,13 @@ class ProgressTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailStat(BuildContext context, IconData icon, String value, String label, Color color) {
+  Widget _buildDetailStat(
+    BuildContext context,
+    IconData icon,
+    String value,
+    String label,
+    Color color,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [

@@ -59,12 +59,18 @@ class ProfileScreen extends StatelessWidget {
                             // Show image in dialog with blur
                             Get.dialog(
                               BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                filter: ImageFilter.blur(
+                                  sigmaX: 10,
+                                  sigmaY: 10,
+                                ),
                                 child: Dialog(
                                   backgroundColor: Colors.transparent,
                                   insetPadding: const EdgeInsets.all(20),
                                   child: Container(
-                                    constraints: const BoxConstraints(maxWidth: 500, maxHeight: 500),
+                                    constraints: const BoxConstraints(
+                                      maxWidth: 500,
+                                      maxHeight: 500,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.black87,
                                       borderRadius: BorderRadius.circular(20),
@@ -72,13 +78,19 @@ class ProfileScreen extends StatelessWidget {
                                     child: Stack(
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
                                           child: InteractiveViewer(
                                             minScale: 0.5,
                                             maxScale: 4.0,
                                             child: Center(
                                               child: Image.file(
-                                                File(controller.backgroundImagePath.value),
+                                                File(
+                                                  controller
+                                                      .backgroundImagePath
+                                                      .value,
+                                                ),
                                                 fit: BoxFit.contain,
                                               ),
                                             ),
@@ -94,7 +106,11 @@ class ProfileScreen extends StatelessWidget {
                                                 color: Colors.black54,
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: const Icon(Icons.close, color: Colors.white, size: 24),
+                                              child: const Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                                size: 24,
+                                              ),
                                             ),
                                             onPressed: () => Get.back(),
                                           ),
@@ -226,17 +242,18 @@ class ProfileScreen extends StatelessWidget {
 
           final photoUrl = profile.photoUrl;
           ImageProvider? imageProvider;
-          
+
           if (photoUrl != null) {
             // Check if it's a local file path or network URL
-            if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+            if (photoUrl.startsWith('http://') ||
+                photoUrl.startsWith('https://')) {
               imageProvider = CachedNetworkImageProvider(photoUrl);
             } else if (photoUrl.startsWith('/')) {
               // Local file path
               imageProvider = FileImage(File(photoUrl));
             }
           }
-          
+
           return GestureDetector(
             onTap: imageProvider != null
                 ? () {
@@ -248,7 +265,10 @@ class ProfileScreen extends StatelessWidget {
                           backgroundColor: Colors.transparent,
                           insetPadding: const EdgeInsets.all(20),
                           child: Container(
-                            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 400),
+                            constraints: const BoxConstraints(
+                              maxWidth: 400,
+                              maxHeight: 400,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.black87,
                               borderRadius: BorderRadius.circular(20),
@@ -283,7 +303,11 @@ class ProfileScreen extends StatelessWidget {
                                         color: Colors.black54,
                                         shape: BoxShape.circle,
                                       ),
-                                      child: const Icon(Icons.close, color: Colors.white, size: 24),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
                                     ),
                                     onPressed: () => Get.back(),
                                   ),
@@ -525,7 +549,10 @@ class ProfileScreen extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(
-                      Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.05),
+                    Theme.of(context).brightness == Brightness.dark
+                        ? 0.3
+                        : 0.05,
+                  ),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -691,37 +718,37 @@ class ProfileScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: color),
                 ),
-              ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Text(
+                  time,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.access_time, color: color, size: 20),
+              ],
             ),
-            Text(
-              time,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Icon(Icons.access_time, color: color, size: 20),
-          ],
-        ),
-      );
+          );
         },
       ),
     );
@@ -732,7 +759,7 @@ class ProfileScreen extends StatelessWidget {
     return Builder(
       builder: (context) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        
+
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -807,11 +834,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.favorite,
-                color: const Color(0xFF4A90E2),
-                size: 32,
-              ),
+              Icon(Icons.favorite, color: const Color(0xFF4A90E2), size: 32),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -879,7 +902,9 @@ class ProfileScreen extends StatelessWidget {
             decoration: InputDecoration(
               labelText: 'Gender',
               prefixIcon: const Icon(Icons.wc),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               filled: true,
               fillColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
             ),
@@ -903,10 +928,7 @@ class ProfileScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFFFFA726),
-            Color(0xFFFF6B6B),
-          ],
+          colors: [Color(0xFFFFA726), Color(0xFFFF6B6B)],
         ),
         borderRadius: BorderRadius.circular(16),
       ),
