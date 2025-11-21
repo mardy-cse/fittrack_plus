@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'dart:async';
 import '../../services/auth_service.dart';
 
@@ -43,7 +44,17 @@ class _SplashViewState extends State<SplashView>
 
   Future<void> _checkAuthAndNavigate() async {
     try {
+      final storage = GetStorage();
       final authService = Get.find<AuthService>();
+      
+      // Check if onboarding is completed
+      final onboardingCompleted = storage.read('onboarding_completed') ?? false;
+      
+      if (!onboardingCompleted) {
+        // First time user, show onboarding
+        Get.offAllNamed('/onboarding');
+        return;
+      }
 
       // Check if user is logged in
       if (authService.isLoggedIn && authService.currentUser != null) {
@@ -54,8 +65,15 @@ class _SplashViewState extends State<SplashView>
         Get.offAllNamed('/login');
       }
     } catch (e) {
-      // If auth service not found, go to login
-      Get.offAllNamed('/login');
+      // If auth service not found, check onboarding and go to login
+      final storage = GetStorage();
+      final onboardingCompleted = storage.read('onboarding_completed') ?? false;
+      
+      if (!onboardingCompleted) {
+        Get.offAllNamed('/onboarding');
+      } else {
+        Get.offAllNamed('/login');
+      }
     }
   }
 

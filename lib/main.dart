@@ -19,6 +19,8 @@ import 'app/views/workout/workout_detail_view.dart';
 import 'app/views/workout/start_workout_view.dart';
 import 'app/views/tools/bmi_screen.dart';
 import 'app/views/progress/all_workouts_screen.dart';
+import 'app/views/onboarding/onboarding_view.dart';
+import 'app/bindings/onboarding_binding.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
@@ -74,6 +76,12 @@ class FitTrackApp extends StatelessWidget {
           name: '/',
           page: () => const SplashView(),
           transition: Transition.fade,
+        ),
+        GetPage(
+          name: '/onboarding',
+          page: () => const OnboardingView(),
+          binding: OnboardingBinding(),
+          transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/login',
