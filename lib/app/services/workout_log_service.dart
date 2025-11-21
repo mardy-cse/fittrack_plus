@@ -119,4 +119,22 @@ class WorkoutLogService extends GetxService {
       return false;
     }
   }
+
+  // Watch user's workout sessions in real-time
+  Stream<List<WorkoutSession>> watchUserWorkoutSessions(String userId) {
+    return _firestore
+        .collection('workout_sessions')
+        .where('userId', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+          final sessions = snapshot.docs
+              .map((doc) => WorkoutSession.fromDocument(doc))
+              .toList();
+
+          // Sort by date (newest first)
+          sessions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+          return sessions;
+        });
+  }
 }

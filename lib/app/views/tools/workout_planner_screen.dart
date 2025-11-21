@@ -1,41 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../services/workout_planner_service.dart';
 
-class WorkoutPlannerScreen extends StatelessWidget {
+class WorkoutPlannerScreen extends StatefulWidget {
   const WorkoutPlannerScreen({super.key});
 
   @override
+  State<WorkoutPlannerScreen> createState() => _WorkoutPlannerScreenState();
+}
+
+class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
+  final WorkoutPlannerService _service = Get.find<WorkoutPlannerService>();
+
+  final daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  final workoutPlan = <String, String>{}.obs;
+  final isLoading = false.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWorkoutPlan();
+  }
+
+  Future<void> _loadWorkoutPlan() async {
+    try {
+      isLoading.value = true;
+      final plan = await _service.loadWorkoutPlan();
+      workoutPlan.value = plan;
+    } catch (e) {
+      debugPrint('Error loading workout plan: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to load workout plan',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _saveWorkoutPlan() async {
+    try {
+      isLoading.value = true;
+      final success = await _service.saveWorkoutPlan(workoutPlan);
+      if (success) {
+        Get.snackbar(
+          'Saved! ✓',
+          'Workout plan saved to database',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        throw Exception('Save failed');
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to save workout plan',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _updateDayPlan(String day, String workout) async {
+    workoutPlan[day] = workout;
+    // Auto-save to database
+    await _saveWorkoutPlan();
+  }
+
+  Future<void> _removeDayPlan(String day) async {
+    workoutPlan.remove(day);
+    // Auto-save to database
+    await _saveWorkoutPlan();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final daysOfWeek = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ];
-
-    final workoutPlan = <String, String>{}.obs;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Workout Planner'),
         backgroundColor: Colors.red,
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: () {
-              Get.snackbar(
-                'Saved! ✓',
-                'Workout plan saved successfully',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-              );
-            },
-          ),
+          IconButton(icon: const Icon(Icons.save), onPressed: _saveWorkoutPlan),
         ],
       ),
       body: Column(
@@ -162,13 +225,15 @@ class WorkoutPlannerScreen extends StatelessWidget {
                               actions: [
                                 if (workoutPlan[day] != null)
                                   TextButton.icon(
-                                    onPressed: () {
-                                      workoutPlan.remove(day);
+                                    onPressed: () async {
                                       Get.back();
+                                      await _removeDayPlan(day);
                                       Get.snackbar(
                                         'Removed',
                                         '$day is now a rest day',
                                         snackPosition: SnackPosition.BOTTOM,
+                                        backgroundColor: Colors.orange,
+                                        colorText: Colors.white,
                                       );
                                     },
                                     icon: const Icon(
@@ -185,12 +250,15 @@ class WorkoutPlannerScreen extends StatelessWidget {
                                   child: const Text('Cancel'),
                                 ),
                                 ElevatedButton.icon(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (controller.text.isNotEmpty) {
-                                      workoutPlan[day] = controller.text;
                                       Get.back();
+                                      await _updateDayPlan(
+                                        day,
+                                        controller.text,
+                                      );
                                       Get.snackbar(
-                                        'Added',
+                                        'Saved to Database',
                                         '$day: ${controller.text}',
                                         snackPosition: SnackPosition.BOTTOM,
                                         backgroundColor: Colors.green,

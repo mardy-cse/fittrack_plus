@@ -21,6 +21,7 @@ import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
 import 'app/services/workout_log_service.dart';
+import 'app/services/workout_planner_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,7 @@ void main() async {
   await Get.putAsync(() => AuthService().init());
   await Get.putAsync(() => WorkoutService().init());
   await Get.putAsync(() => WorkoutLogService().init());
+  await Get.putAsync(() => WorkoutPlannerService().init());
 
   runApp(const FitTrackApp());
 }

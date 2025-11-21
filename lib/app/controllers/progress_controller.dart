@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../models/workout_session.dart';
@@ -26,10 +27,50 @@ class ProgressController extends GetxController {
   final Rx<DateTime> selectedDate = DateTime.now().obs;
   final RxList<WorkoutSession> selectedDateSessions = <WorkoutSession>[].obs;
 
+  // Stream subscription for real-time updates
+  StreamSubscription<List<WorkoutSession>>? _sessionsSubscription;
+
   @override
   void onInit() {
     super.onInit();
-    loadProgressData();
+    _setupRealtimeListener();
+  }
+
+  @override
+  void onClose() {
+    _sessionsSubscription?.cancel();
+    super.onClose();
+  }
+
+  // Setup real-time listener for workout sessions
+  void _setupRealtimeListener() {
+    final userId = _authService.currentUserId;
+    if (userId == null) return;
+
+    isLoading.value = true;
+
+    _sessionsSubscription = _workoutLogService
+        .watchUserWorkoutSessions(userId)
+        .listen(
+          (sessions) {
+            print(
+              'ProgressController: Real-time update - ${sessions.length} sessions',
+            );
+
+            allSessions.value = sessions;
+            recentSessions.value = sessions.take(10).toList();
+
+            _calculateStats();
+            _calculateWeeklyData();
+            _calculateStreak();
+
+            isLoading.value = false;
+          },
+          onError: (error) {
+            print('Error in real-time listener: $error');
+            isLoading.value = false;
+          },
+        );
   }
 
   // Load all progress data

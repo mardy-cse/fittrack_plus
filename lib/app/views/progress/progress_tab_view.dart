@@ -454,106 +454,114 @@ class ProgressTabView extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Workout Calendar',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Obx(
-                () => TableCalendar(
-                  firstDay: DateTime.utc(2024, 1, 1),
-                  lastDay: DateTime.now().add(const Duration(days: 365)),
-                  focusedDay: controller.selectedDate.value,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(controller.selectedDate.value, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    controller.loadSessionsForDate(selectedDay);
-                  },
-                  calendarStyle: CalendarStyle(
-                    todayDecoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.3),
-                      shape: BoxShape.circle,
-                    ),
-                    selectedDecoration: const BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    markerDecoration: const BoxDecoration(
-                      color: Colors.green,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  calendarBuilders: CalendarBuilders(
-                    markerBuilder: (context, day, events) {
-                      if (controller.hasWorkoutOnDate(day)) {
-                        return Positioned(
-                          bottom: 1,
-                          child: Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        );
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Obx(() {
-                if (controller.selectedDateSessions.isEmpty) {
-                  return Text(
-                    'No workouts on this date',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  );
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${controller.selectedDateSessions.length} workout(s)',
-                      style: const TextStyle(
-                        fontSize: 14,
+                    const Text(
+                      'Workout Calendar',
+                      style: TextStyle(
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    ...controller.selectedDateSessions
-                        .map(
-                          (session) => ListTile(
-                            dense: true,
-                            leading: const Icon(
-                              Icons.fitness_center,
-                              color: Colors.blue,
-                            ),
-                            title: Text(session.workoutTitle),
-                            subtitle: Text(
-                              '${controller.formatDuration(session.durationSeconds)} • ${session.caloriesBurned} kcal',
-                            ),
-                          ),
-                        )
-                        .toList(),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                   ],
-                );
-              }),
-            ],
+                ),
+                const SizedBox(height: 16),
+                Obx(
+                  () => TableCalendar(
+                    firstDay: DateTime.utc(2024, 1, 1),
+                    lastDay: DateTime.now().add(const Duration(days: 365)),
+                    focusedDay: controller.selectedDate.value,
+                    selectedDayPredicate: (day) {
+                      return isSameDay(controller.selectedDate.value, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      controller.loadSessionsForDate(selectedDay);
+                    },
+                    calendarStyle: CalendarStyle(
+                      todayDecoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: const BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      markerDecoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    calendarBuilders: CalendarBuilders(
+                      markerBuilder: (context, day, events) {
+                        if (controller.hasWorkoutOnDate(day)) {
+                          return Positioned(
+                            bottom: 1,
+                            child: Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(
+                                color: Colors.green,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          );
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Obx(() {
+                  if (controller.selectedDateSessions.isEmpty) {
+                    return Text(
+                      'No workouts on this date',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    );
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${controller.selectedDateSessions.length} workout(s)',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ...controller.selectedDateSessions
+                          .map(
+                            (session) => ListTile(
+                              dense: true,
+                              leading: const Icon(
+                                Icons.fitness_center,
+                                color: Colors.blue,
+                              ),
+                              title: Text(session.workoutTitle),
+                              subtitle: Text(
+                                '${controller.formatDuration(session.durationSeconds)} • ${session.caloriesBurned} kcal',
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ],
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
