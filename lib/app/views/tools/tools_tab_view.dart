@@ -1,6 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
+import 'water_tracker_screen.dart';
+import 'calorie_calculator_screen.dart';
+import 'body_measurements_screen.dart';
+import 'workout_planner_screen.dart';
 
 class ToolsTabView extends GetView<HomeController> {
   const ToolsTabView({super.key});
@@ -34,11 +39,7 @@ class ToolsTabView extends GetView<HomeController> {
                 Icons.timer,
                 Colors.blue,
                 () {
-                  Get.snackbar(
-                    'Workout Timer',
-                    'Coming soon!',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+                  _showWorkoutTimer(context);
                 },
               ),
 
@@ -62,11 +63,7 @@ class ToolsTabView extends GetView<HomeController> {
                 Icons.water_drop,
                 Colors.cyan,
                 () {
-                  Get.snackbar(
-                    'Water Tracker',
-                    'Stay hydrated! Feature coming soon.',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+                  Get.to(() => const WaterTrackerScreen());
                 },
               ),
 
@@ -78,11 +75,7 @@ class ToolsTabView extends GetView<HomeController> {
                 Icons.restaurant,
                 Colors.orange,
                 () {
-                  Get.snackbar(
-                    'Calorie Calculator',
-                    'Coming soon!',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+                  Get.to(() => const CalorieCalculatorScreen());
                 },
               ),
 
@@ -94,11 +87,7 @@ class ToolsTabView extends GetView<HomeController> {
                 Icons.straighten,
                 Colors.purple,
                 () {
-                  Get.snackbar(
-                    'Body Measurements',
-                    'Coming soon!',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+                  Get.to(() => const BodyMeasurementsScreen());
                 },
               ),
 
@@ -110,11 +99,7 @@ class ToolsTabView extends GetView<HomeController> {
                 Icons.calendar_month,
                 Colors.red,
                 () {
-                  Get.snackbar(
-                    'Workout Planner',
-                    'Coming soon!',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
+                  Get.to(() => const WorkoutPlannerScreen());
                 },
               ),
             ],
@@ -332,6 +317,282 @@ class ToolsTabView extends GetView<HomeController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showWorkoutTimer(BuildContext context) {
+    final workSeconds = 30.obs;
+    final restSeconds = 10.obs;
+    final rounds = 5.obs;
+    final isRunning = false.obs;
+    final isPaused = false.obs;
+    final currentRound = 1.obs;
+    final currentPhase = 'work'.obs; // 'work' or 'rest'
+    final timeRemaining = 30.obs;
+
+    Timer? timer;
+
+    void startTimer() {
+      if (isRunning.value) return;
+
+      isRunning.value = true;
+      isPaused.value = false;
+      currentPhase.value = 'work';
+      timeRemaining.value = workSeconds.value;
+
+      timer = Timer.periodic(const Duration(seconds: 1), (t) {
+        if (isPaused.value) return;
+
+        if (timeRemaining.value > 0) {
+          timeRemaining.value--;
+        } else {
+          // Switch phase
+          if (currentPhase.value == 'work') {
+            if (currentRound.value < rounds.value) {
+              currentPhase.value = 'rest';
+              timeRemaining.value = restSeconds.value;
+            } else {
+              // Workout complete
+              t.cancel();
+              isRunning.value = false;
+              Get.snackbar(
+                'Workout Complete!',
+                'Great job! You completed ${rounds.value} rounds.',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+              );
+            }
+          } else {
+            currentPhase.value = 'work';
+            currentRound.value++;
+            timeRemaining.value = workSeconds.value;
+          }
+        }
+      });
+    }
+
+    void pauseTimer() {
+      isPaused.value = !isPaused.value;
+    }
+
+    void stopTimer() {
+      timer?.cancel();
+      isRunning.value = false;
+      isPaused.value = false;
+      currentRound.value = 1;
+      currentPhase.value = 'work';
+      timeRemaining.value = workSeconds.value;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Workout Timer'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Settings (only show when not running)
+              Obx(
+                () => !isRunning.value
+                    ? Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Expanded(child: Text('Work Time (sec):')),
+                              const SizedBox(width: 8),
+                              SizedBox(
+                                width: 80,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  controller: TextEditingController(
+                                    text: workSeconds.value.toString(),
+                                  ),
+                                  onChanged: (value) {
+                                    workSeconds.value =
+                                        int.tryParse(value) ?? 30;
+                                    timeRemaining.value = workSeconds.value;
+                                  },
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              const Expanded(child: Text('Rest Time (sec):')),
+                              const SizedBox(width: 8),
+                              SizedBox(
+                                width: 80,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  controller: TextEditingController(
+                                    text: restSeconds.value.toString(),
+                                  ),
+                                  onChanged: (value) {
+                                    restSeconds.value =
+                                        int.tryParse(value) ?? 10;
+                                  },
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              const Expanded(child: Text('Rounds:')),
+                              const SizedBox(width: 8),
+                              SizedBox(
+                                width: 80,
+                                child: TextField(
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  controller: TextEditingController(
+                                    text: rounds.value.toString(),
+                                  ),
+                                  onChanged: (value) {
+                                    rounds.value = int.tryParse(value) ?? 5;
+                                  },
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      )
+                    : const SizedBox(),
+              ),
+
+              // Timer Display
+              Obx(
+                () => Column(
+                  children: [
+                    // Phase indicator
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: currentPhase.value == 'work'
+                            ? Colors.green
+                            : Colors.orange,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        currentPhase.value == 'work' ? 'WORK' : 'REST',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Timer
+                    Text(
+                      '${(timeRemaining.value ~/ 60).toString().padLeft(2, '0')}:${(timeRemaining.value % 60).toString().padLeft(2, '0')}',
+                      style: const TextStyle(
+                        fontSize: 64,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Round counter
+                    Text(
+                      'Round ${currentRound.value} / ${rounds.value}',
+                      style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                if (!isRunning.value)
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: startTimer,
+                      icon: const Icon(Icons.play_arrow),
+                      label: const Text('Start'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                if (isRunning.value) ...[
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: pauseTimer,
+                      icon: Icon(
+                        isPaused.value ? Icons.play_arrow : Icons.pause,
+                      ),
+                      label: Text(isPaused.value ? 'Resume' : 'Pause'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: stopTimer,
+                      icon: const Icon(Icons.stop),
+                      label: const Text('Stop'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+                const SizedBox(width: 8),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      timer?.cancel();
+                      Get.back();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
