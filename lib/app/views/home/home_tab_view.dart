@@ -640,7 +640,10 @@ class HomeTabView extends GetView<HomeController> {
           ),
           const Divider(),
           ListTile(
-            leading: Icon(Icons.smart_toy_rounded, color: const Color(0xFF4A90E2)),
+            leading: Icon(
+              Icons.smart_toy_rounded,
+              color: const Color(0xFF4A90E2),
+            ),
             title: Text(
               'AI Fitness Coach',
               style: TextStyle(color: isDark ? Colors.white : Colors.black87),

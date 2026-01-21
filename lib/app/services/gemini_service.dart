@@ -2,13 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {
-  static const String _apiKey = 'YOUR_GEMINI_API_KEY_HERE'; // TODO: Replace with your actual API key
+  static const String _apiKey =
+      'AIzaSyDIjJRxGZ4v8cpG9Qc98JMOGA42XXNj6X8'; // TODO: Replace with your actual API key
   late final GenerativeModel _model;
   late final ChatSession _chat;
 
   GeminiService() {
     _model = GenerativeModel(
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash',
       apiKey: _apiKey,
       generationConfig: GenerationConfig(
         temperature: 0.7,
@@ -22,13 +23,7 @@ class GeminiService {
         SafetySetting(HarmCategory.sexuallyExplicit, HarmBlockThreshold.medium),
         SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.medium),
       ],
-    );
-    _initializeChat();
-  }
-
-  void _initializeChat() {
-    _chat = _model.startChat(history: [
-      Content.text(
+      systemInstruction: Content.text(
         '''You are an expert AI fitness coach named "FitBot". You provide:
 - Personalized workout advice
 - Exercise form tips and corrections
@@ -37,21 +32,25 @@ class GeminiService {
 - Injury prevention tips
 - Progress tracking insights
 
-Keep responses concise, friendly, and actionable. Always prioritize user safety and recommend consulting healthcare professionals for medical concerns.'''
+Keep responses concise, friendly, and actionable. Always prioritize user safety and recommend consulting healthcare professionals for medical concerns.''',
       ),
-      Content.model([TextPart('Hello! I\'m FitBot, your AI fitness coach. How can I help you achieve your fitness goals today? 💪')]),
-    ]);
+    );
+    _initializeChat();
+  }
+
+  void _initializeChat() {
+    _chat = _model.startChat();
   }
 
   Future<String> sendMessage(String message) async {
     try {
       final response = await _chat.sendMessage(Content.text(message));
       final text = response.text;
-      
+
       if (text == null || text.isEmpty) {
         throw Exception('Empty response from AI');
       }
-      
+
       return text;
     } catch (e) {
       debugPrint('Error sending message to Gemini: $e');
@@ -72,7 +71,8 @@ Keep responses concise, friendly, and actionable. Always prioritize user safety 
     String? availableEquipment,
     int? durationMinutes,
   }) async {
-    final prompt = '''
+    final prompt =
+        '''
 Suggest a workout plan with these details:
 - Fitness Level: $fitnessLevel
 - Goal: $goal
@@ -81,12 +81,13 @@ ${durationMinutes != null ? '- Duration: $durationMinutes minutes' : ''}
 
 Provide a structured workout with exercises, sets, and reps.
 ''';
-    
+
     return sendMessage(prompt);
   }
 
   Future<String> getFormAdvice(String exerciseName) async {
-    final prompt = 'Explain the proper form for $exerciseName exercise. Include common mistakes to avoid.';
+    final prompt =
+        'Explain the proper form for $exerciseName exercise. Include common mistakes to avoid.';
     return sendMessage(prompt);
   }
 
@@ -94,14 +95,15 @@ Provide a structured workout with exercises, sets, and reps.
     required String goal,
     String? dietaryRestrictions,
   }) async {
-    final prompt = '''
+    final prompt =
+        '''
 Provide nutrition advice for:
 - Goal: $goal
 ${dietaryRestrictions != null ? '- Dietary Restrictions: $dietaryRestrictions' : ''}
 
 Include macronutrient recommendations and meal timing tips.
 ''';
-    
+
     return sendMessage(prompt);
   }
 }

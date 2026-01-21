@@ -7,7 +7,7 @@ class AiChatController extends GetxController {
   final GeminiService _geminiService = GeminiService();
   final TextEditingController messageController = TextEditingController();
   final ScrollController scrollController = ScrollController();
-  
+
   final RxList<ChatMessage> messages = <ChatMessage>[].obs;
   final RxBool isLoading = false.obs;
 
@@ -25,12 +25,15 @@ class AiChatController extends GetxController {
   }
 
   void _addWelcomeMessage() {
-    messages.add(ChatMessage(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      text: "Hello! I'm FitBot, your AI fitness coach. How can I help you achieve your fitness goals today? 💪",
-      isUser: false,
-      timestamp: DateTime.now(),
-    ));
+    messages.add(
+      ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        text:
+            "Hello! I'm FitBot, your AI fitness coach. How can I help you achieve your fitness goals today? 💪",
+        isUser: false,
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   Future<void> sendMessage() async {
@@ -114,7 +117,8 @@ class AiChatController extends GetxController {
   }
 
   Future<void> getWorkoutSuggestion() async {
-    messageController.text = 'Suggest a beginner-friendly full body workout for 30 minutes';
+    messageController.text =
+        'Suggest a beginner-friendly full body workout for 30 minutes';
     await sendMessage();
   }
 

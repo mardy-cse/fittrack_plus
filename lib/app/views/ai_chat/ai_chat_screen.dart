@@ -46,7 +46,9 @@ class AiChatScreen extends GetView<AiChatController> {
               Get.dialog(
                 AlertDialog(
                   title: const Text('Clear Chat'),
-                  content: const Text('Are you sure you want to clear the chat history?'),
+                  content: const Text(
+                    'Are you sure you want to clear the chat history?',
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Get.back(),
@@ -71,7 +73,7 @@ class AiChatScreen extends GetView<AiChatController> {
         children: [
           // Quick action chips
           _buildQuickActions(context),
-          
+
           // Messages list
           Expanded(
             child: Obx(() {
@@ -88,7 +90,8 @@ class AiChatScreen extends GetView<AiChatController> {
                       const SizedBox(height: 16),
                       Text(
                         'Start chatting with FitBot',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
                               color: Theme.of(context).colorScheme.outline,
                             ),
                       ),
@@ -120,7 +123,9 @@ class AiChatScreen extends GetView<AiChatController> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
         border: Border(
           bottom: BorderSide(
             color: Theme.of(context).colorScheme.outlineVariant,
@@ -182,7 +187,9 @@ class AiChatScreen extends GetView<AiChatController> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isUser) ...[
@@ -198,17 +205,26 @@ class AiChatScreen extends GetView<AiChatController> {
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isUser
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: isUser
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16).copyWith(
-                      topLeft: isUser ? const Radius.circular(16) : const Radius.circular(4),
-                      topRight: isUser ? const Radius.circular(4) : const Radius.circular(16),
+                      topLeft: isUser
+                          ? const Radius.circular(16)
+                          : const Radius.circular(4),
+                      topRight: isUser
+                          ? const Radius.circular(4)
+                          : const Radius.circular(16),
                     ),
                   ),
                   child: message.isLoading
@@ -226,15 +242,19 @@ class AiChatScreen extends GetView<AiChatController> {
                             const SizedBox(width: 8),
                             Text(
                               message.text,
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface,
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                             ),
                           ],
                         )
                       : Text(
                           message.text,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
                                 color: isUser
                                     ? Theme.of(context).colorScheme.onPrimary
                                     : Theme.of(context).colorScheme.onSurface,
@@ -245,8 +265,8 @@ class AiChatScreen extends GetView<AiChatController> {
                 Text(
                   time,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ],
             ),
@@ -288,7 +308,9 @@ class AiChatScreen extends GetView<AiChatController> {
                 decoration: InputDecoration(
                   hintText: 'Ask me anything about fitness...',
                   filled: true,
-                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  fillColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24),
                     borderSide: BorderSide.none,
@@ -306,7 +328,9 @@ class AiChatScreen extends GetView<AiChatController> {
             const SizedBox(width: 8),
             Obx(() {
               return FilledButton(
-                onPressed: controller.isLoading.value ? null : controller.sendMessage,
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.sendMessage,
                 style: FilledButton.styleFrom(
                   shape: const CircleBorder(),
                   padding: const EdgeInsets.all(16),
