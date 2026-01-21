@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../models/workout_session.dart';
@@ -53,7 +54,7 @@ class ProgressController extends GetxController {
         .watchUserWorkoutSessions(userId)
         .listen(
           (sessions) {
-            print(
+            debugPrint(
               'ProgressController: Real-time update - ${sessions.length} sessions',
             );
 
@@ -67,7 +68,7 @@ class ProgressController extends GetxController {
             isLoading.value = false;
           },
           onError: (error) {
-            print('Error in real-time listener: $error');
+            debugPrint('Error in real-time listener: $error');
             isLoading.value = false;
           },
         );
@@ -80,19 +81,19 @@ class ProgressController extends GetxController {
       final userId = _authService.currentUserId;
 
       if (userId == null) {
-        print('ProgressController: User ID is null');
+        debugPrint('ProgressController: User ID is null');
         isLoading.value = false;
         return;
       }
 
-      print('ProgressController: Loading sessions for user: $userId');
+      debugPrint('ProgressController: Loading sessions for user: $userId');
 
       // Load all sessions
       allSessions.value = await _workoutLogService.getUserWorkoutSessions(
         userId,
       );
 
-      print('ProgressController: Loaded ${allSessions.length} sessions');
+      debugPrint('ProgressController: Loaded ${allSessions.length} sessions');
 
       // Load recent sessions (last 10)
       recentSessions.value = allSessions.take(10).toList();
@@ -102,11 +103,11 @@ class ProgressController extends GetxController {
       _calculateWeeklyData();
       _calculateStreak();
 
-      print(
+      debugPrint(
         'ProgressController: Stats - Workouts: ${totalWorkouts.value}, Calories: ${totalCalories.value}, Streak: ${currentStreak.value}',
       );
     } catch (e) {
-      print('Error loading progress data: $e');
+      debugPrint('Error loading progress data: $e');
       Get.snackbar(
         'Error',
         'Failed to load progress data',

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/workout_session.dart';
 
@@ -18,7 +19,7 @@ class WorkoutLogService extends GetxService {
           .add(session.toMap());
       return docRef.id;
     } catch (e) {
-      print('Error saving workout session: $e');
+      debugPrint('Error saving workout session: $e');
       return null;
     }
   }
@@ -35,7 +36,7 @@ class WorkoutLogService extends GetxService {
           .update(updates);
       return true;
     } catch (e) {
-      print('Error updating workout session: $e');
+      debugPrint('Error updating workout session: $e');
       return false;
     }
   }
@@ -57,7 +58,7 @@ class WorkoutLogService extends GetxService {
 
       return sessions;
     } catch (e) {
-      print('Error fetching workout sessions: $e');
+      debugPrint('Error fetching workout sessions: $e');
       return [];
     }
   }
@@ -81,7 +82,7 @@ class WorkoutLogService extends GetxService {
 
       return sessions;
     } catch (e) {
-      print('Error fetching recent workout sessions: $e');
+      debugPrint('Error fetching recent workout sessions: $e');
       return [];
     }
   }
@@ -94,9 +95,9 @@ class WorkoutLogService extends GetxService {
       int totalWorkouts = sessions.where((s) => s.isCompleted).length;
       int totalMinutes = sessions.fold(
         0,
-        (sum, s) => sum + (s.durationSeconds ~/ 60),
+        (total, s) => total + (s.durationSeconds ~/ 60),
       );
-      int totalCalories = sessions.fold(0, (sum, s) => sum + s.caloriesBurned);
+      int totalCalories = sessions.fold(0, (total, s) => total + s.caloriesBurned);
 
       return {
         'totalWorkouts': totalWorkouts,
@@ -104,7 +105,7 @@ class WorkoutLogService extends GetxService {
         'totalCalories': totalCalories,
       };
     } catch (e) {
-      print('Error calculating user stats: $e');
+      debugPrint('Error calculating user stats: $e');
       return {'totalWorkouts': 0, 'totalMinutes': 0, 'totalCalories': 0};
     }
   }
@@ -115,7 +116,7 @@ class WorkoutLogService extends GetxService {
       await _firestore.collection('workout_sessions').doc(sessionId).delete();
       return true;
     } catch (e) {
-      print('Error deleting workout session: $e');
+      debugPrint('Error deleting workout session: $e');
       return false;
     }
   }

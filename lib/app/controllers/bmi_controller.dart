@@ -155,7 +155,7 @@ class BMIController extends GetxController {
       // Get trend
       trend.value = await _storageService.getBMITrend();
     } catch (e) {
-      print('Error loading BMI history: $e');
+      debugPrint('Error loading BMI history: $e');
     } finally {
       isLoading.value = false;
     }

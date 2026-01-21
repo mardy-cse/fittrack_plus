@@ -54,7 +54,11 @@ class HomeTabView extends GetView<HomeController> {
               color: isDark ? Colors.white : Colors.black87,
             ),
             onPressed: () {
-              // TODO: Navigate to notifications
+              Get.snackbar(
+                'Coming Soon',
+                'Notifications feature will be available soon',
+                snackPosition: SnackPosition.BOTTOM,
+              );
             },
           ),
         ],
@@ -646,7 +650,11 @@ class HomeTabView extends GetView<HomeController> {
             ),
             onTap: () {
               Navigator.pop(context);
-              // TODO: Navigate to settings
+              Get.snackbar(
+                'Coming Soon',
+                'Settings page will be available soon',
+                snackPosition: SnackPosition.BOTTOM,
+              );
             },
           ),
           ListTile(
@@ -660,7 +668,11 @@ class HomeTabView extends GetView<HomeController> {
             ),
             onTap: () {
               Navigator.pop(context);
-              // TODO: Navigate to help
+              Get.snackbar(
+                'Coming Soon',
+                'Help & Support will be available soon',
+                snackPosition: SnackPosition.BOTTOM,
+              );
             },
           ),
           ListTile(
@@ -668,30 +680,66 @@ class HomeTabView extends GetView<HomeController> {
             title: Text('Logout', style: TextStyle(color: Colors.red)),
             onTap: () {
               Navigator.pop(context);
-              // TODO: Handle logout
-              Get.dialog(
-                AlertDialog(
-                  title: const Text('Logout'),
-                  content: const Text('Are you sure you want to logout?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Get.back();
-                        // TODO: Implement logout
-                      },
-                      child: const Text(
-                        'Logout',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              _handleLogout(context);
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Handle logout
+  void _handleLogout(BuildContext context) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Get.back();
+              try {
+                // Show loading
+                Get.dialog(
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  barrierDismissible: false,
+                );
+
+                // Perform logout
+                await controller.logout();
+
+                // Close loading
+                Get.back();
+
+                // Navigate to login
+                Get.offAllNamed('/login');
+
+                Get.snackbar(
+                  'Success',
+                  'You have been logged out successfully',
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              } catch (e) {
+                Get.back(); // Close loading
+                Get.snackbar(
+                  'Error',
+                  'Failed to logout: ${e.toString()}',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              }
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),

@@ -74,7 +74,7 @@ class WorkoutDetailController extends GetxController {
 
       isVideoLoading.value = false;
     } catch (e) {
-      print('Error initializing video: $e');
+      debugPrint('Error initializing video: $e');
       isVideoLoading.value = false;
     }
   }
@@ -105,7 +105,7 @@ class WorkoutDetailController extends GetxController {
           .take(5)
           .toList();
     } catch (e) {
-      print('Error loading related workouts: $e');
+      debugPrint('Error loading related workouts: $e');
     } finally {
       isLoading.value = false;
     }

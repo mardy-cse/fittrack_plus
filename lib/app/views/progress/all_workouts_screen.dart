@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/progress_controller.dart';
 
 class AllWorkoutsScreen extends GetView<ProgressController> {
-  const AllWorkoutsScreen({Key? key}) : super(key: key);
+  const AllWorkoutsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -190,181 +190,6 @@ class ToolsTabView extends GetView<HomeController> {
     );
   }
 
-  void _showBMICalculator(BuildContext context) {
-    final user = controller.userProfile.value;
-
-    // Auto-fill from profile
-    final heightController = TextEditingController(
-      text: user?.height?.toInt().toString() ?? '',
-    );
-    final weightController = TextEditingController(
-      text: user?.weight?.toInt().toString() ?? '',
-    );
-    final RxString bmiResult = ''.obs;
-    final RxString bmiCategory = ''.obs;
-
-    // Auto-calculate if data exists
-    if (user?.height != null && user?.weight != null) {
-      final heightInMeters = user!.height! / 100;
-      final bmi = user.weight! / (heightInMeters * heightInMeters);
-      bmiResult.value = bmi.toStringAsFixed(1);
-
-      if (bmi < 18.5) {
-        bmiCategory.value = 'Underweight';
-      } else if (bmi < 25) {
-        bmiCategory.value = 'Normal weight';
-      } else if (bmi < 30) {
-        bmiCategory.value = 'Overweight';
-      } else {
-        bmiCategory.value = 'Obese';
-      }
-    }
-
-    Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'BMI Calculator',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: heightController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Height (cm)',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.height),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: weightController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Weight (kg)',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.monitor_weight),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Obx(
-                () => bmiResult.value.isNotEmpty
-                    ? Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Your BMI',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              bmiResult.value,
-                              style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              bmiCategory.value,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Get.back(),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('Cancel'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final height = double.tryParse(heightController.text);
-                        final weight = double.tryParse(weightController.text);
-
-                        if (height != null &&
-                            weight != null &&
-                            height > 0 &&
-                            weight > 0) {
-                          final heightInMeters = height / 100;
-                          final bmi =
-                              weight / (heightInMeters * heightInMeters);
-                          bmiResult.value = bmi.toStringAsFixed(1);
-
-                          if (bmi < 18.5) {
-                            bmiCategory.value = 'Underweight';
-                          } else if (bmi < 25) {
-                            bmiCategory.value = 'Normal weight';
-                          } else if (bmi < 30) {
-                            bmiCategory.value = 'Overweight';
-                          } else {
-                            bmiCategory.value = 'Obese';
-                          }
-                        } else {
-                          Get.snackbar(
-                            'Error',
-                            'Please enter valid height and weight',
-                            snackPosition: SnackPosition.BOTTOM,
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('Calculate'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   void _showWorkoutTimer(BuildContext context) {
     final workSeconds = 30.obs;
     final restSeconds = 10.obs;
@@ -584,11 +409,12 @@ class ToolsTabView extends GetView<HomeController> {
         ),
         actions: [
           Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            () => Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (!isRunning.value)
-                  Expanded(
+                  SizedBox(
+                    width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: startTimer,
                       icon: const Icon(Icons.play_arrow),
@@ -596,42 +422,50 @@ class ToolsTabView extends GetView<HomeController> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
                 if (isRunning.value) ...[
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: pauseTimer,
-                      icon: Icon(
-                        isPaused.value ? Icons.play_arrow : Icons.pause,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: pauseTimer,
+                          icon: Icon(
+                            isPaused.value ? Icons.play_arrow : Icons.pause,
+                          ),
+                          label: Text(isPaused.value ? 'Resume' : 'Pause'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
                       ),
-                      label: Text(isPaused.value ? 'Resume' : 'Pause'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        foregroundColor: Colors.white,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: stopTimer,
+                          icon: const Icon(Icons.stop),
+                          label: const Text('Stop'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: stopTimer,
-                      icon: const Icon(Icons.stop),
-                      label: const Text('Stop'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
+                    ],
                   ),
                 ],
-                const SizedBox(width: 8),
-                Expanded(
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
                   child: TextButton(
                     onPressed: () {
                       timer?.cancel();
-                      Get.back();
+                      Navigator.of(context).pop();
                     },
                     child: const Text('Close'),
                   ),

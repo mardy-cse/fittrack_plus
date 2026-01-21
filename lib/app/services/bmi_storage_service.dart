@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../models/bmi_record.dart';
@@ -30,7 +31,7 @@ class BMIStorageService extends GetxService {
       final jsonList = history.map((r) => r.toJson()).toList();
       await _storage.write(_key, jsonList);
     } catch (e) {
-      print('Error saving BMI record: $e');
+      debugPrint('Error saving BMI record: $e');
       rethrow;
     }
   }
@@ -48,7 +49,7 @@ class BMIStorageService extends GetxService {
           .map((json) => BMIRecord.fromJson(json as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      print('Error loading BMI history: $e');
+      debugPrint('Error loading BMI history: $e');
       return [];
     }
   }
@@ -59,7 +60,7 @@ class BMIStorageService extends GetxService {
       final history = await loadBMIHistory();
       return history.isNotEmpty ? history.first : null;
     } catch (e) {
-      print('Error getting latest record: $e');
+      debugPrint('Error getting latest record: $e');
       return null;
     }
   }
@@ -69,7 +70,7 @@ class BMIStorageService extends GetxService {
     try {
       await _storage.remove(_key);
     } catch (e) {
-      print('Error clearing history: $e');
+      debugPrint('Error clearing history: $e');
       rethrow;
     }
   }

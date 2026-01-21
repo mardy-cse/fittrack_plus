@@ -79,7 +79,7 @@ class StepsService extends GetxService {
   Future<int> getWeeklyTotal({required String userId}) async {
     try {
       final weeklySteps = await getWeeklySummary(userId: userId);
-      return weeklySteps.fold<int>(0, (sum, steps) => sum + steps);
+      return weeklySteps.fold<int>(0, (total, steps) => total + steps);
     } catch (e) {
       return 0;
     }

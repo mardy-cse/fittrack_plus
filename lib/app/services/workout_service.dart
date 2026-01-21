@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../models/workout.dart';
@@ -21,7 +22,7 @@ class WorkoutService extends GetxService {
       final List<dynamic> data = json.decode(response);
       return data.map((json) => Workout.fromJson(json)).toList();
     } catch (e) {
-      print('Failed to load local workouts: $e');
+      debugPrint('Failed to load local workouts: $e');
       return [];
     }
   }
@@ -184,7 +185,7 @@ class WorkoutService extends GetxService {
       }
 
       await batch.commit();
-      print('Successfully imported ${workouts.length} workouts');
+      debugPrint('Successfully imported ${workouts.length} workouts');
     } catch (e) {
       throw Exception('Failed to import workouts: $e');
     }

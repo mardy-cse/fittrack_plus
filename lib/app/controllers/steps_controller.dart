@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:pedometer/pedometer.dart';
 import '../services/steps_service.dart';
 import '../services/auth_service.dart';
+import '../services/user_service.dart';
 
 class StepsController extends GetxController {
   final StepsService _stepsService = Get.find<StepsService>();
   final AuthService _authService = Get.find<AuthService>();
+  final UserService _userService = Get.find<UserService>();
 
   // Observable variables
   final RxInt todaySteps = 0.obs;
@@ -131,7 +134,7 @@ class StepsController extends GetxController {
         steps: todaySteps.value,
       );
     } catch (e) {
-      print('❌ Failed to save steps: $e');
+      debugPrint('❌ Failed to save steps: $e');
     }
   }
 
@@ -148,7 +151,7 @@ class StepsController extends GetxController {
         todaySteps.value = steps;
       }
     } catch (e) {
-      print('❌ Failed to load today steps: $e');
+      debugPrint('❌ Failed to load today steps: $e');
     }
   }
 
@@ -170,7 +173,7 @@ class StepsController extends GetxController {
       weeklyTotal.value = total;
       weeklyAverage.value = average;
     } catch (e) {
-      print('❌ Failed to load weekly summary: $e');
+      debugPrint('❌ Failed to load weekly summary: $e');
       errorMessage.value = 'Failed to load weekly data';
     } finally {
       isLoading.value = false;
@@ -199,10 +202,20 @@ class StepsController extends GetxController {
   }
 
   // Update daily goal
-  void updateDailyGoal(int newGoal) {
+  void updateDailyGoal(int newGoal) async {
     if (newGoal > 0 && newGoal <= 100000) {
       dailyGoal.value = newGoal;
-      // TODO: Save goal to user profile
+      // Save goal to user profile
+      try {
+        final userId = _authService.currentUserId;
+        if (userId != null) {
+          await _userService.updateUserFields(userId, {
+            'dailyStepGoal': newGoal,
+          });
+        }
+      } catch (e) {
+        debugPrint('Failed to save step goal: $e');
+      }
     }
   }
 

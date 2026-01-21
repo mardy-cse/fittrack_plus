@@ -167,7 +167,7 @@ class ProfileController extends GetxController {
       );
 
       if (image == null) {
-        print('No image selected');
+        debugPrint('No image selected');
         return;
       }
 
@@ -185,14 +185,14 @@ class ProfileController extends GetxController {
         return;
       }
 
-      print('Saving image locally for user: $userId');
+      debugPrint('Saving image locally for user: $userId');
 
       // Save to local storage instead of Firebase Storage (to avoid billing)
       final photoUrl = image.path;
 
       // Update profile with local photo path
       await _userService.updateUserFields(userId, {'photoUrl': photoUrl});
-      print('Profile updated in Firestore with local path');
+      debugPrint('Profile updated in Firestore with local path');
 
       // Update local profile
       if (userProfile.value != null) {
@@ -207,7 +207,7 @@ class ProfileController extends GetxController {
         colorText: Colors.white,
       );
     } catch (e) {
-      print('Error saving photo: $e');
+      debugPrint('Error saving photo: $e');
       Get.snackbar(
         'Error',
         'Failed to save photo: ${e.toString()}',

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -68,7 +68,7 @@ class NotificationService extends GetxService {
     // Request permissions for Android 13+
     await _requestPermissions();
 
-    print('NotificationService: Initialized with notification channel');
+    debugPrint('NotificationService: Initialized with notification channel');
     return this;
   }
 
@@ -97,7 +97,7 @@ class NotificationService extends GetxService {
 
   /// Handle notification tap
   void _onNotificationTapped(NotificationResponse response) {
-    print('Notification tapped: ${response.payload}');
+    debugPrint('Notification tapped: ${response.payload}');
 
     // Navigate based on payload
     switch (response.payload) {
@@ -129,7 +129,7 @@ class NotificationService extends GetxService {
       payload: 'workout',
     );
 
-    print('NotificationService: Workout reminder scheduled for $hour:$minute');
+    debugPrint('NotificationService: Workout reminder scheduled for $hour:$minute');
   }
 
   /// Schedule daily water reminder
@@ -148,7 +148,7 @@ class NotificationService extends GetxService {
       payload: 'water',
     );
 
-    print('NotificationService: Water reminder scheduled for $hour:$minute');
+    debugPrint('NotificationService: Water reminder scheduled for $hour:$minute');
   }
 
   /// Schedule daily step goal reminder
@@ -167,7 +167,7 @@ class NotificationService extends GetxService {
       payload: 'steps',
     );
 
-    print(
+    debugPrint(
       'NotificationService: Step goal reminder scheduled for $hour:$minute',
     );
   }
@@ -203,7 +203,7 @@ class NotificationService extends GetxService {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
 
-    print(
+    debugPrint(
       'NotificationService: Scheduling notification #$id for $scheduledDate',
     );
 
@@ -249,9 +249,9 @@ class NotificationService extends GetxService {
         payload: payload,
       );
 
-      print('NotificationService: Successfully scheduled notification #$id');
+      debugPrint('NotificationService: Successfully scheduled notification #$id');
     } catch (e) {
-      print('NotificationService: Error scheduling notification: $e');
+      debugPrint('NotificationService: Error scheduling notification: $e');
       rethrow;
     }
   }
@@ -259,7 +259,7 @@ class NotificationService extends GetxService {
   /// Cancel specific notification
   Future<void> cancelNotification(int id) async {
     await _notifications.cancel(id);
-    print('NotificationService: Cancelled notification $id');
+    debugPrint('NotificationService: Cancelled notification $id');
   }
 
   /// Cancel workout reminder
@@ -280,7 +280,7 @@ class NotificationService extends GetxService {
   /// Cancel all notifications
   Future<void> cancelAllNotifications() async {
     await _notifications.cancelAll();
-    print('NotificationService: Cancelled all notifications');
+    debugPrint('NotificationService: Cancelled all notifications');
   }
 
   /// Show immediate notification (for testing)

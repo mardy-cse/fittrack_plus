@@ -114,7 +114,7 @@ class StartWorkoutController extends GetxController {
     currentExerciseSeconds.value = exerciseDuration;
 
     final exercise = workout.exercises[currentExerciseIndex.value];
-    _speak("Start ${exercise}");
+    _speak("Start $exercise");
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!isPaused.value) {
@@ -302,7 +302,7 @@ class StartWorkoutController extends GetxController {
   String formatDuration(int seconds) {
     final minutes = seconds ~/ 60;
     final remainingSeconds = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+    return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
   // Get current exercise name

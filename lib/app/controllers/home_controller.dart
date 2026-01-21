@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/workout.dart';
 import '../models/user_profile.dart';
@@ -50,7 +51,7 @@ class HomeController extends GetxController {
       // Initial load
       _updateTodayStats();
     } catch (e) {
-      print('Progress sync error: $e');
+      debugPrint('Progress sync error: $e');
     }
   }
 
@@ -74,7 +75,7 @@ class HomeController extends GetxController {
         (sum, session) => sum + session.caloriesBurned,
       );
     } catch (e) {
-      print('Today stats update error: $e');
+      debugPrint('Today stats update error: $e');
     }
   }
 
@@ -104,7 +105,7 @@ class HomeController extends GetxController {
         userProfile.value = profile;
       }
     } catch (e) {
-      print('Error loading user profile: $e');
+      debugPrint('Error loading user profile: $e');
     }
   }
 
@@ -180,5 +181,14 @@ class HomeController extends GetxController {
   // Refresh data
   Future<void> refreshData() async {
     await Future.wait([loadUserProfile(), loadWorkouts()]);
+  }
+
+  // Logout
+  Future<void> logout() async {
+    try {
+      await _authService.signOut();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

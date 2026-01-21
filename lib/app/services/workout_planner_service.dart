@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class WorkoutPlannerService extends GetxService {
@@ -27,7 +28,7 @@ class WorkoutPlannerService extends GetxService {
 
       return true;
     } catch (e) {
-      print('Error saving workout plan: $e');
+      debugPrint('Error saving workout plan: $e');
       return false;
     }
   }
@@ -55,7 +56,7 @@ class WorkoutPlannerService extends GetxService {
 
       return {};
     } catch (e) {
-      print('Error loading workout plan: $e');
+      debugPrint('Error loading workout plan: $e');
       return {};
     }
   }
@@ -79,7 +80,7 @@ class WorkoutPlannerService extends GetxService {
 
       return true;
     } catch (e) {
-      print('Error deleting day plan: $e');
+      debugPrint('Error deleting day plan: $e');
       return false;
     }
   }
@@ -100,7 +101,7 @@ class WorkoutPlannerService extends GetxService {
 
       return true;
     } catch (e) {
-      print('Error clearing workout plan: $e');
+      debugPrint('Error clearing workout plan: $e');
       return false;
     }
   }

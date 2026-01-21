@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/user_profile.dart';
 import 'notification_service.dart';
@@ -20,7 +21,7 @@ class UserService extends GetxService {
       // Only schedule if notifications are enabled
       if (profile.notificationsEnabled != true) {
         await notificationService.cancelAllNotifications();
-        print('UserService: Notifications disabled by user');
+        debugPrint('UserService: Notifications disabled by user');
         return;
       }
 
@@ -37,7 +38,7 @@ class UserService extends GetxService {
           hour: profile.workoutReminderHour!,
           minute: profile.workoutReminderMinute ?? 0,
         );
-        print(
+        debugPrint(
           'UserService: Workout reminder scheduled for ${profile.workoutReminderHour}:${profile.workoutReminderMinute ?? 0}',
         );
       }
@@ -48,14 +49,14 @@ class UserService extends GetxService {
           hour: profile.waterReminderHour!,
           minute: profile.waterReminderMinute ?? 0,
         );
-        print(
+        debugPrint(
           'UserService: Water reminder scheduled for ${profile.waterReminderHour}:${profile.waterReminderMinute ?? 0}',
         );
       }
 
-      print('UserService: All notifications scheduled successfully');
+      debugPrint('UserService: All notifications scheduled successfully');
     } catch (e) {
-      print('UserService: Failed to schedule notifications: $e');
+      debugPrint('UserService: Failed to schedule notifications: $e');
     }
   }
 

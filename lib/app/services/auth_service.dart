@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import '../models/user_profile.dart';
@@ -12,9 +13,6 @@ class AuthService extends GetxService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService _userService = Get.find<UserService>();
-
-  // Phone verification ID
-  String? _verificationId;
 
   // Get current user
   User? get currentUser => _auth.currentUser;
@@ -241,11 +239,9 @@ class AuthService extends GetxService {
           verificationFailed(_handleAuthException(e));
         },
         codeSent: (String verificationId, int? resendToken) {
-          _verificationId = verificationId;
           codeSent(verificationId);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          _verificationId = verificationId;
           codeAutoRetrievalTimeout();
         },
       );
@@ -308,10 +304,10 @@ class AuthService extends GetxService {
           .doc(email)
           .set(emailOTP.toMap());
 
-      // TODO: Send email via Cloud Functions or third-party service
-      // For development, print OTP to console
-      print('📧 Email OTP for $email: $otp');
-      print('⏰ Expires at: ${emailOTP.expiresAt}');
+      // Note: Email sending requires Cloud Functions or third-party service setup
+      // For development, OTP is logged to console
+      debugPrint('📧 Email OTP for $email: $otp');
+      debugPrint('⏰ Expires at: ${emailOTP.expiresAt}');
 
       // In production, you would call a Cloud Function like:
       // await FirebaseFunctions.instance
