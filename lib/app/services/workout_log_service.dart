@@ -97,7 +97,10 @@ class WorkoutLogService extends GetxService {
         0,
         (total, s) => total + (s.durationSeconds ~/ 60),
       );
-      int totalCalories = sessions.fold(0, (total, s) => total + s.caloriesBurned);
+      int totalCalories = sessions.fold(
+        0,
+        (total, s) => total + s.caloriesBurned,
+      );
 
       return {
         'totalWorkouts': totalWorkouts,

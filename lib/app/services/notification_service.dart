@@ -129,7 +129,9 @@ class NotificationService extends GetxService {
       payload: 'workout',
     );
 
-    debugPrint('NotificationService: Workout reminder scheduled for $hour:$minute');
+    debugPrint(
+      'NotificationService: Workout reminder scheduled for $hour:$minute',
+    );
   }
 
   /// Schedule daily water reminder
@@ -148,7 +150,9 @@ class NotificationService extends GetxService {
       payload: 'water',
     );
 
-    debugPrint('NotificationService: Water reminder scheduled for $hour:$minute');
+    debugPrint(
+      'NotificationService: Water reminder scheduled for $hour:$minute',
+    );
   }
 
   /// Schedule daily step goal reminder
@@ -249,7 +253,9 @@ class NotificationService extends GetxService {
         payload: payload,
       );
 
-      debugPrint('NotificationService: Successfully scheduled notification #$id');
+      debugPrint(
+        'NotificationService: Successfully scheduled notification #$id',
+      );
     } catch (e) {
       debugPrint('NotificationService: Error scheduling notification: $e');
       rethrow;
