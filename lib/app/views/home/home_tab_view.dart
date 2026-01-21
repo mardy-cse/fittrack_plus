@@ -640,6 +640,24 @@ class HomeTabView extends GetView<HomeController> {
           ),
           const Divider(),
           ListTile(
+            leading: Icon(Icons.smart_toy_rounded, color: const Color(0xFF4A90E2)),
+            title: Text(
+              'AI Fitness Coach',
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+            ),
+            subtitle: Text(
+              'Chat with FitBot',
+              style: TextStyle(
+                fontSize: 12,
+                color: isDark ? Colors.grey[400] : Colors.grey[600],
+              ),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Get.toNamed('/ai-chat');
+            },
+          ),
+          ListTile(
             leading: Icon(
               Icons.settings,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
