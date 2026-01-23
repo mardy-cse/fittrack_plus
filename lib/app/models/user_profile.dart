@@ -9,6 +9,7 @@ class UserProfile {
   final double? weight; // in kg
   final String? gender;
   final String? photoUrl;
+  final String? coverImageUrl;
   final DateTime createdAt;
   final int? weeklyWorkoutGoal;
   final int? dailyCalorieGoal;
@@ -30,6 +31,7 @@ class UserProfile {
     this.weight,
     this.gender,
     this.photoUrl,
+    this.coverImageUrl,
     required this.createdAt,
     this.weeklyWorkoutGoal,
     this.dailyCalorieGoal,
@@ -54,6 +56,7 @@ class UserProfile {
       weight: map['weight']?.toDouble(),
       gender: map['gender'] as String?,
       photoUrl: map['photoUrl'] as String?,
+      coverImageUrl: map['coverImageUrl'] as String?,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       weeklyWorkoutGoal: map['weeklyWorkoutGoal'] as int?,
       dailyCalorieGoal: map['dailyCalorieGoal'] as int?,
@@ -85,6 +88,7 @@ class UserProfile {
       'weight': weight,
       'gender': gender,
       'photoUrl': photoUrl,
+      'coverImageUrl': coverImageUrl,
       'createdAt': Timestamp.fromDate(createdAt),
       'weeklyWorkoutGoal': weeklyWorkoutGoal,
       'dailyCalorieGoal': dailyCalorieGoal,
@@ -109,6 +113,7 @@ class UserProfile {
     double? weight,
     String? gender,
     String? photoUrl,
+    String? coverImageUrl,
     DateTime? createdAt,
     int? weeklyWorkoutGoal,
     int? dailyCalorieGoal,
@@ -130,6 +135,7 @@ class UserProfile {
       weight: weight ?? this.weight,
       gender: gender ?? this.gender,
       photoUrl: photoUrl ?? this.photoUrl,
+      coverImageUrl: coverImageUrl ?? this.coverImageUrl,
       createdAt: createdAt ?? this.createdAt,
       weeklyWorkoutGoal: weeklyWorkoutGoal ?? this.weeklyWorkoutGoal,
       dailyCalorieGoal: dailyCalorieGoal ?? this.dailyCalorieGoal,

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/user_profile.dart';
-import 'notification_service.dart';
 
 class UserService extends GetxService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,53 +10,6 @@ class UserService extends GetxService {
   // Initialize service
   Future<UserService> init() async {
     return this;
-  }
-
-  // Schedule notifications based on user profile
-  Future<void> _scheduleNotifications(UserProfile profile) async {
-    try {
-      final notificationService = Get.find<NotificationService>();
-
-      // Only schedule if notifications are enabled
-      if (profile.notificationsEnabled != true) {
-        await notificationService.cancelAllNotifications();
-        debugPrint('UserService: Notifications disabled by user');
-        return;
-      }
-
-      // Show immediate test notification
-      await notificationService.showImmediateNotification(
-        title: 'Notifications Enabled! 🔔',
-        body: 'You will receive daily reminders for workout and water intake.',
-        payload: 'test',
-      );
-
-      // Schedule workout reminder
-      if (profile.workoutReminderHour != null) {
-        await notificationService.scheduleWorkoutReminder(
-          hour: profile.workoutReminderHour!,
-          minute: profile.workoutReminderMinute ?? 0,
-        );
-        debugPrint(
-          'UserService: Workout reminder scheduled for ${profile.workoutReminderHour}:${profile.workoutReminderMinute ?? 0}',
-        );
-      }
-
-      // Schedule water reminder
-      if (profile.waterReminderHour != null) {
-        await notificationService.scheduleWaterReminder(
-          hour: profile.waterReminderHour!,
-          minute: profile.waterReminderMinute ?? 0,
-        );
-        debugPrint(
-          'UserService: Water reminder scheduled for ${profile.waterReminderHour}:${profile.waterReminderMinute ?? 0}',
-        );
-      }
-
-      debugPrint('UserService: All notifications scheduled successfully');
-    } catch (e) {
-      debugPrint('UserService: Failed to schedule notifications: $e');
-    }
   }
 
   // Create a new user profile
@@ -83,9 +35,6 @@ class UserService extends GetxService {
 
       final profile = UserProfile.fromSnapshot(doc);
 
-      // Schedule notifications when profile is loaded
-      await _scheduleNotifications(profile);
-
       return profile;
     } catch (e) {
       throw Exception('Failed to get user profile: $e');
@@ -99,9 +48,6 @@ class UserService extends GetxService {
           .collection(_collection)
           .doc(profile.uid)
           .update(profile.toMap());
-
-      // Reschedule notifications after profile update
-      await _scheduleNotifications(profile);
     } catch (e) {
       throw Exception('Failed to update user profile: $e');
     }
@@ -110,8 +56,13 @@ class UserService extends GetxService {
   // Update specific fields
   Future<void> updateUserFields(String uid, Map<String, dynamic> fields) async {
     try {
+      debugPrint('🔥 UserService.updateUserFields called');
+      debugPrint('🔥 User ID: $uid');
+      debugPrint('🔥 Fields to update: $fields');
       await _firestore.collection(_collection).doc(uid).update(fields);
+      debugPrint('🔥 Firestore update completed successfully');
     } catch (e) {
+      debugPrint('❌ Error updating fields: $e');
       throw Exception('Failed to update user fields: $e');
     }
   }

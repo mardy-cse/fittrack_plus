@@ -52,82 +52,12 @@ class ProfileScreen extends StatelessWidget {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
+                    // Background/Cover Image
                     Obx(() {
-                      if (controller.backgroundImagePath.value.isNotEmpty) {
-                        return GestureDetector(
-                          onTap: () {
-                            // Show image in dialog with blur
-                            Get.dialog(
-                              BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10,
-                                  sigmaY: 10,
-                                ),
-                                child: Dialog(
-                                  backgroundColor: Colors.transparent,
-                                  insetPadding: const EdgeInsets.all(20),
-                                  child: Container(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 500,
-                                      maxHeight: 500,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.black87,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                          child: InteractiveViewer(
-                                            minScale: 0.5,
-                                            maxScale: 4.0,
-                                            child: Center(
-                                              child: Image.file(
-                                                File(
-                                                  controller
-                                                      .backgroundImagePath
-                                                      .value,
-                                                ),
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: 8,
-                                          right: 8,
-                                          child: IconButton(
-                                            icon: Container(
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: BoxDecoration(
-                                                color: Colors.black54,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Icon(
-                                                Icons.close,
-                                                color: Colors.white,
-                                                size: 24,
-                                              ),
-                                            ),
-                                            onPressed: () => Get.back(),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              barrierColor: Colors.black54,
-                            );
-                          },
-                          child: Image.file(
-                            File(controller.backgroundImagePath.value),
-                            fit: BoxFit.cover,
-                          ),
-                        );
+                      final coverUrl =
+                          controller.userProfile.value?.coverImageUrl;
+                      if (coverUrl != null && coverUrl.isNotEmpty) {
+                        return Image.file(File(coverUrl), fit: BoxFit.cover);
                       }
                       return Container(
                         decoration: BoxDecoration(
@@ -137,6 +67,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       );
                     }),
+                    // Edit button for cover image
                     if (controller.isEditMode.value)
                       Positioned(
                         bottom: 16,
@@ -196,13 +127,6 @@ class ProfileScreen extends StatelessWidget {
                     _buildSectionTitle('Daily Goals'),
                     const SizedBox(height: 16),
                     _buildGoalsFields(controller),
-
-                    const SizedBox(height: 32),
-
-                    // Notifications Section
-                    _buildSectionTitle('Notifications'),
-                    const SizedBox(height: 16),
-                    _buildNotificationSettings(controller, context),
 
                     const SizedBox(height: 32),
 
@@ -528,230 +452,6 @@ class ProfileScreen extends StatelessWidget {
         keyboardType: TextInputType.number,
       );
     });
-  }
-
-  /// Notification settings
-  Widget _buildNotificationSettings(
-    ProfileController controller,
-    BuildContext context,
-  ) {
-    return Obx(
-      () => Column(
-        children: [
-          // Enable/Disable Toggle
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFF1C1C1E)
-                  : Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(
-                    Theme.of(context).brightness == Brightness.dark
-                        ? 0.3
-                        : 0.05,
-                  ),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4A90E2).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(
-                    Icons.notifications_active_rounded,
-                    color: Color(0xFF4A90E2),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                const Expanded(
-                  child: Text(
-                    'Enable Notifications',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                Switch(
-                  value: controller.notificationsEnabled.value,
-                  onChanged: controller.toggleNotifications,
-                  activeColor: const Color(0xFF4A90E2),
-                ),
-              ],
-            ),
-          ),
-
-          if (controller.notificationsEnabled.value) ...[
-            const SizedBox(height: 16),
-
-            // Workout Reminder
-            _buildReminderCard(
-              title: 'Workout Reminder',
-              icon: Icons.fitness_center,
-              time: controller.formatTime(
-                controller.workoutReminderHour.value,
-                controller.workoutReminderMinute.value,
-              ),
-              color: Colors.blue,
-              onTap: () => controller.pickWorkoutReminderTime(context),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Water Reminder
-            _buildReminderCard(
-              title: 'Water Reminder',
-              icon: Icons.water_drop,
-              time: controller.formatTime(
-                controller.waterReminderHour.value,
-                controller.waterReminderMinute.value,
-              ),
-              color: Colors.cyan,
-              onTap: () => controller.pickWaterReminderTime(context),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Test Notification Button
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: controller.testNotification,
-                    icon: const Icon(Icons.notifications_active),
-                    label: const Text('Test Now'),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: Color(0xFF4A90E2)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: controller.checkPendingNotifications,
-                    icon: const Icon(Icons.schedule),
-                    label: const Text('Check Pending'),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: const BorderSide(color: Colors.blue),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            // Help info
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.orange.shade200),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    color: Colors.orange.shade700,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Note: Scheduled notifications work best when battery optimization is disabled for this app in Settings.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.orange.shade900,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  /// Reminder card
-  Widget _buildReminderCard({
-    required String title,
-    required IconData icon,
-    required String time,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Builder(
-        builder: (context) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          return Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: color),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Text(
-                  time,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Icon(Icons.access_time, color: color, size: 20),
-              ],
-            ),
-          );
-        },
-      ),
-    );
   }
 
   /// Info card
