@@ -13,6 +13,7 @@ class ProfileController extends GetxController {
 
   // Observable variables
   final Rx<UserProfile?> userProfile = Rx<UserProfile?>(null);
+  UserProfile? _originalProfile; // Store original profile for cancel/reset
   final RxBool isLoading = false.obs;
   final RxBool isEditMode = false.obs;
   final RxBool isUploadingPhoto = false.obs;
@@ -76,14 +77,29 @@ class ProfileController extends GetxController {
     stepGoalController.text = profile.dailyStepGoal?.toString() ?? '10000';
     selectedGender.value = profile.gender ?? 'Male';
     backgroundImagePath.value = profile.coverImageUrl ?? '';
+
+    // Save original profile for cancel/reset functionality
+    _originalProfile = profile;
+  }
+
+  /// Reset to original profile (discard unsaved changes)
+  void resetToOriginal() {
+    if (_originalProfile != null) {
+      userProfile.value = _originalProfile;
+      _populateFields(_originalProfile!);
+      debugPrint('🔄 Profile reset to original state');
+    }
   }
 
   /// Toggle edit mode
   void toggleEditMode() {
     if (isEditMode.value) {
-      // Cancel edit - reload profile
+      // Cancel edit - reset to original profile
+      resetToOriginal();
+    } else {
+      // Entering edit mode - save current state as original
       if (userProfile.value != null) {
-        _populateFields(userProfile.value!);
+        _originalProfile = userProfile.value;
       }
     }
     isEditMode.value = !isEditMode.value;
@@ -123,6 +139,10 @@ class ProfileController extends GetxController {
       debugPrint('💾 Saving profile to Firebase including images...');
       await _userService.updateUserProfile(updatedProfile);
       userProfile.value = updatedProfile;
+
+      // Update the original profile after successful save
+      _originalProfile = updatedProfile;
+
       debugPrint('✅ Profile saved to Firebase successfully');
 
       isEditMode.value = false;

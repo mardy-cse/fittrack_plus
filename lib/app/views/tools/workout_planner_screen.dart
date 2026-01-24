@@ -188,98 +188,127 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                           final controller = TextEditingController(
                             text: workoutPlan[day] ?? '',
                           );
-                          Get.dialog(
-                            AlertDialog(
-                              title: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.fitness_center,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text('Plan for $day'),
-                                ],
-                              ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextField(
-                                    controller: controller,
-                                    decoration: const InputDecoration(
-                                      labelText: 'Workout Type',
-                                      hintText:
-                                          'e.g., Upper Body, Cardio, Legs',
-                                      border: OutlineInputBorder(),
-                                      prefixIcon: Icon(Icons.edit),
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext dialogContext) {
+                              return AlertDialog(
+                                title: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.fitness_center,
+                                      color: Color(0xFF4A90E2),
                                     ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
+                                    const SizedBox(width: 12),
+                                    Text('Plan for $day'),
+                                  ],
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      controller: controller,
+                                      autofocus: true,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Workout Type',
+                                        hintText:
+                                            'e.g., Upper Body, Cardio, Legs',
+                                        border: OutlineInputBorder(),
+                                        prefixIcon: Icon(Icons.edit),
+                                      ),
                                     ),
-                                    child: const Text(
-                                      'Quick suggestions: Upper Body, Lower Body, Full Body, Cardio, HIIT, Yoga, Rest',
-                                      style: TextStyle(fontSize: 12),
+                                    const SizedBox(height: 16),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.grey[800]
+                                            : Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        'Quick suggestions: Upper Body, Lower Body, Full Body, Cardio, HIIT, Yoga, Rest',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color:
+                                              Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.grey[300]
+                                              : Colors.grey[700],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                if (workoutPlan[day] != null)
-                                  TextButton.icon(
-                                    onPressed: () async {
-                                      Get.back();
-                                      await _removeDayPlan(day);
-                                      Get.snackbar(
-                                        'Removed',
-                                        '$day is now a rest day',
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.orange,
-                                        colorText: Colors.white,
-                                      );
+                                  ],
+                                ),
+                                actions: [
+                                  if (workoutPlan[day] != null)
+                                    TextButton.icon(
+                                      onPressed: () {
+                                        Navigator.of(dialogContext).pop();
+                                        _removeDayPlan(day).then((_) {
+                                          Get.snackbar(
+                                            'Removed',
+                                            '$day is now a rest day',
+                                            snackPosition: SnackPosition.BOTTOM,
+                                            backgroundColor: Colors.orange,
+                                            colorText: Colors.white,
+                                          );
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      label: const Text(
+                                        'Remove',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(dialogContext).pop();
                                     },
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                    label: const Text(
-                                      'Remove',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                    child: const Text('Cancel'),
                                   ),
-                                TextButton(
-                                  onPressed: () => Get.back(),
-                                  child: const Text('Cancel'),
-                                ),
-                                ElevatedButton.icon(
-                                  onPressed: () async {
-                                    if (controller.text.isNotEmpty) {
-                                      Get.back();
-                                      await _updateDayPlan(
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      if (controller.text.trim().isEmpty) {
+                                        Get.snackbar(
+                                          'Empty Field',
+                                          'Please enter a workout type',
+                                          snackPosition: SnackPosition.BOTTOM,
+                                          backgroundColor: Colors.orange,
+                                          colorText: Colors.white,
+                                        );
+                                        return;
+                                      }
+
+                                      Navigator.of(dialogContext).pop();
+                                      _updateDayPlan(
                                         day,
-                                        controller.text,
-                                      );
-                                      Get.snackbar(
-                                        'Saved to Database',
-                                        '$day: ${controller.text}',
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        backgroundColor: Colors.green,
-                                        colorText: Colors.white,
-                                      );
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF4A90E2),
-                                    foregroundColor: Colors.white,
+                                        controller.text.trim(),
+                                      ).then((_) {
+                                        Get.snackbar(
+                                          'Saved to Database',
+                                          '$day: ${controller.text.trim()}',
+                                          snackPosition: SnackPosition.BOTTOM,
+                                          backgroundColor: Colors.green,
+                                          colorText: Colors.white,
+                                        );
+                                      });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF4A90E2),
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    icon: const Icon(Icons.check),
+                                    label: const Text('Save'),
                                   ),
-                                  icon: const Icon(Icons.check),
-                                  label: const Text('Save'),
-                                ),
-                              ],
-                            ),
+                                ],
+                              );
+                            },
                           );
                         },
                       ),
