@@ -17,12 +17,6 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   List<DateTime> timestamps = [];
   bool _isLoading = true;
 
-  int waterGlasses = 0;
-  final int dailyGoal = 8;
-  final WaterTrackerService _service = WaterTrackerService();
-  List<DateTime> timestamps = [];
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
