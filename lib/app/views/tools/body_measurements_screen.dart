@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
 import '../../services/body_measurement_service.dart';
 import '../../models/body_measurement.dart';
+import 'body_measurement_trends_screen.dart';
 
 class BodyMeasurementsScreen extends StatefulWidget {
   const BodyMeasurementsScreen({super.key});
@@ -95,6 +96,20 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
             ? Colors.black
             : const Color(0xFF50C878),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.insights),
+            tooltip: 'View Trends',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BodyMeasurementTrendsScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -102,6 +117,17 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Icon(Icons.straighten, size: 80, color: Colors.white),
+            const SizedBox(height: 24),
+            // Quick Stats Card
+            FutureBuilder<List<BodyMeasurement>>(
+              future: _service.loadHistory(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data!.length >= 2) {
+                  return _buildQuickStatsCard(snapshot.data!);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
             const SizedBox(height: 24),
             const Text(
               'Track your body progress',
@@ -238,6 +264,125 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildQuickStatsCard(List<BodyMeasurement> history) {
+    final latest = history[0];
+    final previous = history[1];
+
+    final weightChange = (latest.weight ?? 0) - (previous.weight ?? 0);
+    final waistChange = (latest.waist ?? 0) - (previous.waist ?? 0);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF4A90E2), Color(0xFF50C878)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Progress Since Last Time',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BodyMeasurementTrendsScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.insights, color: Colors.white, size: 18),
+                label: const Text(
+                  'View All',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildProgressItem(
+                  'Weight',
+                  weightChange,
+                  'kg',
+                  weightChange < 0,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildProgressItem(
+                  'Waist',
+                  waistChange,
+                  'cm',
+                  waistChange < 0,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressItem(
+    String label,
+    double change,
+    String unit,
+    bool isImprovement,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                isImprovement ? Icons.trending_down : Icons.trending_up,
+                color: isImprovement ? Colors.greenAccent : Colors.orangeAccent,
+                size: 20,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${change >= 0 ? '+' : ''}${change.toStringAsFixed(1)} $unit',
+                style: TextStyle(
+                  color: isImprovement
+                      ? Colors.greenAccent
+                      : Colors.orangeAccent,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
