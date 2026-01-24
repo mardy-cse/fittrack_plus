@@ -16,11 +16,45 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   final WaterTrackerService _service = WaterTrackerService();
   List<DateTime> timestamps = [];
   bool _isLoading = true;
+  DateTime _currentDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _loadTodayData();
+    _startDailyResetTimer();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _startDailyResetTimer() {
+    // Check every minute if date has changed
+    Future.delayed(const Duration(minutes: 1), () {
+      if (!mounted) return;
+      
+      final now = DateTime.now();
+      final currentDateOnly = DateTime(now.year, now.month, now.day);
+      final lastDateOnly = DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
+      
+      if (!_isSameDay(currentDateOnly, lastDateOnly)) {
+        // New day detected, reset the tracker
+        setState(() {
+          waterGlasses = 0;
+          timestamps = [];
+          _currentDate = now;
+          _isLoading = false;
+        });
+      }
+      
+      _startDailyResetTimer(); // Continue checking
+    });
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   Future<void> _loadTodayData() async {
@@ -31,6 +65,14 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
       setState(() {
         waterGlasses = todayLog.glassesConsumed;
         timestamps = todayLog.timestamps;
+        _currentDate = todayLog.date;
+      });
+    } else {
+      // No data for today, ensure it's reset
+      setState(() {
+        waterGlasses = 0;
+        timestamps = [];
+        _currentDate = DateTime.now();
       });
     }
     
