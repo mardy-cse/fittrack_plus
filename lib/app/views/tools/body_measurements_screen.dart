@@ -1,28 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
+import '../../services/body_measurement_service.dart';
+import '../../models/body_measurement.dart';
 
-class BodyMeasurementsScreen extends StatelessWidget {
+class BodyMeasurementsScreen extends StatefulWidget {
   const BodyMeasurementsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Get profile data for reference
+  State<BodyMeasurementsScreen> createState() => _BodyMeasurementsScreenState();
+}
+
+class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
+  final _service = Get.put(BodyMeasurementService());
+  late Map<String, TextEditingController> measurements;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMeasurements();
+  }
+
+  Future<void> _initializeMeasurements() async {
     final controller = Get.find<HomeController>();
     final user = controller.userProfile.value;
 
-    final measurements = {
+    // Load latest measurements
+    final latest = await _service.getLatestMeasurement();
+
+    measurements = {
       'Weight': TextEditingController(
-        text: user?.weight?.toInt().toString() ?? '',
+        text:
+            latest?.weight?.toStringAsFixed(0) ??
+            user?.weight?.toInt().toString() ??
+            '',
       ),
-      'Chest': TextEditingController(),
-      'Waist': TextEditingController(),
-      'Hips': TextEditingController(),
-      'Biceps': TextEditingController(),
-      'Thighs': TextEditingController(),
-      'Calves': TextEditingController(),
+      'Chest': TextEditingController(
+        text: latest?.chest?.toStringAsFixed(0) ?? '',
+      ),
+      'Waist': TextEditingController(
+        text: latest?.waist?.toStringAsFixed(0) ?? '',
+      ),
+      'Hips': TextEditingController(
+        text: latest?.hips?.toStringAsFixed(0) ?? '',
+      ),
+      'Biceps': TextEditingController(
+        text: latest?.biceps?.toStringAsFixed(0) ?? '',
+      ),
+      'Thighs': TextEditingController(
+        text: latest?.thighs?.toStringAsFixed(0) ?? '',
+      ),
+      'Calves': TextEditingController(
+        text: latest?.calves?.toStringAsFixed(0) ?? '',
+      ),
     };
 
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    measurements.forEach((key, controller) {
+      controller.dispose();
+    });
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final icons = {
       'Weight': Icons.monitor_weight,
       'Chest': Icons.fitness_center,
@@ -32,6 +80,10 @@ class BodyMeasurementsScreen extends StatelessWidget {
       'Thighs': Icons.directions_walk,
       'Calves': Icons.sports_martial_arts,
     };
+
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
@@ -74,40 +126,95 @@ class BodyMeasurementsScreen extends StatelessWidget {
               );
             }),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {
-                bool hasData = false;
-                for (var controller in measurements.values) {
-                  if (controller.text.isNotEmpty) {
-                    hasData = true;
-                    break;
-                  }
-                }
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  debugPrint('Save Measurements button pressed');
 
-                if (hasData) {
-                  Get.snackbar(
-                    'Saved! ✓',
-                    'Measurements saved successfully',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green,
-                    colorText: Colors.white,
-                  );
-                } else {
-                  Get.snackbar(
-                    'Error',
-                    'Please enter at least one measurement',
-                    snackPosition: SnackPosition.BOTTOM,
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4A90E2),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text(
-                'Save Measurements',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  bool hasData = false;
+                  final data = <String, double>{};
+
+                  measurements.forEach((key, controller) {
+                    if (controller.text.trim().isNotEmpty) {
+                      hasData = true;
+                      final value = double.tryParse(controller.text.trim());
+                      if (value != null) {
+                        data[key] = value;
+                        debugPrint('$key: $value');
+                      }
+                    }
+                  });
+
+                  if (hasData) {
+                    debugPrint('Saving measurements: $data');
+
+                    // Create measurement object
+                    final measurement = BodyMeasurement(
+                      date: DateTime.now(),
+                      weight: data['Weight'],
+                      chest: data['Chest'],
+                      waist: data['Waist'],
+                      hips: data['Hips'],
+                      biceps: data['Biceps'],
+                      thighs: data['Thighs'],
+                      calves: data['Calves'],
+                    );
+
+                    // Save to storage
+                    try {
+                      await _service.saveMeasurement(measurement);
+
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Saved! ✓ Measurements saved successfully',
+                            ),
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+
+                        // Navigate back after a short delay
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      }
+                    } catch (e) {
+                      debugPrint('Error saving: $e');
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error saving: $e'),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please enter at least one measurement'),
+                        backgroundColor: Colors.orange,
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A90E2),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  elevation: 2,
+                ),
+                child: const Text(
+                  'Save Measurements',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const SizedBox(height: 24),
