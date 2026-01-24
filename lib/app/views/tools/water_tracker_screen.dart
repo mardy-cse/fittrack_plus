@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../models/water_intake_log.dart';
+import '../../services/water_tracker_service.dart';
 
 class WaterTrackerScreen extends StatefulWidget {
   const WaterTrackerScreen({super.key});
@@ -11,27 +13,75 @@ class WaterTrackerScreen extends StatefulWidget {
 class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   int waterGlasses = 0;
   final int dailyGoal = 8;
+  final WaterTrackerService _service = WaterTrackerService();
+  List<DateTime> timestamps = [];
+  bool _isLoading = true;
 
-  void addGlass() {
+  int waterGlasses = 0;
+  final int dailyGoal = 8;
+  final WaterTrackerService _service = WaterTrackerService();
+  List<DateTime> timestamps = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTodayData();
+  }
+
+  Future<void> _loadTodayData() async {
+    setState(() => _isLoading = true);
+    
+    final todayLog = await _service.getTodayLog();
+    if (todayLog != null) {
+      setState(() {
+        waterGlasses = todayLog.glassesConsumed;
+        timestamps = todayLog.timestamps;
+      });
+    }
+    
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _saveData() async {
+    final log = WaterIntakeLog(
+      date: DateTime.now(),
+      glassesConsumed: waterGlasses,
+      dailyGoal: dailyGoal,
+      timestamps: timestamps,
+    );
+    await _service.saveTodayLog(log);
+  }
+
+  void addGlass() async {
     setState(() {
       waterGlasses++;
+      timestamps.add(DateTime.now());
     });
+    await _saveData();
+    
     if (waterGlasses >= dailyGoal) {
-      Get.snackbar(
-        'Goal Achieved! 🎉',
-        'Great job! You reached your daily water goal 💧',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Goal Achieved! 🎉 Great job! You reached your daily water goal 💧'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
-  void removeGlass() {
+  void removeGlass() async {
     if (waterGlasses > 0) {
       setState(() {
         waterGlasses--;
+        if (timestamps.isNotEmpty) {
+          timestamps.removeLast();
+        }
       });
+      await _saveData();
     }
   }
 
@@ -45,6 +95,22 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Colors.black
+            : Colors.grey[50],
+        appBar: AppBar(
+          title: const Text('Water Tracker'),
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.black
+              : const Color(0xFF64FFDA),
+          foregroundColor: Colors.white,
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? Colors.black
@@ -55,6 +121,15 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
             ? Colors.black
             : const Color(0xFF64FFDA),
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () {
+              Get.toNamed('/water-tracker-history');
+            },
+            tooltip: 'View History',
+          ),
+        ],
       ),
       body: Center(
         child: Padding(

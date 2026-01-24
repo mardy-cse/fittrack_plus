@@ -21,6 +21,7 @@ import 'app/views/tools/bmi_screen.dart';
 import 'app/views/progress/all_workouts_screen.dart';
 import 'app/views/onboarding/onboarding_view.dart';
 import 'app/views/ai_chat/ai_chat_screen.dart';
+import 'app/views/tools/water_tracker_history_screen.dart';
 import 'app/bindings/onboarding_binding.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
@@ -141,6 +142,11 @@ class FitTrackApp extends StatelessWidget {
         GetPage(
           name: '/ai-chat',
           page: () => const AiChatScreen(),
+          transition: Transition.rightToLeft,
+        ),
+        GetPage(
+          name: '/water-tracker-history',
+          page: () => const WaterTrackerHistoryScreen(),
           transition: Transition.rightToLeft,
         ),
       ],
