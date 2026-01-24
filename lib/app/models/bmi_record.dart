@@ -1,8 +1,6 @@
 class BMIRecord {
   final double height; // in cm
   final double weight; // in kg
-  final int age;
-  final String gender; // 'male' or 'female'
   final double bmi;
   final String category;
   final DateTime date;
@@ -10,8 +8,6 @@ class BMIRecord {
   BMIRecord({
     required this.height,
     required this.weight,
-    required this.age,
-    required this.gender,
     required this.bmi,
     required this.category,
     required this.date,
@@ -22,8 +18,6 @@ class BMIRecord {
     return {
       'height': height,
       'weight': weight,
-      'age': age,
-      'gender': gender,
       'bmi': bmi,
       'category': category,
       'date': date.toIso8601String(),
@@ -35,8 +29,6 @@ class BMIRecord {
     return BMIRecord(
       height: (json['height'] as num).toDouble(),
       weight: (json['weight'] as num).toDouble(),
-      age: json['age'] as int,
-      gender: json['gender'] as String,
       bmi: (json['bmi'] as num).toDouble(),
       category: json['category'] as String,
       date: DateTime.parse(json['date'] as String),
@@ -82,15 +74,57 @@ class BMIRecord {
   static String getHealthAdvice(String category) {
     switch (category) {
       case 'Underweight':
-        return 'Consider consulting a nutritionist to gain healthy weight.';
+        return 'Consider consulting a nutritionist to gain healthy weight. Focus on nutrient-dense foods and strength training.';
       case 'Normal':
-        return 'Great! Maintain your healthy lifestyle.';
+        return 'Great! Maintain your healthy lifestyle with regular exercise and balanced diet.';
       case 'Overweight':
-        return 'Consider regular exercise and a balanced diet.';
+        return 'Consider regular exercise and a balanced diet. Aim for 30 minutes of activity daily.';
       case 'Obese':
-        return 'Please consult a healthcare professional for guidance.';
+        return 'Please consult a healthcare professional for personalized guidance. Small, sustainable changes can make a big difference.';
       default:
         return '';
+    }
+  }
+
+  // Calculate ideal weight range
+  static Map<String, double> getIdealWeightRange(double heightInCm) {
+    final heightInMeters = heightInCm / 100;
+    const minBMI = 18.5;
+    const maxBMI = 25.0;
+    
+    final minWeight = minBMI * (heightInMeters * heightInMeters);
+    final maxWeight = maxBMI * (heightInMeters * heightInMeters);
+    
+    return {
+      'min': minWeight,
+      'max': maxWeight,
+    };
+  }
+
+  // Get weight difference from ideal range
+  static Map<String, dynamic> getWeightStatus(double heightInCm, double weightInKg) {
+    final range = getIdealWeightRange(heightInCm);
+    final minWeight = range['min']!;
+    final maxWeight = range['max']!;
+    
+    if (weightInKg < minWeight) {
+      return {
+        'status': 'below',
+        'difference': minWeight - weightInKg,
+        'message': 'below ideal range',
+      };
+    } else if (weightInKg > maxWeight) {
+      return {
+        'status': 'above',
+        'difference': weightInKg - maxWeight,
+        'message': 'above ideal range',
+      };
+    } else {
+      return {
+        'status': 'ideal',
+        'difference': 0.0,
+        'message': 'within ideal range',
+      };
     }
   }
 }

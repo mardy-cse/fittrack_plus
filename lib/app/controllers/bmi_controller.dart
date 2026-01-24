@@ -9,14 +9,16 @@ class BMIController extends GetxController {
   // Form controllers
   final heightController = TextEditingController();
   final weightController = TextEditingController();
-  final ageController = TextEditingController();
 
   // Observable variables
-  final RxString selectedGender = 'male'.obs;
   final Rx<BMIRecord?> currentRecord = Rx<BMIRecord?>(null);
   final RxList<BMIRecord> history = <BMIRecord>[].obs;
   final RxBool isLoading = false.obs;
   final RxString trend = ''.obs;
+
+  // Slider values
+  final RxDouble heightSlider = 170.0.obs;
+  final RxDouble weightSlider = 70.0.obs;
 
   // Chart data
   final RxList<double> weightHistory = <double>[].obs;
@@ -26,70 +28,28 @@ class BMIController extends GetxController {
   void onInit() {
     super.onInit();
     loadHistory();
+    
+    // Sync sliders with text fields
+    heightSlider.listen((value) {
+      heightController.text = value.toInt().toString();
+    });
+    weightSlider.listen((value) {
+      weightController.text = value.toInt().toString();
+    });
   }
 
   @override
   void onClose() {
     heightController.dispose();
     weightController.dispose();
-    ageController.dispose();
     super.onClose();
   }
 
   // Calculate BMI
   Future<void> calculateBMI() async {
-    // Validate inputs
-    if (heightController.text.isEmpty ||
-        weightController.text.isEmpty ||
-        ageController.text.isEmpty) {
-      Get.snackbar(
-        'Missing Information',
-        'Please fill in all fields',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
-
     try {
-      final height = double.parse(heightController.text);
-      final weight = double.parse(weightController.text);
-      final age = int.parse(ageController.text);
-
-      // Validate ranges
-      if (height < 50 || height > 300) {
-        Get.snackbar(
-          'Invalid Height',
-          'Height must be between 50-300 cm',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      if (weight < 10 || weight > 500) {
-        Get.snackbar(
-          'Invalid Weight',
-          'Weight must be between 10-500 kg',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      if (age < 1 || age > 150) {
-        Get.snackbar(
-          'Invalid Age',
-          'Age must be between 1-150 years',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return;
-      }
+      final height = heightSlider.value;
+      final weight = weightSlider.value;
 
       // Calculate BMI
       final bmi = BMIRecord.calculateBMI(height, weight);
@@ -99,8 +59,6 @@ class BMIController extends GetxController {
       final record = BMIRecord(
         height: height,
         weight: weight,
-        age: age,
-        gender: selectedGender.value,
         bmi: bmi,
         category: category,
         date: DateTime.now(),
@@ -115,7 +73,7 @@ class BMIController extends GetxController {
       // Reload history
       await loadHistory();
 
-      // Show success
+      // Show success with personalized message
       Get.snackbar(
         'BMI Calculated! 🎯',
         'Your BMI is ${bmi.toStringAsFixed(1)} ($category)',
@@ -127,7 +85,7 @@ class BMIController extends GetxController {
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Invalid input. Please enter valid numbers.',
+        'Failed to calculate BMI',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -197,16 +155,12 @@ class BMIController extends GetxController {
     String? gender,
   }) {
     if (height != null) {
+      heightSlider.value = height;
       heightController.text = height.toInt().toString();
     }
     if (weight != null) {
+      weightSlider.value = weight;
       weightController.text = weight.toInt().toString();
-    }
-    if (age != null) {
-      ageController.text = age.toString();
-    }
-    if (gender != null) {
-      selectedGender.value = gender.toLowerCase();
     }
   }
 

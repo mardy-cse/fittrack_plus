@@ -24,6 +24,13 @@ class BMIScreen extends StatelessWidget {
         foregroundColor: Colors.white,
         actions: [
           IconButton(
+            icon: const Icon(Icons.show_chart),
+            onPressed: () {
+              Get.toNamed('/bmi-trends');
+            },
+            tooltip: 'View Trends',
+          ),
+          IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: () {
               Get.dialog(
@@ -123,6 +130,16 @@ class BMIScreen extends StatelessWidget {
               return _buildBMIResult(record, controller);
             }),
 
+            const SizedBox(height: 16),
+
+            // Ideal Weight Range
+            Obx(() {
+              if (controller.heightSlider.value > 0) {
+                return _buildIdealWeightRange(controller);
+              }
+              return const SizedBox.shrink();
+            }),
+
             const SizedBox(height: 32),
 
             // Weight History Chart
@@ -172,72 +189,89 @@ class BMIScreen extends StatelessWidget {
   }
 
   Widget _buildInputForm(BMIController controller) {
-    return Column(
+    return Obx(() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: controller.heightController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Height (cm)',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.height, color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: controller.weightController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Weight (kg)',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.monitor_weight, color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: controller.ageController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Age (years)',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.cake, color: Colors.white),
-          ),
-        ),
-        const SizedBox(height: 16),
+        // Height Slider
         const Text(
-          'Gender',
+          'Height',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
-        Obx(
-          () => Row(
-            children: [
-              Expanded(
-                child: RadioListTile<String>(
-                  value: 'male',
-                  groupValue: controller.selectedGender.value,
-                  onChanged: (value) =>
-                      controller.selectedGender.value = value!,
-                  title: const Text('Male'),
-                  activeColor: const Color(0xFF4A90E2),
+        Row(
+          children: [
+            Expanded(
+              child: Slider(
+                value: controller.heightSlider.value,
+                min: 100,
+                max: 250,
+                divisions: 150,
+                activeColor: const Color(0xFF4A90E2),
+                onChanged: (value) {
+                  controller.heightSlider.value = value;
+                },
+              ),
+            ),
+            Container(
+              width: 70,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A90E2).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '${controller.heightSlider.value.toInt()} cm',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Expanded(
-                child: RadioListTile<String>(
-                  value: 'female',
-                  groupValue: controller.selectedGender.value,
-                  onChanged: (value) =>
-                      controller.selectedGender.value = value!,
-                  title: const Text('Female'),
-                  activeColor: const Color(0xFF4A90E2),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        
+        // Weight Slider
+        const Text(
+          'Weight',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: Slider(
+                value: controller.weightSlider.value,
+                min: 30,
+                max: 200,
+                divisions: 170,
+                activeColor: const Color(0xFF4A90E2),
+                onChanged: (value) {
+                  controller.weightSlider.value = value;
+                },
+              ),
+            ),
+            Container(
+              width: 70,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A90E2).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '${controller.weightSlider.value.toInt()} kg',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
-    );
+    ));
   }
 
   Widget _buildBMIResult(BMIRecord record, BMIController controller) {
@@ -296,6 +330,33 @@ class BMIScreen extends StatelessWidget {
             BMIRecord.getHealthAdvice(record.category),
             textAlign: TextAlign.center,
             style: const TextStyle(color: Colors.white, fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricChip(String label, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -474,6 +535,140 @@ class BMIScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildIdealWeightRange(BMIController controller) {
+    final height = controller.heightSlider.value;
+    final weight = controller.weightSlider.value;
+    
+    final range = BMIRecord.getIdealWeightRange(height);
+    final status = BMIRecord.getWeightStatus(height, weight);
+    
+    final minWeight = range['min']!;
+    final maxWeight = range['max']!;
+    
+    Color statusColor = Colors.blue;
+    String statusIcon = 'ℹ️';
+    if (status['status'] == 'ideal') {
+      statusColor = Colors.green;
+      statusIcon = '✅';
+    } else if (status['status'] == 'above') {
+      statusColor = Colors.orange;
+      statusIcon = '⬆️';
+    } else {
+      statusIcon = '⬇️';
+    }
+
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: statusColor.withOpacity(0.3),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.balance, color: statusColor, size: 24),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Ideal Weight Range',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Min Weight',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      Text(
+                        '${minWeight.toStringAsFixed(1)} kg',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(Icons.arrow_forward, color: Colors.grey[600]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Max Weight',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      Text(
+                        '${maxWeight.toStringAsFixed(1)} kg',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      statusIcon,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        status['status'] == 'ideal'
+                            ? 'Your weight is ${status['message']}! Perfect!'
+                            : status['difference'] > 0
+                                ? '${status['difference'].toStringAsFixed(1)} kg ${status['message']}'
+                                : status['message'],
+                        style: TextStyle(
+                          color: statusColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
