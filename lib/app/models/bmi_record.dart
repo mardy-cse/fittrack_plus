@@ -91,22 +91,22 @@ class BMIRecord {
     final heightInMeters = heightInCm / 100;
     const minBMI = 18.5;
     const maxBMI = 25.0;
-    
+
     final minWeight = minBMI * (heightInMeters * heightInMeters);
     final maxWeight = maxBMI * (heightInMeters * heightInMeters);
-    
-    return {
-      'min': minWeight,
-      'max': maxWeight,
-    };
+
+    return {'min': minWeight, 'max': maxWeight};
   }
 
   // Get weight difference from ideal range
-  static Map<String, dynamic> getWeightStatus(double heightInCm, double weightInKg) {
+  static Map<String, dynamic> getWeightStatus(
+    double heightInCm,
+    double weightInKg,
+  ) {
     final range = getIdealWeightRange(heightInCm);
     final minWeight = range['min']!;
     final maxWeight = range['max']!;
-    
+
     if (weightInKg < minWeight) {
       return {
         'status': 'below',

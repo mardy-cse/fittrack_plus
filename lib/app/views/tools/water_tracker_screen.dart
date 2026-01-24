@@ -34,11 +34,15 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
     // Check every minute if date has changed
     Future.delayed(const Duration(minutes: 1), () {
       if (!mounted) return;
-      
+
       final now = DateTime.now();
       final currentDateOnly = DateTime(now.year, now.month, now.day);
-      final lastDateOnly = DateTime(_currentDate.year, _currentDate.month, _currentDate.day);
-      
+      final lastDateOnly = DateTime(
+        _currentDate.year,
+        _currentDate.month,
+        _currentDate.day,
+      );
+
       if (!_isSameDay(currentDateOnly, lastDateOnly)) {
         // New day detected, reset the tracker
         setState(() {
@@ -48,7 +52,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           _isLoading = false;
         });
       }
-      
+
       _startDailyResetTimer(); // Continue checking
     });
   }
@@ -59,7 +63,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
 
   Future<void> _loadTodayData() async {
     setState(() => _isLoading = true);
-    
+
     final todayLog = await _service.getTodayLog();
     if (todayLog != null) {
       setState(() {
@@ -75,7 +79,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
         _currentDate = DateTime.now();
       });
     }
-    
+
     setState(() => _isLoading = false);
   }
 
@@ -95,12 +99,14 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
       timestamps.add(DateTime.now());
     });
     await _saveData();
-    
+
     if (waterGlasses >= dailyGoal) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Goal Achieved! 🎉 Great job! You reached your daily water goal 💧'),
+            content: Text(
+              'Goal Achieved! 🎉 Great job! You reached your daily water goal 💧',
+            ),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 3),
           ),
@@ -146,7 +152,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
         body: const Center(child: CircularProgressIndicator()),
       );
     }
-    
+
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? Colors.black

@@ -9,7 +9,8 @@ class WaterTrackerHistoryScreen extends StatefulWidget {
   const WaterTrackerHistoryScreen({super.key});
 
   @override
-  State<WaterTrackerHistoryScreen> createState() => _WaterTrackerHistoryScreenState();
+  State<WaterTrackerHistoryScreen> createState() =>
+      _WaterTrackerHistoryScreenState();
 }
 
 class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
@@ -17,7 +18,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
   List<WaterIntakeLog> _logs = [];
   bool _isLoading = true;
   String _selectedPeriod = '7days'; // 7days, 30days
-  
+
   double _avgConsumption = 0;
   int _currentStreak = 0;
   int _totalGlasses = 0;
@@ -32,16 +33,16 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
 
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
-    
+
     final days = _selectedPeriod == '7days' ? 7 : 30;
-    
+
     final logs = await _service.getLogsForLastDays(days);
     final avg = await _service.getAverageConsumption(days: days);
     final streak = await _service.getCurrentStreak();
     final total = await _service.getTotalGlasses(days: days);
     final rate = await _service.getGoalAchievementRate(days: days);
     final best = await _service.getBestDay(days: days);
-    
+
     setState(() {
       _logs = logs;
       _avgConsumption = avg;
@@ -56,7 +57,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       backgroundColor: isDark ? Colors.black : Colors.grey[50],
       appBar: AppBar(
@@ -169,9 +170,14 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -207,10 +213,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -227,9 +230,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
               : Colors.white,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Center(
-          child: Text('No data available'),
-        ),
+        child: const Center(child: Text('No data available')),
       );
     }
 
@@ -258,10 +259,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
         children: [
           const Text(
             'Daily Water Intake',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -307,7 +305,8 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
                       reservedSize: 30,
                       interval: 1,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < sortedLogs.length) {
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < sortedLogs.length) {
                           final log = sortedLogs[value.toInt()];
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
@@ -386,9 +385,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
               : Colors.white,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Center(
-          child: Text('No history available'),
-        ),
+        child: const Center(child: Text('No history available')),
       );
     }
 
@@ -417,10 +414,7 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
             padding: EdgeInsets.all(16),
             child: Text(
               'History',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           ListView.separated(
@@ -431,8 +425,9 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
             itemBuilder: (context, index) {
               final log = sortedLogs[index];
               final isToday = _isToday(log.date);
-              final percentage = (log.glassesConsumed / log.dailyGoal * 100).toInt();
-              
+              final percentage = (log.glassesConsumed / log.dailyGoal * 100)
+                  .toInt();
+
               return ListTile(
                 leading: Container(
                   width: 48,
@@ -445,13 +440,17 @@ class _WaterTrackerHistoryScreenState extends State<WaterTrackerHistoryScreen> {
                   ),
                   child: Center(
                     child: Icon(
-                      log.isGoalAchieved ? Icons.check_circle : Icons.water_drop,
+                      log.isGoalAchieved
+                          ? Icons.check_circle
+                          : Icons.water_drop,
                       color: log.isGoalAchieved ? Colors.green : Colors.blue,
                     ),
                   ),
                 ),
                 title: Text(
-                  isToday ? 'Today' : DateFormat('EEEE, MMM dd').format(log.date),
+                  isToday
+                      ? 'Today'
+                      : DateFormat('EEEE, MMM dd').format(log.date),
                   style: TextStyle(
                     fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
                   ),

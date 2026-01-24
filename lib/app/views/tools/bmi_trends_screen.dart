@@ -26,26 +26,16 @@ class BMITrendsScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.show_chart,
-                  size: 80,
-                  color: Colors.grey[400],
-                ),
+                Icon(Icons.show_chart, size: 80, color: Colors.grey[400]),
                 const SizedBox(height: 16),
                 Text(
                   'No BMI data yet',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Calculate your BMI to see trends',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[500],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[500]),
                 ),
               ],
             ),
@@ -78,11 +68,15 @@ class BMITrendsScreen extends StatelessWidget {
   Widget _buildStatisticsCards(BMIController controller, bool isDark) {
     final history = controller.history;
     final latestBMI = history.first.bmi;
-    final avgBMI = history.fold<double>(0, (sum, record) => sum + record.bmi) / history.length;
+    final avgBMI =
+        history.fold<double>(0, (sum, record) => sum + record.bmi) /
+        history.length;
     final minBMI = history.map((r) => r.bmi).reduce((a, b) => a < b ? a : b);
     final maxBMI = history.map((r) => r.bmi).reduce((a, b) => a > b ? a : b);
-    
-    final avgWeight = history.fold<double>(0, (sum, record) => sum + record.weight) / history.length;
+
+    final avgWeight =
+        history.fold<double>(0, (sum, record) => sum + record.weight) /
+        history.length;
     final latestWeight = history.first.weight;
     final firstWeight = history.last.weight;
     final weightChange = latestWeight - firstWeight;
@@ -170,7 +164,13 @@ class BMITrendsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color, bool isDark) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+    bool isDark,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -206,10 +206,7 @@ class BMITrendsScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -218,7 +215,7 @@ class BMITrendsScreen extends StatelessWidget {
 
   Widget _buildBMIChart(BMIController controller, bool isDark) {
     final records = controller.history.reversed.toList();
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -237,10 +234,7 @@ class BMITrendsScreen extends StatelessWidget {
         children: [
           const Text(
             'BMI Trend',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -287,7 +281,8 @@ class BMITrendsScreen extends StatelessWidget {
                       reservedSize: 30,
                       interval: 1,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < records.length) {
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < records.length) {
                           final record = records[value.toInt()];
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
@@ -309,10 +304,7 @@ class BMITrendsScreen extends StatelessWidget {
                 lineBarsData: [
                   LineChartBarData(
                     spots: records.asMap().entries.map((entry) {
-                      return FlSpot(
-                        entry.key.toDouble(),
-                        entry.value.bmi,
-                      );
+                      return FlSpot(entry.key.toDouble(), entry.value.bmi);
                     }).toList(),
                     isCurved: true,
                     color: const Color(0xFF4A90E2),
@@ -369,7 +361,7 @@ class BMITrendsScreen extends StatelessWidget {
 
   Widget _buildWeightChart(BMIController controller, bool isDark) {
     final records = controller.history.reversed.toList();
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -388,10 +380,7 @@ class BMITrendsScreen extends StatelessWidget {
         children: [
           const Text(
             'Weight Progress',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -435,7 +424,8 @@ class BMITrendsScreen extends StatelessWidget {
                       showTitles: true,
                       reservedSize: 30,
                       getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 && value.toInt() < records.length) {
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < records.length) {
                           final record = records[value.toInt()];
                           return Padding(
                             padding: const EdgeInsets.only(top: 8.0),
@@ -457,10 +447,7 @@ class BMITrendsScreen extends StatelessWidget {
                 lineBarsData: [
                   LineChartBarData(
                     spots: records.asMap().entries.map((entry) {
-                      return FlSpot(
-                        entry.key.toDouble(),
-                        entry.value.weight,
-                      );
+                      return FlSpot(entry.key.toDouble(), entry.value.weight);
                     }).toList(),
                     isCurved: true,
                     color: Colors.purple,
@@ -510,10 +497,7 @@ class BMITrendsScreen extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Text(
               'History',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           ListView.separated(
@@ -525,7 +509,7 @@ class BMITrendsScreen extends StatelessWidget {
               final record = controller.history[index];
               final color = controller.getBMIColor(record.category);
               final dateStr = DateFormat('MMM dd, yyyy').format(record.date);
-              
+
               return ListTile(
                 leading: Container(
                   width: 60,
@@ -547,10 +531,7 @@ class BMITrendsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   record.category,
-                  style: TextStyle(
-                    color: color,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(
                   '${record.weight.toInt()} kg • ${record.height.toInt()} cm\n$dateStr',

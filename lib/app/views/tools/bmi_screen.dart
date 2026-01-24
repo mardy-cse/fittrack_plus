@@ -189,89 +189,97 @@ class BMIScreen extends StatelessWidget {
   }
 
   Widget _buildInputForm(BMIController controller) {
-    return Obx(() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Height Slider
-        const Text(
-          'Height',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: Slider(
-                value: controller.heightSlider.value,
-                min: 100,
-                max: 250,
-                divisions: 150,
-                activeColor: const Color(0xFF4A90E2),
-                onChanged: (value) {
-                  controller.heightSlider.value = value;
-                },
-              ),
-            ),
-            Container(
-              width: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF4A90E2).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '${controller.heightSlider.value.toInt()} cm',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+    return Obx(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Height Slider
+          const Text(
+            'Height',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Slider(
+                  value: controller.heightSlider.value,
+                  min: 100,
+                  max: 250,
+                  divisions: 150,
+                  activeColor: const Color(0xFF4A90E2),
+                  onChanged: (value) {
+                    controller.heightSlider.value = value;
+                  },
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        
-        // Weight Slider
-        const Text(
-          'Weight',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: Slider(
-                value: controller.weightSlider.value,
-                min: 30,
-                max: 200,
-                divisions: 170,
-                activeColor: const Color(0xFF4A90E2),
-                onChanged: (value) {
-                  controller.weightSlider.value = value;
-                },
-              ),
-            ),
-            Container(
-              width: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF4A90E2).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '${controller.weightSlider.value.toInt()} kg',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+              Container(
+                width: 70,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4A90E2).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${controller.heightSlider.value.toInt()} cm',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
-    ));
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Weight Slider
+          const Text(
+            'Weight',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Slider(
+                  value: controller.weightSlider.value,
+                  min: 30,
+                  max: 200,
+                  divisions: 170,
+                  activeColor: const Color(0xFF4A90E2),
+                  onChanged: (value) {
+                    controller.weightSlider.value = value;
+                  },
+                ),
+              ),
+              Container(
+                width: 70,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF4A90E2).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${controller.weightSlider.value.toInt()} kg',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildBMIResult(BMIRecord record, BMIController controller) {
@@ -541,13 +549,13 @@ class BMIScreen extends StatelessWidget {
   Widget _buildIdealWeightRange(BMIController controller) {
     final height = controller.heightSlider.value;
     final weight = controller.weightSlider.value;
-    
+
     final range = BMIRecord.getIdealWeightRange(height);
     final status = BMIRecord.getWeightStatus(height, weight);
-    
+
     final minWeight = range['min']!;
     final maxWeight = range['max']!;
-    
+
     Color statusColor = Colors.blue;
     String statusIcon = 'ℹ️';
     if (status['status'] == 'ideal') {
@@ -568,10 +576,7 @@ class BMIScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: statusColor.withOpacity(0.3),
-              width: 2,
-            ),
+            border: Border.all(color: statusColor.withOpacity(0.3), width: 2),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,10 +587,7 @@ class BMIScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   const Text(
                     'Ideal Weight Range',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -598,10 +600,7 @@ class BMIScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Min Weight',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                       Text(
                         '${minWeight.toStringAsFixed(1)} kg',
@@ -618,10 +617,7 @@ class BMIScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Max Weight',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                       Text(
                         '${maxWeight.toStringAsFixed(1)} kg',
@@ -643,18 +639,15 @@ class BMIScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      statusIcon,
-                      style: const TextStyle(fontSize: 20),
-                    ),
+                    Text(statusIcon, style: const TextStyle(fontSize: 20)),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         status['status'] == 'ideal'
                             ? 'Your weight is ${status['message']}! Perfect!'
                             : status['difference'] > 0
-                                ? '${status['difference'].toStringAsFixed(1)} kg ${status['message']}'
-                                : status['message'],
+                            ? '${status['difference'].toStringAsFixed(1)} kg ${status['message']}'
+                            : status['message'],
                         style: TextStyle(
                           color: statusColor,
                           fontSize: 13,

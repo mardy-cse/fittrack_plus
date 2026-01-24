@@ -28,7 +28,7 @@ class BMIController extends GetxController {
   void onInit() {
     super.onInit();
     loadHistory();
-    
+
     // Sync sliders with text fields
     heightSlider.listen((value) {
       heightController.text = value.toInt().toString();
