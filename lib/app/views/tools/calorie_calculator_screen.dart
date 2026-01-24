@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
+import 'calorie_goal_tracking_screen.dart';
 
 class CalorieCalculatorScreen extends StatelessWidget {
   const CalorieCalculatorScreen({super.key});
@@ -23,6 +24,7 @@ class CalorieCalculatorScreen extends StatelessWidget {
     final gender = (user?.gender?.toLowerCase() ?? 'male').obs;
     final activityLevel = 'moderate'.obs;
     final calorieResult = ''.obs;
+    final calculatedCalories = 0.obs;
 
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
@@ -34,6 +36,26 @@ class CalorieCalculatorScreen extends StatelessWidget {
             ? Colors.black
             : const Color(0xFFFFA726),
         foregroundColor: Colors.white,
+        actions: [
+          Obx(
+            () => calculatedCalories.value > 0
+                ? IconButton(
+                    icon: const Icon(Icons.track_changes),
+                    tooltip: 'Set Goal',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CalorieGoalTrackingScreen(
+                            dailyCalories: calculatedCalories.value,
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -166,6 +188,7 @@ class CalorieCalculatorScreen extends StatelessWidget {
                   }
 
                   final tdee = bmr * multiplier;
+                  calculatedCalories.value = tdee.toInt();
                   calorieResult.value = '${tdee.toInt()} kcal/day';
                 } else {
                   Get.snackbar(
@@ -224,6 +247,41 @@ class CalorieCalculatorScreen extends StatelessWidget {
                           const Text(
                             'To gain weight: +500 kcal/day',
                             style: TextStyle(fontSize: 14, color: Colors.green),
+                          ),
+                          const SizedBox(height: 20),
+                          const Divider(),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        CalorieGoalTrackingScreen(
+                                          dailyCalories:
+                                              calculatedCalories.value,
+                                        ),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4A90E2),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                              ),
+                              icon: const Icon(Icons.track_changes),
+                              label: const Text(
+                                'Set Weight Goal',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

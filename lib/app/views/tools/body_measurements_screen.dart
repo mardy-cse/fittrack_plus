@@ -201,13 +201,6 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
                             duration: Duration(seconds: 2),
                           ),
                         );
-
-                        // Navigate back after a short delay
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          if (mounted) {
-                            Navigator.of(context).pop();
-                          }
-                        });
                       }
                     } catch (e) {
                       debugPrint('Error saving: $e');
