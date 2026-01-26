@@ -57,7 +57,28 @@ class ProfileScreen extends StatelessWidget {
                       final coverUrl =
                           controller.userProfile.value?.coverImageUrl;
                       if (coverUrl != null && coverUrl.isNotEmpty) {
-                        return Image.file(File(coverUrl), fit: BoxFit.cover);
+                        // Check if it's a network URL or local file
+                        if (coverUrl.startsWith('http://') ||
+                            coverUrl.startsWith('https://')) {
+                          return CachedNetworkImage(
+                            imageUrl: coverUrl,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) => Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? const Color(0xFF1C1C1E)
+                                    : const Color(0xFF50C878),
+                              ),
+                            ),
+                          );
+                        } else if (coverUrl.startsWith('/')) {
+                          // Local file - check if exists
+                          final file = File(coverUrl);
+                          if (file.existsSync()) {
+                            return Image.file(file, fit: BoxFit.cover);
+                          }
+                        }
                       }
                       return Container(
                         decoration: BoxDecoration(
@@ -173,8 +194,11 @@ class ProfileScreen extends StatelessWidget {
                 photoUrl.startsWith('https://')) {
               imageProvider = CachedNetworkImageProvider(photoUrl);
             } else if (photoUrl.startsWith('/')) {
-              // Local file path
-              imageProvider = FileImage(File(photoUrl));
+              // Local file path - check if exists
+              final file = File(photoUrl);
+              if (file.existsSync()) {
+                imageProvider = FileImage(file);
+              }
             }
           }
 

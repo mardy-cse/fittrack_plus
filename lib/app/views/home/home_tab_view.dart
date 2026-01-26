@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../controllers/home_controller.dart';
+import '../../controllers/profile_controller.dart';
 // import '../../controllers/steps_controller.dart'; // Disabled for emulator
 // import '../../widgets/steps_card.dart'; // Disabled for emulator
 
@@ -540,52 +543,89 @@ class HomeTabView extends GetView<HomeController> {
 
   Widget _buildDrawer(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final profileController = Get.put(ProfileController());
 
     return Drawer(
       backgroundColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [const Color(0xFF4A90E2), const Color(0xFF50C878)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+          Obx(() {
+            final profile = profileController.userProfile.value;
+            final coverUrl = profile?.coverImageUrl;
+            final photoUrl = profile?.photoUrl;
+
+            return Container(
+              height: 240,
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1A1A1A) : Colors.grey[200],
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    size: 32,
-                    color: const Color(0xFF4A90E2),
+              child: Stack(
+                children: [
+                  // Cover Image Background
+                  Positioned.fill(
+                    child: _buildCoverImage(coverUrl, isDark),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Obx(
-                  () => Text(
-                    controller.getUserName(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  // Dark gradient overlay for text readability
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.3),
+                            Colors.black.withOpacity(0.7),
+                            Colors.black.withOpacity(0.9),
+                          ],
+                          stops: const [0.0, 0.5, 1.0],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  controller.getGreeting(),
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
-                ),
-              ],
-            ),
-          ),
+                  // Content with proper spacing
+                  Positioned(
+                    left: 20,
+                    right: 20,
+                    bottom: 20,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Profile Avatar with border
+                        _buildProfileAvatar(photoUrl, profile?.name ?? 'User'),
+                        const SizedBox(height: 16),
+                        // User Name - Bold and prominent
+                        Text(
+                          controller.getUserName(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                            height: 1.2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 6),
+                        // Greeting - Lighter weight
+                        Text(
+                          controller.getGreeting(),
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
           ListTile(
             leading: Icon(Icons.home, color: const Color(0xFF4A90E2)),
             title: Text(
@@ -755,6 +795,94 @@ class HomeTabView extends GetView<HomeController> {
             child: const Text('Logout', style: TextStyle(color: Colors.red)),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Build cover image with fallback
+  Widget _buildCoverImage(String? coverUrl, bool isDark) {
+    if (coverUrl != null && coverUrl.isNotEmpty) {
+      // Check if it's a network URL or local file
+      if (coverUrl.startsWith('http://') || coverUrl.startsWith('https://')) {
+        return CachedNetworkImage(
+          imageUrl: coverUrl,
+          fit: BoxFit.cover,
+          errorWidget: (context, url, error) => Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [const Color(0xFF4A90E2), const Color(0xFF50C878)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
+        );
+      } else if (coverUrl.startsWith('/')) {
+        // Local file - check if exists
+        final file = File(coverUrl);
+        if (file.existsSync()) {
+          return Image.file(file, fit: BoxFit.cover);
+        }
+      }
+    }
+    // Default gradient background
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [const Color(0xFF4A90E2), const Color(0xFF50C878)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+    );
+  }
+
+  /// Build profile avatar with fallback - Premium design with border
+  Widget _buildProfileAvatar(String? photoUrl, String name) {
+    ImageProvider? imageProvider;
+
+    if (photoUrl != null && photoUrl.isNotEmpty) {
+      // Check if it's a local file path or network URL
+      if (photoUrl.startsWith('http://') || photoUrl.startsWith('https://')) {
+        imageProvider = CachedNetworkImageProvider(photoUrl);
+      } else if (photoUrl.startsWith('/')) {
+        // Local file path - check if exists
+        final file = File(photoUrl);
+        if (file.existsSync()) {
+          imageProvider = FileImage(file);
+        }
+      }
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: const Color(0xFF50C878), // Accent color border
+          width: 3.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF50C878).withOpacity(0.3),
+            blurRadius: 8,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: CircleAvatar(
+        radius: 36,
+        backgroundColor: const Color(0xFF2A2A2A),
+        backgroundImage: imageProvider,
+        child: imageProvider == null
+            ? Text(
+                name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF50C878),
+                ),
+              )
+            : null,
       ),
     );
   }
