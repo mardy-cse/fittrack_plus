@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import '../../controllers/start_workout_controller.dart';
 
 class StartWorkoutView extends GetView<StartWorkoutController> {
@@ -94,6 +95,134 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
             textAlign: TextAlign.center,
           ),
         ),
+        const SizedBox(height: 24),
+
+        // Exercise Animation Card
+        Obx(() {
+          if (!controller.isResting.value) {
+            return Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Container(
+                height: 240,
+                width: 240,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.green.withOpacity(0.2),
+                      Colors.blue.withOpacity(0.2),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    children: [
+                      // Lottie Animation with error handling
+                      Center(
+                        child: _buildAnimationWidget(
+                          _getAnimationForExercise(
+                            controller.currentExerciseName,
+                          ),
+                          !controller.isPaused.value,
+                        ),
+                      ),
+                      // Form tip overlay
+                      Positioned(
+                        bottom: 12,
+                        left: 12,
+                        right: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'Follow the form',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+          // Rest time card
+          return Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Container(
+              height: 240,
+              width: 240,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.orange.withOpacity(0.2),
+                    Colors.red.withOpacity(0.2),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: _buildAnimationWidget(
+                        'assets/animations/plank.json',
+                        true,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 12,
+                      left: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'Take a breath',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
 
         const Spacer(),
 
@@ -288,6 +417,83 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
           ),
         ],
       ),
+    );
+  }
+
+  IconData _getExerciseIcon(String exerciseName) {
+    final lowerName = exerciseName.toLowerCase();
+
+    if (lowerName.contains('plank') ||
+        lowerName.contains('core') ||
+        lowerName.contains('ab')) {
+      return Icons.accessibility_new;
+    } else if (lowerName.contains('push') ||
+        lowerName.contains('chest') ||
+        lowerName.contains('press')) {
+      return Icons.fitness_center;
+    } else if (lowerName.contains('squat') ||
+        lowerName.contains('leg') ||
+        lowerName.contains('lunge')) {
+      return Icons.airline_seat_legroom_normal;
+    } else if (lowerName.contains('run') ||
+        lowerName.contains('cardio') ||
+        lowerName.contains('jog')) {
+      return Icons.directions_run;
+    } else if (lowerName.contains('jump') ||
+        lowerName.contains('jack') ||
+        lowerName.contains('burpee')) {
+      return Icons.sports_gymnastics;
+    } else if (lowerName.contains('rest')) {
+      return Icons.self_improvement;
+    } else {
+      return Icons.fitness_center;
+    }
+  }
+
+  String _getAnimationForExercise(String exerciseName) {
+    final lowerName = exerciseName.toLowerCase();
+
+    if (lowerName.contains('plank') ||
+        lowerName.contains('core') ||
+        lowerName.contains('ab')) {
+      return 'assets/animations/plank.json';
+    } else if (lowerName.contains('push') ||
+        lowerName.contains('chest') ||
+        lowerName.contains('press')) {
+      return 'assets/animations/pushup_improved.json';
+    } else if (lowerName.contains('squat') ||
+        lowerName.contains('leg') ||
+        lowerName.contains('lunge')) {
+      return 'assets/animations/squat_improved.json';
+    } else if (lowerName.contains('run') ||
+        lowerName.contains('cardio') ||
+        lowerName.contains('jog')) {
+      return 'assets/animations/running_improved.json';
+    } else if (lowerName.contains('jump') ||
+        lowerName.contains('jack') ||
+        lowerName.contains('burpee')) {
+      return 'assets/animations/jumping_jacks.lottie';
+    } else {
+      return 'assets/animations/squat_improved.json';
+    }
+  }
+
+  Widget _buildAnimationWidget(String assetPath, bool shouldAnimate) {
+    return Lottie.asset(
+      assetPath,
+      width: 200,
+      height: 200,
+      fit: BoxFit.contain,
+      repeat: true,
+      animate: shouldAnimate,
+      errorBuilder: (context, error, stackTrace) {
+        // Fallback to icon if animation fails
+        return Icon(
+          Icons.fitness_center,
+          size: 120,
+          color: Colors.white.withOpacity(0.7),
+        );
+      },
     );
   }
 }

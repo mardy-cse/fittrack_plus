@@ -228,24 +228,33 @@ class AuthService extends GetxService {
     required Function() codeAutoRetrievalTimeout,
   }) async {
     try {
+      debugPrint('🔐 Starting phone verification for: $phoneNumber');
+      
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        timeout: const Duration(seconds: 60),
+        timeout: const Duration(seconds: 120), // Increased timeout
         verificationCompleted: (PhoneAuthCredential credential) async {
+          debugPrint('✅ Auto-verification completed');
           // Auto-sign in on Android
           await _auth.signInWithCredential(credential);
         },
         verificationFailed: (FirebaseAuthException e) {
+          debugPrint('❌ Verification failed: ${e.code} - ${e.message}');
+          debugPrint('Error details: ${e.toString()}');
           verificationFailed(_handleAuthException(e));
         },
         codeSent: (String verificationId, int? resendToken) {
+          debugPrint('📱 SMS code sent successfully!');
+          debugPrint('Verification ID: $verificationId');
           codeSent(verificationId);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
+          debugPrint('⏱️ Auto-retrieval timeout');
           codeAutoRetrievalTimeout();
         },
       );
     } catch (e) {
+      debugPrint('💥 Exception during phone verification: $e');
       throw Exception('Failed to verify phone number: $e');
     }
   }
@@ -440,8 +449,33 @@ class AuthService extends GetxService {
         return 'Too many attempts. Please try again later';
       case 'network-request-failed':
         return 'Network error. Please check your connection';
+      
+      // Phone Authentication specific errors
+      case 'invalid-phone-number':
+        return 'Invalid phone number format. Use international format (+880...)';
+      case 'missing-phone-number':
+        return 'Please provide a phone number';
+      case 'quota-exceeded':
+        return 'SMS quota exceeded. Try again later';
+      case 'session-expired':
+        return 'Verification session expired. Please try again';
+      case 'invalid-verification-code':
+        return 'Invalid verification code';
+      case 'invalid-verification-id':
+        return 'Invalid verification session';
+      case 'credential-already-in-use':
+        return 'This phone number is already registered';
+      case 'app-not-authorized':
+        return 'App not authorized. Please check Firebase configuration';
+      case 'captcha-check-failed':
+        return 'reCAPTCHA verification failed. Please try again';
+      
       default:
-        return 'Authentication error: ${e.message}';
+        // Check for billing error in message
+        if (e.message?.contains('BILLING_NOT_ENABLED') == true) {
+          return 'Firebase SMS requires Blaze plan. Upgrade at console.firebase.google.com or use test numbers';
+        }
+        return 'Authentication error: ${e.message ?? e.code}';
     }
   }
 }

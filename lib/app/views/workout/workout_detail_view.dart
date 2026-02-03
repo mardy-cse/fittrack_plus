@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:chewie/chewie.dart';
+import 'package:lottie/lottie.dart';
 import '../../controllers/workout_detail_controller.dart';
 
 class WorkoutDetailView extends GetView<WorkoutDetailController> {
@@ -161,63 +161,110 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
 
                   const SizedBox(height: 24),
 
-                  // Video Player
-                  if (workout.videoUrl.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Workout Video',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                  // Exercise Demonstration
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'How to Perform',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Container(
+                            height: 300,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  const Color(0xFF4A90E2).withOpacity(0.05),
+                                  const Color(0xFF50C878).withOpacity(0.05),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Stack(
+                                children: [
+                                  // Lottie Animation with error handling
+                                  Center(
+                                    child: _buildAnimationWidget(
+                                      workout.animationAsset.isNotEmpty
+                                          ? workout.animationAsset
+                                          : _getAnimationForCategory(
+                                              workout.category,
+                                            ),
+                                    ),
+                                  ),
+                                  // Instruction overlay
+                                  Positioned(
+                                    bottom: 16,
+                                    left: 16,
+                                    right: 16,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.6),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        _getExerciseInstruction(
+                                          workout.category,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Play indicator
+                                  Positioned(
+                                    top: 12,
+                                    right: 12,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF4A90E2),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: const Text(
+                                        '💡 Tap exercises below for details',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          Obx(() {
-                            if (controller.isVideoLoading.value) {
-                              return Container(
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            if (controller.chewieController != null) {
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Chewie(
-                                    controller: controller.chewieController!,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return Container(
-                              height: 200,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Center(
-                                child: Text('Video unavailable'),
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
 
                   const SizedBox(height: 24),
 
@@ -514,5 +561,102 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       default:
         return Colors.grey;
     }
+  }
+
+  IconData _getExerciseIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'cardio':
+        return Icons.directions_run;
+      case 'strength':
+        return Icons.fitness_center;
+      case 'yoga':
+        return Icons.self_improvement;
+      case 'core':
+      case 'abs':
+        return Icons.accessibility_new;
+      case 'flexibility':
+        return Icons.accessibility;
+      case 'hiit':
+        return Icons.local_fire_department;
+      default:
+        return Icons.sports_gymnastics;
+    }
+  }
+
+  String _getExerciseInstruction(String category) {
+    switch (category.toLowerCase()) {
+      case 'cardio':
+        return 'Get your heart pumping with cardio exercises';
+      case 'strength':
+        return 'Build muscle with strength training';
+      case 'yoga':
+        return 'Improve flexibility and mindfulness';
+      case 'core':
+        return 'Strengthen your core muscles';
+      case 'flexibility':
+        return 'Increase your range of motion';
+      case 'hiit':
+        return 'High intensity interval training';
+      default:
+        return 'Follow the exercises below';
+    }
+  }
+
+  String _getAnimationForCategory(String category) {
+    switch (category.toLowerCase()) {
+      case 'cardio':
+      case 'hiit':
+        return 'assets/animations/jumping_jacks.lottie';
+      case 'strength':
+        return 'assets/animations/pushup_improved.json';
+      case 'yoga':
+      case 'flexibility':
+        return 'assets/animations/plank.json';
+      case 'core':
+      case 'abs':
+        return 'assets/animations/plank.json';
+      default:
+        return 'assets/animations/squat_improved.json';
+    }
+  }
+
+  Widget _buildAnimationWidget(String assetPath) {
+    try {
+      return Lottie.asset(
+        assetPath,
+        width: 280,
+        height: 280,
+        fit: BoxFit.contain,
+        repeat: true,
+        animate: true,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildFallbackIcon();
+        },
+      );
+    } catch (e) {
+      return _buildFallbackIcon();
+    }
+  }
+
+  Widget _buildFallbackIcon() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.fitness_center,
+          size: 100,
+          color: const Color(0xFF4A90E2),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'Ready to workout!',
+          style: TextStyle(
+            fontSize: 16,
+            color: Color(0xFF4A90E2),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
   }
 }

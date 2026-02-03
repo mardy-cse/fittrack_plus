@@ -5,7 +5,7 @@ class Workout {
   final String title;
   final String description;
   final String imageUrl;
-  final String videoUrl;
+  final String animationAsset; // Path to Lottie animation
   final int durationSeconds;
   final String level; // Beginner, Intermediate, Advanced
   final List<String> tags;
@@ -21,7 +21,7 @@ class Workout {
     required this.title,
     required this.description,
     required this.imageUrl,
-    this.videoUrl = '',
+    this.animationAsset = '',
     required this.durationSeconds,
     required this.level,
     this.tags = const [],
@@ -39,7 +39,7 @@ class Workout {
       'title': title,
       'description': description,
       'imageUrl': imageUrl,
-      'videoUrl': videoUrl,
+      'animationAsset': animationAsset,
       'durationSeconds': durationSeconds,
       'level': level,
       'tags': tags,
@@ -60,7 +60,7 @@ class Workout {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       imageUrl: data['imageUrl'] ?? '',
-      videoUrl: data['videoUrl'] ?? '',
+      animationAsset: data['animationAsset'] ?? '',
       durationSeconds: data['durationSeconds'] ?? (data['duration'] ?? 0) * 60,
       level: data['level'] ?? 'Beginner',
       tags: List<String>.from(data['tags'] ?? []),
@@ -80,7 +80,7 @@ class Workout {
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       imageUrl: map['imageUrl'] ?? '',
-      videoUrl: map['videoUrl'] ?? '',
+      animationAsset: map['animationAsset'] ?? '',
       durationSeconds: map['durationSeconds'] ?? (map['duration'] ?? 0) * 60,
       level: map['level'] ?? 'Beginner',
       tags: List<String>.from(map['tags'] ?? []),
@@ -108,7 +108,7 @@ class Workout {
     String? title,
     String? description,
     String? imageUrl,
-    String? videoUrl,
+    String? animationAsset,
     int? durationSeconds,
     String? level,
     List<String>? tags,
@@ -124,7 +124,7 @@ class Workout {
       title: title ?? this.title,
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
-      videoUrl: videoUrl ?? this.videoUrl,
+      animationAsset: animationAsset ?? this.animationAsset,
       durationSeconds: durationSeconds ?? this.durationSeconds,
       level: level ?? this.level,
       tags: tags ?? this.tags,

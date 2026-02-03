@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../controllers/phone_auth_controller.dart';
 import '../../utils/validators.dart';
+import '../../utils/firebase_diagnostic.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 
@@ -18,6 +19,24 @@ class PhoneAuthView extends GetView<PhoneAuthController> {
           onPressed: () => Get.back(),
         ),
         title: const Text('Phone Verification'),
+        actions: [
+          // Debug button - shows diagnostic info
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            tooltip: 'Run Diagnostics',
+            onPressed: () async {
+              await FirebaseDiagnostic.runDiagnostics();
+              FirebaseDiagnostic.printSetupGuide();
+              
+              Get.snackbar(
+                'Diagnostics Running',
+                'Check console/logcat for detailed information',
+                snackPosition: SnackPosition.BOTTOM,
+                duration: const Duration(seconds: 3),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(

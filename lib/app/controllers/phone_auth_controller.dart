@@ -31,11 +31,23 @@ class PhoneAuthController extends GetxController {
       isLoading.value = true;
 
       final phoneNumber = phoneController.text.trim();
+      
+      // Validate phone number
+      if (phoneNumber.isEmpty) {
+        throw Exception('Please enter a phone number');
+      }
 
       // Add country code if not present
       final formattedPhone = phoneNumber.startsWith('+')
           ? phoneNumber
           : '+88$phoneNumber'; // Bangladesh country code
+      
+      debugPrint('📞 Attempting to send OTP to: $formattedPhone');
+      debugPrint('🔧 Make sure:');
+      debugPrint('  ✓ Phone number is valid');
+      debugPrint('  ✓ SHA keys are configured in Firebase');
+      debugPrint('  ✓ Play Integrity API is enabled');
+      debugPrint('  ✓ Internet connection is active');
 
       await _authService.verifyPhoneNumber(
         phoneNumber: formattedPhone,
@@ -45,11 +57,12 @@ class PhoneAuthController extends GetxController {
           isLoading.value = false;
 
           Get.snackbar(
-            'Success',
-            'OTP sent to $formattedPhone',
+            'Success! 🎉',
+            'OTP sent to $formattedPhone\nCheck your SMS',
             backgroundColor: Colors.green,
             colorText: Colors.white,
             snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 4),
           );
 
           // Start resend timer
@@ -57,26 +70,44 @@ class PhoneAuthController extends GetxController {
         },
         verificationFailed: (String error) {
           isLoading.value = false;
-          Get.snackbar(
-            'Error',
-            error,
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
-            snackPosition: SnackPosition.BOTTOM,
-          );
+          debugPrint('🚫 Verification failed in controller: $error');
+          
+          // Check for billing error
+          if (error.contains('BILLING_NOT_ENABLED')) {
+            debugPrint('⚠️  CRITICAL: Firebase project needs Blaze plan for SMS!');
+            debugPrint('   Solution: Upgrade at https://console.firebase.google.com');
+          }
+          
+          // Use Future.microtask to ensure context is available
+          Future.microtask(() {
+            if (Get.isSnackbarOpen != true) {
+              Get.snackbar(
+                'Verification Failed',
+                error,
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+                snackPosition: SnackPosition.BOTTOM,
+                duration: const Duration(seconds: 5),
+              );
+            }
+          });
         },
         codeAutoRetrievalTimeout: () {
-          isLoading.value = false;
+          if (isLoading.value) {
+            isLoading.value = false;
+          }
         },
       );
     } catch (e) {
       isLoading.value = false;
+      debugPrint('💥 Error in sendOTP: $e');
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 5),
       );
     }
   }
