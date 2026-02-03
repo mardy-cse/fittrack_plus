@@ -7,9 +7,11 @@ import 'app/views/splash/splash_view.dart';
 import 'app/views/auth/login_view.dart';
 import 'app/views/auth/signup_view.dart';
 import 'app/views/auth/phone_auth_view.dart';
+import 'app/views/auth/email_link_auth_view.dart';
 import 'app/views/auth/email_otp_view.dart';
 import 'app/bindings/auth_binding.dart';
 import 'app/bindings/phone_auth_binding.dart';
+import 'app/bindings/email_link_auth_binding.dart';
 import 'app/bindings/email_otp_binding.dart';
 import 'app/bindings/home_binding.dart';
 import 'app/bindings/workout_detail_binding.dart';
@@ -104,6 +106,12 @@ class FitTrackApp extends StatelessWidget {
           name: '/phone-auth',
           page: () => const PhoneAuthView(),
           binding: PhoneAuthBinding(),
+          transition: Transition.rightToLeft,
+        ),
+        GetPage(
+          name: '/email-link-auth',
+          page: () => const EmailLinkAuthView(),
+          binding: EmailLinkAuthBinding(),
           transition: Transition.rightToLeft,
         ),
         GetPage(

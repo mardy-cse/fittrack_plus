@@ -179,6 +179,18 @@ class LoginView extends GetView<AuthController> {
                   icon: Icons.phone,
                 ),
 
+                const SizedBox(height: 16),
+
+                // Email OTP Login Button
+                CustomButton(
+                  text: 'Sign in with Email OTP',
+                  onPressed: () => Get.toNamed('/email-otp'),
+                  backgroundColor: Colors.white,
+                  textColor: Colors.black87,
+                  outlined: true,
+                  icon: Icons.email,
+                ),
+
                 const SizedBox(height: 30),
 
                 // Sign Up Link

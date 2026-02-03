@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 import '../models/user_profile.dart';
@@ -194,8 +195,13 @@ class AuthService extends GetxService {
       // Sign in to Firebase
       final userCredential = await _auth.signInWithCredential(credential);
 
-      // Create user profile if new user
-      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+      // Check if user profile exists in Firestore
+      final profileExists = await _userService.userProfileExists(
+        userCredential.user!.uid,
+      );
+
+      // Create user profile if it doesn't exist (new user or existing user without profile)
+      if (!profileExists) {
         final profile = UserProfile(
           uid: userCredential.user!.uid,
           name: userCredential.user!.displayName ?? 'User',
@@ -229,7 +235,7 @@ class AuthService extends GetxService {
   }) async {
     try {
       debugPrint('🔐 Starting phone verification for: $phoneNumber');
-      
+
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 120), // Increased timeout
@@ -317,6 +323,20 @@ class AuthService extends GetxService {
       // For development, OTP is logged to console
       debugPrint('📧 Email OTP for $email: $otp');
       debugPrint('⏰ Expires at: ${emailOTP.expiresAt}');
+      debugPrint('🔔 Development Mode: OTP will be shown in a notification');
+
+      // Show OTP in development mode
+      if (kDebugMode) {
+        // Import Get for showing snackbar
+        Get.snackbar(
+          'Development Mode',
+          'OTP: $otp\n(Check console for details)',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 10),
+          snackPosition: SnackPosition.TOP,
+        );
+      }
 
       // In production, you would call a Cloud Function like:
       // await FirebaseFunctions.instance
@@ -366,6 +386,76 @@ class AuthService extends GetxService {
     } catch (e) {
       throw Exception('Failed to verify OTP: $e');
     }
+  }
+
+  // Email Link Authentication - Send sign-in link
+  Future<void> sendSignInLinkToEmail(String email) async {
+    try {
+      final actionCodeSettings = ActionCodeSettings(
+        // Use Firebase's default URL - automatically allowlisted
+        url: 'https://fittrackplus-dd993.firebaseapp.com/__/auth/action',
+        handleCodeInApp: true,
+        androidPackageName: 'com.example.fittrack_plus',
+        androidInstallApp: true,
+        androidMinimumVersion: '21',
+        // Don't use dynamic links for now - use default Firebase domain
+      );
+
+      await _auth.sendSignInLinkToEmail(
+        email: email,
+        actionCodeSettings: actionCodeSettings,
+      );
+
+      // Save email locally for sign-in completion
+      // In production, use secure storage
+      debugPrint('📧 Sign-in link sent to: $email');
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw Exception('Failed to send sign-in link: $e');
+    }
+  }
+
+  // Email Link Authentication - Verify and sign in with link
+  Future<UserCredential> signInWithEmailLink({
+    required String email,
+    required String emailLink,
+    String? name,
+  }) async {
+    try {
+      // Verify the link is valid
+      if (!_auth.isSignInWithEmailLink(emailLink)) {
+        throw Exception('Invalid sign-in link');
+      }
+
+      // Sign in with the link
+      final userCredential = await _auth.signInWithEmailLink(
+        email: email,
+        emailLink: emailLink,
+      );
+
+      // Create user profile if new user
+      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        final profile = UserProfile(
+          uid: userCredential.user!.uid,
+          name: name ?? 'User',
+          email: email,
+          createdAt: DateTime.now(),
+        );
+        await _userService.createUserProfile(profile);
+      }
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw Exception('Failed to sign in with email link: $e');
+    }
+  }
+
+  // Email Link Authentication - Check if current link is sign-in link
+  bool isSignInWithEmailLink(String link) {
+    return _auth.isSignInWithEmailLink(link);
   }
 
   // Email OTP - Sign up with email OTP verification
@@ -449,7 +539,7 @@ class AuthService extends GetxService {
         return 'Too many attempts. Please try again later';
       case 'network-request-failed':
         return 'Network error. Please check your connection';
-      
+
       // Phone Authentication specific errors
       case 'invalid-phone-number':
         return 'Invalid phone number format. Use international format (+880...)';
@@ -469,7 +559,7 @@ class AuthService extends GetxService {
         return 'App not authorized. Please check Firebase configuration';
       case 'captcha-check-failed':
         return 'reCAPTCHA verification failed. Please try again';
-      
+
       default:
         // Check for billing error in message
         if (e.message?.contains('BILLING_NOT_ENABLED') == true) {

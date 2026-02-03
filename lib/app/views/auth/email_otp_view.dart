@@ -55,7 +55,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
               // Description
               Obx(
                 () => Text(
-                  'We sent a 6-digit OTP to\n${controller.email}',
+                  'We sent a 6-digit OTP to\n${controller.email.value}',
                   textAlign: TextAlign.center,
                   style: Theme.of(
                     context,

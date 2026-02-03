@@ -14,9 +14,9 @@ class EmailOTPController extends GetxController {
   final List<FocusNode> otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   // Signup data
-  String email = '';
-  String password = '';
-  String name = '';
+  final email = ''.obs;
+  final password = ''.obs;
+  final name = ''.obs;
 
   // State
   final isLoading = false.obs;
@@ -32,9 +32,9 @@ class EmailOTPController extends GetxController {
     // Get signup data from arguments
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null) {
-      email = args['email'] ?? '';
-      password = args['password'] ?? '';
-      name = args['name'] ?? '';
+      email.value = args['email'] ?? '';
+      password.value = args['password'] ?? '';
+      name.value = args['name'] ?? '';
     }
     startTimer();
   }
@@ -108,14 +108,17 @@ class EmailOTPController extends GetxController {
       isLoading.value = true;
 
       // Verify OTP
-      final isValid = await _authService.verifyEmailOTP(email: email, otp: otp);
+      final isValid = await _authService.verifyEmailOTP(
+        email: email.value,
+        otp: otp,
+      );
 
       if (isValid) {
         // Complete signup
         await _authService.completeEmailSignup(
-          email: email,
-          password: password,
-          name: name,
+          email: email.value,
+          password: password.value,
+          name: name.value,
         );
 
         Get.snackbar(
@@ -150,7 +153,7 @@ class EmailOTPController extends GetxController {
     try {
       isResending.value = true;
 
-      await _authService.sendEmailOTP(email);
+      await _authService.sendEmailOTP(email.value);
 
       Get.snackbar(
         'OTP Resent',

@@ -194,12 +194,17 @@ class SignupView extends GetView<AuthController> {
                       'Already have an account? ',
                       style: TextStyle(color: Colors.grey[600]),
                     ),
-                    GestureDetector(
-                      onTap: () {
+                    TextButton(
+                      onPressed: () {
                         // Clear form before going back
                         controller.clearForm();
                         Get.back();
                       },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       child: Text(
                         'Login',
                         style: TextStyle(
