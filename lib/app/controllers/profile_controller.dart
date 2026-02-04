@@ -51,17 +51,50 @@ class ProfileController extends GetxController {
       isLoading.value = true;
 
       final userId = _authService.currentUserId;
+      debugPrint('🔍 Loading profile for user ID: $userId');
+      
       if (userId == null) {
+        debugPrint('❌ No user ID found - user not logged in');
         Get.snackbar('Error', 'User not logged in');
         return;
       }
 
-      final profile = await _userService.getUserProfile(userId);
-      if (profile != null) {
-        userProfile.value = profile;
-        _populateFields(profile);
+      var profile = await _userService.getUserProfile(userId);
+      debugPrint('📦 Profile loaded from Firestore: ${profile?.toMap()}');
+      
+      if (profile == null) {
+        debugPrint('⚠️ No profile found - creating default profile');
+        
+        // Get current user info from Firebase Auth
+        final currentUser = _authService.currentUser;
+        final name = currentUser?.displayName ?? 
+                     currentUser?.phoneNumber ?? 
+                     'User';
+        final email = currentUser?.email ?? 
+                      currentUser?.phoneNumber ?? 
+                      '';
+        
+        // Create default profile
+        profile = UserProfile(
+          uid: userId,
+          name: name,
+          email: email,
+          createdAt: DateTime.now(),
+          dailyStepGoal: 10000,
+          notificationsEnabled: true,
+          darkModeEnabled: false,
+        );
+        
+        // Save to Firestore
+        await _userService.createUserProfile(profile);
+        debugPrint('✅ Default profile created successfully');
       }
+      
+      userProfile.value = profile;
+      _populateFields(profile);
+      debugPrint('✅ Profile populated successfully');
     } catch (e) {
+      debugPrint('❌ Error loading profile: $e');
       Get.snackbar('Error', 'Failed to load profile: $e');
     } finally {
       isLoading.value = false;
@@ -111,11 +144,30 @@ class ProfileController extends GetxController {
       isLoading.value = true;
 
       final userId = _authService.currentUserId;
-      if (userId == null) return;
+      if (userId == null) {
+        debugPrint('❌ No user ID - cannot save');
+        Get.snackbar(
+          'Error', 
+          'User not logged in',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        isLoading.value = false;
+        return;
+      }
 
       // Validate inputs
       if (nameController.text.trim().isEmpty) {
-        Get.snackbar('Error', 'Name cannot be empty');
+        debugPrint('❌ Name is empty - cannot save');
+        Get.snackbar(
+          'Error', 
+          'Name cannot be empty',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        isLoading.value = false;
         return;
       }
 
@@ -155,7 +207,14 @@ class ProfileController extends GetxController {
         colorText: Colors.white,
       );
     } catch (e) {
-      Get.snackbar('Error', 'Failed to save profile: $e');
+      debugPrint('❌ Error saving profile: $e');
+      Get.snackbar(
+        'Error', 
+        'Failed to save profile: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }

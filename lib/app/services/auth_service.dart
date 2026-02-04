@@ -8,11 +8,13 @@ import 'package:get/get.dart';
 import '../models/user_profile.dart';
 import '../models/email_otp.dart';
 import 'user_service.dart';
+import 'email_service.dart';
 
 class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final EmailService _emailService = EmailService();
   final UserService _userService = Get.find<UserService>();
 
   // Get current user
@@ -94,13 +96,71 @@ class AuthService extends GetxService {
     }
   }
 
-  // Reset password
+  // Reset password (old email link method)
   Future<void> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     } catch (e) {
+      throw Exception('Failed to reset password: $e');
+    }
+  }
+
+  // Forgot Password - Send OTP for password reset
+  Future<String> sendForgotPasswordOTP(String email) async {
+    try {
+      debugPrint('🔐 Starting forgot password for: $email');
+      
+      // Validate email format
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(email)) {
+        debugPrint('❌ Invalid email format');
+        throw Exception('Please enter a valid email address');
+      }
+
+      // Send OTP directly without checking account existence
+      // The password reset will fail later if account doesn't exist
+      debugPrint('📧 Sending forgot password OTP...');
+      final otp = await sendEmailOTP(email, userName: 'User');
+      
+      debugPrint('✅ Forgot password OTP sent successfully: $otp');
+      
+      return otp;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('❌ Firebase error: ${e.code} - ${e.message}');
+      throw _handleAuthException(e);
+    } catch (e) {
+      debugPrint('❌ Error in sendForgotPasswordOTP: $e');
+      rethrow;
+    }
+  }
+
+  // Forgot Password - Reset password after OTP verification
+  Future<void> resetPasswordWithOTP({
+    required String email,
+    required String newPassword,
+  }) async {
+    try {
+      debugPrint('🔐 Resetting password for: $email');
+      
+      // Send password reset email
+      // Firebase doesn't allow direct password update without current authentication
+      // So we send a password reset link after OTP verification
+      debugPrint('📧 Sending password reset email...');
+      await _auth.sendPasswordResetEmail(email: email);
+      
+      debugPrint('✅ Password reset email sent');
+
+      // Delete OTP record
+      debugPrint('🗑️ Deleting OTP record...');
+      await _firestore.collection('email_otps').doc(email).delete();
+      debugPrint('✅ OTP record deleted');
+    } on FirebaseAuthException catch (e) {
+      debugPrint('❌ Firebase error in resetPasswordWithOTP: ${e.code} - ${e.message}');
+      throw _handleAuthException(e);
+    } catch (e) {
+      debugPrint('❌ Error in resetPasswordWithOTP: $e');
       throw Exception('Failed to reset password: $e');
     }
   }
@@ -281,10 +341,12 @@ class AuthService extends GetxService {
 
       // Create user profile if new user
       if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        // Use phone number as email fallback for phone auth users
+        final phoneNumber = userCredential.user!.phoneNumber ?? '';
         final profile = UserProfile(
           uid: userCredential.user!.uid,
           name: name ?? 'User',
-          email: userCredential.user!.email ?? '',
+          email: userCredential.user!.email ?? phoneNumber,
           createdAt: DateTime.now(),
         );
         await _userService.createUserProfile(profile);
@@ -299,7 +361,7 @@ class AuthService extends GetxService {
   }
 
   // Email OTP - Generate and send OTP
-  Future<void> sendEmailOTP(String email) async {
+  Future<String> sendEmailOTP(String email, {String? userName}) async {
     try {
       // Generate 6-digit OTP
       final random = Random();
@@ -319,33 +381,30 @@ class AuthService extends GetxService {
           .doc(email)
           .set(emailOTP.toMap());
 
-      // Note: Email sending requires Cloud Functions or third-party service setup
-      // For development, OTP is logged to console
-      debugPrint('📧 Email OTP for $email: $otp');
+      debugPrint('📧 Sending OTP email to $email: $otp');
       debugPrint('⏰ Expires at: ${emailOTP.expiresAt}');
-      debugPrint('🔔 Development Mode: OTP will be shown in a notification');
 
-      // Show OTP in development mode
-      if (kDebugMode) {
-        // Import Get for showing snackbar
-        Get.snackbar(
-          'Development Mode',
-          'OTP: $otp\n(Check console for details)',
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 10),
-          snackPosition: SnackPosition.TOP,
-        );
+      // Send email via Resend API
+      final emailSent = await _emailService.sendOTPEmail(
+        recipientEmail: email,
+        otp: otp,
+        recipientName: userName ?? 'User',
+      );
+
+      if (emailSent) {
+        debugPrint('✅ Email sent successfully');
+      } else {
+        debugPrint('⚠️ Email service not configured - showing OTP in development mode');
       }
-
-      // In production, you would call a Cloud Function like:
-      // await FirebaseFunctions.instance
-      //     .httpsCallable('sendEmailOTP')
-      //     .call({'email': email, 'otp': otp});
+      
+      return otp;
     } catch (e) {
+      debugPrint('❌ Error in sendEmailOTP: $e');
       throw Exception('Failed to send OTP: $e');
     }
   }
+
+  // Email OTP - Verify OTP
 
   // Email OTP - Verify OTP
   Future<bool> verifyEmailOTP({
@@ -459,20 +518,27 @@ class AuthService extends GetxService {
   }
 
   // Email OTP - Sign up with email OTP verification
-  Future<void> signUpWithEmailOTP({
+  // Email OTP - Initiate signup with email OTP verification
+  Future<String> signUpWithEmailOTP({
     required String email,
     required String password,
     required String name,
   }) async {
     try {
+      // Validate email format
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(email)) {
+        throw Exception('Please enter a valid email address');
+      }
+
       // Check if email already exists
       final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
       if (signInMethods.isNotEmpty) {
         throw Exception('This email is already registered');
       }
 
-      // Send OTP
-      await sendEmailOTP(email);
+      // Send OTP and return it
+      return await sendEmailOTP(email, userName: name);
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     } catch (e) {

@@ -179,18 +179,6 @@ class LoginView extends GetView<AuthController> {
                   icon: Icons.phone,
                 ),
 
-                const SizedBox(height: 16),
-
-                // Email OTP Login Button
-                CustomButton(
-                  text: 'Sign in with Email OTP',
-                  onPressed: () => Get.toNamed('/email-otp'),
-                  backgroundColor: Colors.white,
-                  textColor: Colors.black87,
-                  outlined: true,
-                  icon: Icons.email,
-                ),
-
                 const SizedBox(height: 30),
 
                 // Sign Up Link
@@ -203,8 +191,6 @@ class LoginView extends GetView<AuthController> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        // Clear form before navigating
-                        controller.clearForm();
                         Get.toNamed('/signup');
                       },
                       child: Text(
@@ -240,7 +226,7 @@ class LoginView extends GetView<AuthController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Enter your email address and we\'ll send you a link to reset your password.',
+                'Enter your email address and we\'ll send you an OTP to reset your password.',
               ),
               const SizedBox(height: 16),
               CustomTextField(
@@ -254,7 +240,12 @@ class LoginView extends GetView<AuthController> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('Cancel'),
+          ),
           Obx(
             () => TextButton(
               onPressed: controller.isLoading.value
@@ -275,6 +266,9 @@ class LoginView extends GetView<AuthController> {
           ),
         ],
       ),
-    );
+    ).then((_) {
+      // Dispose controller only after dialog is completely closed
+      emailController.dispose();
+    });
   }
 }

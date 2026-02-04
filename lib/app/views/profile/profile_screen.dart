@@ -275,7 +275,9 @@ class ProfileScreen extends StatelessWidget {
               backgroundImage: imageProvider,
               child: imageProvider == null
                   ? Text(
-                      profile.name[0].toUpperCase(),
+                      profile.name.isNotEmpty 
+                          ? profile.name[0].toUpperCase()
+                          : '?',
                       style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,

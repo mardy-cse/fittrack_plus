@@ -16,7 +16,14 @@ class PhoneAuthView extends GetView<PhoneAuthController> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            // Use Navigator.pop to avoid GetX snackbar controller issue
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Get.offAllNamed('/login');
+            }
+          },
         ),
         title: const Text('Phone Verification'),
         actions: [

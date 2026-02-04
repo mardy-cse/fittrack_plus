@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../services/auth_service.dart';
@@ -106,6 +107,8 @@ class EmailOTPController extends GetxController {
 
     try {
       isLoading.value = true;
+      
+      debugPrint('🔍 Verifying OTP: $otp for email: ${email.value}');
 
       // Verify OTP
       final isValid = await _authService.verifyEmailOTP(
@@ -113,13 +116,19 @@ class EmailOTPController extends GetxController {
         otp: otp,
       );
 
+      debugPrint('✅ OTP Valid: $isValid');
+
       if (isValid) {
+        debugPrint('📝 Creating account...');
+        
         // Complete signup
         await _authService.completeEmailSignup(
           email: email.value,
           password: password.value,
           name: name.value,
         );
+
+        debugPrint('🎉 Account created successfully!');
 
         Get.snackbar(
           'Success! 🎉',
@@ -130,9 +139,20 @@ class EmailOTPController extends GetxController {
         );
 
         // Navigate to home
+        debugPrint('🏠 Navigating to home...');
         Get.offAllNamed('/home');
+      } else {
+        debugPrint('❌ Invalid OTP');
+        Get.snackbar(
+          'Invalid OTP',
+          'The OTP you entered is incorrect',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[900],
+        );
       }
     } catch (e) {
+      debugPrint('❌ Error during verification: $e');
       Get.snackbar(
         'Verification Failed',
         e.toString().replaceAll('Exception: ', ''),
@@ -153,14 +173,15 @@ class EmailOTPController extends GetxController {
     try {
       isResending.value = true;
 
-      await _authService.sendEmailOTP(email.value);
+      final otp = await _authService.sendEmailOTP(email.value);
 
       Get.snackbar(
         'OTP Resent',
-        'A new OTP has been sent to your email',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green[100],
-        colorText: Colors.green[900],
+        'Development Mode - Your OTP: $otp',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 15),
       );
 
       // Clear OTP fields

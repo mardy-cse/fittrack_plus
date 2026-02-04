@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../services/auth_service.dart';
@@ -7,10 +8,10 @@ class AuthController extends GetxController {
   final AuthService _authService = Get.find<AuthService>();
 
   // Form controllers
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final nameController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController nameController;
+  late TextEditingController confirmPasswordController;
 
   // Observable variables
   final RxBool isLoading = false.obs;
@@ -21,6 +22,12 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Initialize controllers
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    nameController = TextEditingController();
+    confirmPasswordController = TextEditingController();
+    
     // Reset state on controller init
     isLoading.value = false;
     isPasswordVisible.value = false;
@@ -56,6 +63,9 @@ class AuthController extends GetxController {
         password: passwordController.text,
       );
 
+      // Clear form after successful login
+      clearForm();
+
       Get.snackbar(
         'Success',
         'Login successful!',
@@ -65,8 +75,11 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      // Navigate to home
+      // Navigate to home and dispose auth controller
       Get.offAllNamed('/home');
+      
+      // Dispose the controller after navigation
+      Get.delete<AuthController>(force: true);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -92,8 +105,8 @@ class AuthController extends GetxController {
       final password = passwordController.text;
       final name = nameController.text.trim();
 
-      // Send OTP to email
-      await _authService.signUpWithEmailOTP(
+      // Send OTP to email and get OTP for development mode
+      final otp = await _authService.signUpWithEmailOTP(
         email: email,
         password: password,
         name: name,
@@ -101,13 +114,14 @@ class AuthController extends GetxController {
 
       isLoading.value = false;
 
+      // Show OTP in development mode
       Get.snackbar(
         'OTP Sent! 📧',
-        'Check your email for verification code',
-        backgroundColor: Colors.green,
+        'Development Mode - Your OTP: $otp\n(Check console for details)',
+        backgroundColor: Colors.orange,
         colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2),
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 15),
       );
 
       // Navigate to email OTP screen
@@ -136,6 +150,9 @@ class AuthController extends GetxController {
 
       await _authService.signInWithGoogle();
 
+      // Clear form after successful login
+      clearForm();
+
       Get.snackbar(
         'Success',
         'Google Sign In successful!',
@@ -145,8 +162,11 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      // Navigate to home
+      // Navigate to home and dispose auth controller
       Get.offAllNamed('/home');
+      
+      // Dispose the controller after navigation
+      Get.delete<AuthController>(force: true);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -161,24 +181,48 @@ class AuthController extends GetxController {
     }
   }
 
-  // Forgot password
+  // Forgot password - Send OTP
   Future<void> forgotPassword(String email) async {
     try {
+      debugPrint('🔑 Forgot password initiated for: $email');
       isLoading.value = true;
 
-      await _authService.resetPassword(email);
+      // Send OTP for password reset
+      debugPrint('📤 Sending OTP...');
+      final otp = await _authService.sendForgotPasswordOTP(email);
+      debugPrint('✅ OTP received: $otp');
 
+      // Close dialog first
+      debugPrint('🚪 Closing dialog...');
+      Get.back();
+
+      // Wait a bit for dialog to close
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      isLoading.value = false;
+
+      // Show OTP in development mode
+      debugPrint('📱 Showing OTP snackbar...');
       Get.snackbar(
-        'Success',
-        'Password reset email sent! Check your inbox.',
-        backgroundColor: Colors.green,
+        'OTP Sent! 📧',
+        'Development Mode - Your OTP: $otp',
+        backgroundColor: Colors.orange,
         colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 3),
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 15),
       );
 
-      Get.back();
+      // Navigate to reset password OTP screen
+      debugPrint('🧭 Navigating to reset password screen...');
+      Get.toNamed(
+        '/reset-password-otp',
+        arguments: {'email': email},
+      );
+      debugPrint('✅ Navigation completed');
     } catch (e) {
+      debugPrint('❌ Error in forgotPassword: $e');
+      isLoading.value = false;
+      
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),
@@ -187,8 +231,6 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 3),
       );
-    } finally {
-      isLoading.value = false;
     }
   }
 

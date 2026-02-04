@@ -17,9 +17,10 @@ class SignupView extends GetView<AuthController> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Clear form before going back
-            controller.clearForm();
-            Get.back();
+            // Use Navigator.pop to avoid GetX snackbar controller issue
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
           },
         ),
         elevation: 0,
@@ -194,17 +195,12 @@ class SignupView extends GetView<AuthController> {
                       'Already have an account? ',
                       style: TextStyle(color: Colors.grey[600]),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        // Clear form before going back
-                        controller.clearForm();
-                        Get.back();
+                    GestureDetector(
+                      onTap: () {
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).pop();
+                        }
                       },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
                       child: Text(
                         'Login',
                         style: TextStyle(
