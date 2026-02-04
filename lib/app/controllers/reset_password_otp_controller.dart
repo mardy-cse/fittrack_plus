@@ -147,8 +147,10 @@ class ResetPasswordOTPController extends GetxController {
     debugPrint('🔐 Reset password called');
     debugPrint('✅ OTP Verified: ${otpVerified.value}');
     debugPrint('📝 New Password length: ${newPasswordController.text.length}');
-    debugPrint('📝 Confirm Password length: ${confirmPasswordController.text.length}');
-    
+    debugPrint(
+      '📝 Confirm Password length: ${confirmPasswordController.text.length}',
+    );
+
     if (!otpVerified.value) {
       debugPrint('❌ OTP not verified');
       Get.snackbar(
@@ -196,11 +198,11 @@ class ResetPasswordOTPController extends GetxController {
 
       // Stop loading before navigation
       isLoading.value = false;
-      
+
       // Clean up this controller completely
       debugPrint('🧹 Cleaning up reset password controller...');
       Get.delete<ResetPasswordOTPController>(force: true);
-      
+
       // Navigate to login - use regular offAllNamed without animations for clean transition
       debugPrint('🧭 Navigating to login...');
       await Get.offAllNamed('/login');
@@ -214,7 +216,6 @@ class ResetPasswordOTPController extends GetxController {
         colorText: Colors.white,
         duration: const Duration(seconds: 5),
       );
-      
     } catch (e) {
       debugPrint('❌ Error resetting password: $e');
       isLoading.value = false;

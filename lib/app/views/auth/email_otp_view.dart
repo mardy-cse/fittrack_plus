@@ -28,7 +28,13 @@ class EmailOTPView extends GetView<EmailOTPController> {
               size: 18,
             ),
           ),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            } else {
+              Get.offAllNamed('/login');
+            }
+          },
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -119,11 +125,14 @@ class EmailOTPView extends GetView<EmailOTPController> {
                 const SizedBox(height: 50),
 
                 // OTP Input Fields
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(
-                    6,
-                    (index) => _buildOTPField(context, index),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      6,
+                      (index) => _buildOTPField(context, index),
+                    ),
                   ),
                 ),
 

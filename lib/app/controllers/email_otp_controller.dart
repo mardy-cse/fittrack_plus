@@ -130,17 +130,21 @@ class EmailOTPController extends GetxController {
 
         debugPrint('🎉 Account created successfully!');
 
-        Get.snackbar(
-          'Success! 🎉',
-          'Account created successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green[100],
-          colorText: Colors.green[900],
-        );
-
         // Navigate to home
         debugPrint('🏠 Navigating to home...');
         Get.offAllNamed('/home');
+
+        // Show success message after navigation
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Get.snackbar(
+            'Success! 🎉',
+            'Account created successfully',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+        });
       } else {
         debugPrint('❌ Invalid OTP');
         Get.snackbar(

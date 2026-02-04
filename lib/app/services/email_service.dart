@@ -32,10 +32,13 @@ class EmailService {
   }) async {
     try {
       // Check if API key is configured
-      if (_apiKey == 're_Y4tchBmF_3BDX1yeB3NB11Qv7QDWK2wHM') {
+      if (_apiKey.isEmpty || _apiKey == 'YOUR_RESEND_API_KEY') {
         debugPrint('⚠️ Resend API key not configured!');
-        debugPrint('📧 Would send OTP: $otp to $recipientEmail');
-        return false;
+        debugPrint('📧 Development Mode - OTP: $otp for $recipientEmail');
+        debugPrint('ℹ️ To enable email sending:');
+        debugPrint('   1. Get API key from https://resend.com');
+        debugPrint('   2. Replace _apiKey in email_service.dart');
+        return true; // Return true in development mode
       }
 
       // Prepare email content
