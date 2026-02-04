@@ -547,9 +547,20 @@ class AuthService extends GetxService {
         throw Exception('Please enter a valid email address');
       }
 
-      // Check if email already exists
+      // Check if email already exists in Firebase Auth
       final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
       if (signInMethods.isNotEmpty) {
+        throw Exception('This email is already registered. Please login instead.');
+      }
+
+      // Check if email already exists in Firestore
+      final existingUsers = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (existingUsers.docs.isNotEmpty) {
         throw Exception('This email is already registered. Please login instead.');
       }
 
