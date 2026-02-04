@@ -213,23 +213,44 @@ class ProfileSetupController extends GetxController {
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xFF1A1F3A),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: Colors.white.withOpacity(0.2),
+          ),
+        ),
         title: const Text(
           'Skip Profile Setup?',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         content: const Text(
           'You can complete your profile later from the settings page. However, some features may be limited without complete profile information.',
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(
+            color: Colors.white70,
+            fontSize: 15,
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Get.back(),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white70,
+            ),
+            child: const Text('Cancel'),
+          ),
           TextButton(
             onPressed: () {
               Get.back();
               Get.offAllNamed('/home');
             },
-            child: const Text('Skip', style: TextStyle(color: Colors.red)),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text('Skip'),
           ),
         ],
       ),

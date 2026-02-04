@@ -86,17 +86,40 @@ class AuthController extends GetxController {
       Get.dialog(
         Builder(
           builder: (context) => AlertDialog(
+            backgroundColor: const Color(0xFF1A1F3A),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Colors.white.withOpacity(0.2),
+              ),
+            ),
             title: const Row(
               children: [
                 Icon(Icons.error_outline, color: Colors.red),
                 SizedBox(width: 8),
-                Text('Login Failed'),
+                Text(
+                  'Login Failed',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
-            content: Text(errorMessage),
+            content: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 15,
+              ),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF4A90E2),
+                ),
                 child: const Text('OK'),
               ),
             ],
@@ -162,17 +185,40 @@ class AuthController extends GetxController {
       Get.dialog(
         Builder(
           builder: (context) => AlertDialog(
+            backgroundColor: const Color(0xFF1A1F3A),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(
+                color: Colors.white.withOpacity(0.2),
+              ),
+            ),
             title: const Row(
               children: [
                 Icon(Icons.error_outline, color: Colors.red),
                 SizedBox(width: 8),
-                Text('Sign Up Failed'),
+                Text(
+                  'Sign Up Failed',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
-            content: Text(errorMessage),
+            content: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 15,
+              ),
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF4A90E2),
+                ),
                 child: const Text('OK'),
               ),
             ],

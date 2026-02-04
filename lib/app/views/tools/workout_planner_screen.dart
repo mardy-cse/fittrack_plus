@@ -298,6 +298,13 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                             barrierDismissible: true,
                             builder: (BuildContext dialogContext) {
                               return AlertDialog(
+                                backgroundColor: const Color(0xFF1A1F3A),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  side: BorderSide(
+                                    color: Colors.white.withOpacity(0.2),
+                                  ),
+                                ),
                                 title: Row(
                                   children: [
                                     const Icon(
@@ -305,7 +312,14 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                       color: Color(0xFF4A90E2),
                                     ),
                                     const SizedBox(width: 12),
-                                    Text('Plan for $day'),
+                                    Text(
+                                      'Plan for $day',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 content: Column(
@@ -314,34 +328,53 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                     TextField(
                                       controller: controller,
                                       autofocus: true,
-                                      decoration: const InputDecoration(
+                                      style: const TextStyle(color: Colors.white),
+                                      decoration: InputDecoration(
                                         labelText: 'Workout Type',
+                                        labelStyle: TextStyle(
+                                          color: Colors.white.withOpacity(0.7),
+                                        ),
                                         hintText:
                                             'e.g., Upper Body, Cardio, Legs',
-                                        border: OutlineInputBorder(),
-                                        prefixIcon: Icon(Icons.edit),
+                                        hintStyle: TextStyle(
+                                          color: Colors.white.withOpacity(0.5),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: Colors.white.withOpacity(0.3),
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: Colors.white.withOpacity(0.3),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: const BorderSide(
+                                            color: Color(0xFF4A90E2),
+                                          ),
+                                        ),
+                                        prefixIcon: Icon(
+                                          Icons.edit,
+                                          color: Colors.white.withOpacity(0.7),
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(height: 16),
                                     Container(
                                       padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
-                                        color:
-                                            Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.grey[800]
-                                            : Colors.grey[200],
+                                        color: Colors.white.withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: Text(
+                                      child: const Text(
                                         'Quick suggestions: Upper Body, Lower Body, Full Body, Cardio, HIIT, Yoga, Rest',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color:
-                                              Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.grey[300]
-                                              : Colors.grey[700],
+                                          color: Colors.white70,
                                         ),
                                       ),
                                     ),
@@ -362,19 +395,19 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                           );
                                         });
                                       },
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.red,
                                       ),
-                                      label: const Text(
-                                        'Remove',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
+                                      icon: const Icon(Icons.delete),
+                                      label: const Text('Remove'),
                                     ),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(dialogContext).pop();
                                     },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white70,
+                                    ),
                                     child: const Text('Cancel'),
                                   ),
                                   ElevatedButton.icon(

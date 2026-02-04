@@ -723,11 +723,34 @@ class ProfileScreen extends StatelessWidget {
         onPressed: () {
           Get.dialog(
             AlertDialog(
-              title: const Text('Logout'),
-              content: const Text('Are you sure you want to logout?'),
+              backgroundColor: const Color(0xFF1A1F3A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(
+                  color: Colors.white.withOpacity(0.2),
+                ),
+              ),
+              title: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              content: const Text(
+                'Are you sure you want to logout?',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                ),
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Get.back(),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white70,
+                  ),
                   child: const Text('Cancel'),
                 ),
                 TextButton(
@@ -735,10 +758,10 @@ class ProfileScreen extends StatelessWidget {
                     Get.back();
                     controller.logout();
                   },
-                  child: const Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.red),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.red,
                   ),
+                  child: const Text('Logout'),
                 ),
               ],
             ),
