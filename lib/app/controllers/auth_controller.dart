@@ -78,9 +78,34 @@ class AuthController extends GetxController {
       // Navigate to home
       Get.offAllNamed('/home');
     } catch (e) {
+      final errorMessage = e.toString().replaceAll('Exception: ', '');
+      
+      // Show dialog for better visibility
+      Get.dialog(
+        Builder(
+          builder: (context) => AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.red),
+                SizedBox(width: 8),
+                Text('Login Failed'),
+              ],
+            ),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ),
+        barrierDismissible: false,
+      );
+      
       Get.snackbar(
         'Error',
-        e.toString().replaceAll('Exception: ', ''),
+        errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,

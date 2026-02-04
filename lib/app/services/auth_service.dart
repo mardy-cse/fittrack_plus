@@ -144,9 +144,21 @@ class AuthService extends GetxService {
     try {
       debugPrint('🔐 Resetting password for: $email');
 
-      // Send password reset email
-      // Firebase doesn't allow direct password update without current authentication
-      // So we send a password reset link after OTP verification
+      // Check if user exists and their sign-in methods
+      final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
+      debugPrint('📋 Existing sign-in methods: $signInMethods');
+
+      // If user only has Google sign-in, they need to link email/password
+      if (signInMethods.contains('google.com') && 
+          !signInMethods.contains('password')) {
+        debugPrint('⚠️  User only has Google sign-in, cannot set password directly');
+        throw Exception(
+          'This account was created with Google. Please sign in with Google instead, '
+          'or contact support to add password authentication.',
+        );
+      }
+
+      // Send password reset email for email/password users
       debugPrint('📧 Sending password reset email...');
       await _auth.sendPasswordResetEmail(email: email);
 
@@ -163,7 +175,7 @@ class AuthService extends GetxService {
       throw _handleAuthException(e);
     } catch (e) {
       debugPrint('❌ Error in resetPasswordWithOTP: $e');
-      throw Exception('Failed to reset password: $e');
+      rethrow;
     }
   }
 
