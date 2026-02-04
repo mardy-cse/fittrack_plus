@@ -34,26 +34,45 @@ class BMIScreen extends StatelessWidget {
             icon: const Icon(Icons.delete_outline),
             onPressed: () {
               Get.dialog(
-                AlertDialog(
-                  title: const Text('Clear History?'),
-                  content: const Text('This will delete all BMI records.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      child: const Text('Cancel'),
+                Builder(
+                  builder: (context) => AlertDialog(
+                    backgroundColor: const Color(0xFF1A1F3A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(color: Colors.white.withOpacity(0.2)),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        controller.clearHistory();
-                        Get.back();
-                      },
-                      child: const Text(
-                        'Clear',
-                        style: TextStyle(color: Colors.red),
+                    title: const Text(
+                      'Clear History?',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    content: const Text(
+                      'This will delete all BMI records.',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white70,
+                        ),
+                        child: const Text('Cancel'),
                       ),
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          controller.clearHistory();
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.red,
+                        ),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  ),
                 ),
+                barrierDismissible: true,
               );
             },
           ),
