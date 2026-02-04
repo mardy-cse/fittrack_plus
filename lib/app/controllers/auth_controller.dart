@@ -129,13 +129,37 @@ class AuthController extends GetxController {
     } catch (e) {
       isLoading.value = false;
 
+      final errorMessage = e.toString().replaceAll('Exception: ', '');
+      
+      // Show dialog for better visibility
+      Get.dialog(
+        AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.error_outline, color: Colors.red),
+              SizedBox(width: 8),
+              Text('Sign Up Failed'),
+            ],
+          ),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
+      
+      // Also show snackbar as backup
       Get.snackbar(
         'Error',
-        e.toString().replaceAll('Exception: ', ''),
+        errorMessage,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
       );
     }
   }

@@ -302,7 +302,9 @@ class AuthService extends GetxService {
       try {
         final methods = await _auth.fetchSignInMethodsForEmail(phoneNumber);
         if (methods.isNotEmpty) {
-          verificationFailed('This phone number is already registered. Please login instead.');
+          verificationFailed(
+            'This phone number is already registered. Please login instead.',
+          );
           return;
         }
       } catch (e) {
@@ -550,7 +552,9 @@ class AuthService extends GetxService {
       // Check if email already exists in Firebase Auth
       final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
       if (signInMethods.isNotEmpty) {
-        throw Exception('This email is already registered. Please login instead.');
+        throw Exception(
+          'This email is already registered. Please login instead.',
+        );
       }
 
       // Check if email already exists in Firestore
@@ -561,7 +565,9 @@ class AuthService extends GetxService {
           .get();
 
       if (existingUsers.docs.isNotEmpty) {
-        throw Exception('This email is already registered. Please login instead.');
+        throw Exception(
+          'This email is already registered. Please login instead.',
+        );
       }
 
       // Send OTP and return it
