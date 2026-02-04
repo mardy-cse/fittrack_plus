@@ -170,11 +170,11 @@ class AuthController extends GetxController {
   Future<void> signInWithGoogle() async {
     try {
       isLoading.value = true;
+      
+      // Clear form first to avoid confusion
+      clearForm();
 
       await _authService.signInWithGoogle();
-
-      // Clear form after successful login
-      clearForm();
 
       Get.snackbar(
         'Success',

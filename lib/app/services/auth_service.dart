@@ -272,6 +272,16 @@ class AuthService extends GetxService {
           createdAt: DateTime.now(),
         );
         await _userService.createUserProfile(profile);
+      } else {
+        // Update existing profile with Google account info
+        final existingProfile = await _userService.getUserProfile(userCredential.user!.uid);
+        if (existingProfile != null) {
+          final updatedProfile = existingProfile.copyWith(
+            name: userCredential.user!.displayName ?? existingProfile.name,
+            photoUrl: userCredential.user!.photoURL ?? existingProfile.photoUrl,
+          );
+          await _userService.updateUserProfile(updatedProfile);
+        }
       }
 
       return userCredential;
