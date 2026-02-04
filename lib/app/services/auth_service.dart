@@ -298,6 +298,18 @@ class AuthService extends GetxService {
     try {
       debugPrint('🔐 Starting phone verification for: $phoneNumber');
 
+      // Check if phone number already exists
+      try {
+        final methods = await _auth.fetchSignInMethodsForEmail(phoneNumber);
+        if (methods.isNotEmpty) {
+          verificationFailed('This phone number is already registered. Please login instead.');
+          return;
+        }
+      } catch (e) {
+        // If email check fails, continue with phone verification
+        debugPrint('ℹ️ Could not check if phone exists, continuing...');
+      }
+
       await _auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 120), // Increased timeout
@@ -538,7 +550,7 @@ class AuthService extends GetxService {
       // Check if email already exists
       final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
       if (signInMethods.isNotEmpty) {
-        throw Exception('This email is already registered');
+        throw Exception('This email is already registered. Please login instead.');
       }
 
       // Send OTP and return it
@@ -592,7 +604,7 @@ class AuthService extends GetxService {
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'email-already-in-use':
-        return 'This email is already registered';
+        return 'This email is already registered. Please login instead.';
       case 'invalid-email':
         return 'Invalid email address';
       case 'operation-not-allowed':
