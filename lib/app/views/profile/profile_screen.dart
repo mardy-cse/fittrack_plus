@@ -65,7 +65,8 @@ class ProfileScreen extends StatelessWidget {
                             fit: BoxFit.cover,
                             errorWidget: (context, url, error) => Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).brightness ==
+                                color:
+                                    Theme.of(context).brightness ==
                                         Brightness.dark
                                     ? const Color(0xFF1C1C1E)
                                     : const Color(0xFF50C878),
@@ -275,7 +276,7 @@ class ProfileScreen extends StatelessWidget {
               backgroundImage: imageProvider,
               child: imageProvider == null
                   ? Text(
-                      profile.name.isNotEmpty 
+                      profile.name.isNotEmpty
                           ? profile.name[0].toUpperCase()
                           : '?',
                       style: const TextStyle(

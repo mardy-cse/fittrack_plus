@@ -111,7 +111,7 @@ class AuthService extends GetxService {
   Future<String> sendForgotPasswordOTP(String email) async {
     try {
       debugPrint('🔐 Starting forgot password for: $email');
-      
+
       // Validate email format
       final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       if (!emailRegex.hasMatch(email)) {
@@ -123,9 +123,9 @@ class AuthService extends GetxService {
       // The password reset will fail later if account doesn't exist
       debugPrint('📧 Sending forgot password OTP...');
       final otp = await sendEmailOTP(email, userName: 'User');
-      
+
       debugPrint('✅ Forgot password OTP sent successfully: $otp');
-      
+
       return otp;
     } on FirebaseAuthException catch (e) {
       debugPrint('❌ Firebase error: ${e.code} - ${e.message}');
@@ -143,13 +143,13 @@ class AuthService extends GetxService {
   }) async {
     try {
       debugPrint('🔐 Resetting password for: $email');
-      
+
       // Send password reset email
       // Firebase doesn't allow direct password update without current authentication
       // So we send a password reset link after OTP verification
       debugPrint('📧 Sending password reset email...');
       await _auth.sendPasswordResetEmail(email: email);
-      
+
       debugPrint('✅ Password reset email sent');
 
       // Delete OTP record
@@ -157,7 +157,9 @@ class AuthService extends GetxService {
       await _firestore.collection('email_otps').doc(email).delete();
       debugPrint('✅ OTP record deleted');
     } on FirebaseAuthException catch (e) {
-      debugPrint('❌ Firebase error in resetPasswordWithOTP: ${e.code} - ${e.message}');
+      debugPrint(
+        '❌ Firebase error in resetPasswordWithOTP: ${e.code} - ${e.message}',
+      );
       throw _handleAuthException(e);
     } catch (e) {
       debugPrint('❌ Error in resetPasswordWithOTP: $e');
@@ -394,9 +396,11 @@ class AuthService extends GetxService {
       if (emailSent) {
         debugPrint('✅ Email sent successfully');
       } else {
-        debugPrint('⚠️ Email service not configured - showing OTP in development mode');
+        debugPrint(
+          '⚠️ Email service not configured - showing OTP in development mode',
+        );
       }
-      
+
       return otp;
     } catch (e) {
       debugPrint('❌ Error in sendEmailOTP: $e');

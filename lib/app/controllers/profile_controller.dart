@@ -52,7 +52,7 @@ class ProfileController extends GetxController {
 
       final userId = _authService.currentUserId;
       debugPrint('🔍 Loading profile for user ID: $userId');
-      
+
       if (userId == null) {
         debugPrint('❌ No user ID found - user not logged in');
         Get.snackbar('Error', 'User not logged in');
@@ -61,19 +61,16 @@ class ProfileController extends GetxController {
 
       var profile = await _userService.getUserProfile(userId);
       debugPrint('📦 Profile loaded from Firestore: ${profile?.toMap()}');
-      
+
       if (profile == null) {
         debugPrint('⚠️ No profile found - creating default profile');
-        
+
         // Get current user info from Firebase Auth
         final currentUser = _authService.currentUser;
-        final name = currentUser?.displayName ?? 
-                     currentUser?.phoneNumber ?? 
-                     'User';
-        final email = currentUser?.email ?? 
-                      currentUser?.phoneNumber ?? 
-                      '';
-        
+        final name =
+            currentUser?.displayName ?? currentUser?.phoneNumber ?? 'User';
+        final email = currentUser?.email ?? currentUser?.phoneNumber ?? '';
+
         // Create default profile
         profile = UserProfile(
           uid: userId,
@@ -84,12 +81,12 @@ class ProfileController extends GetxController {
           notificationsEnabled: true,
           darkModeEnabled: false,
         );
-        
+
         // Save to Firestore
         await _userService.createUserProfile(profile);
         debugPrint('✅ Default profile created successfully');
       }
-      
+
       userProfile.value = profile;
       _populateFields(profile);
       debugPrint('✅ Profile populated successfully');
@@ -147,7 +144,7 @@ class ProfileController extends GetxController {
       if (userId == null) {
         debugPrint('❌ No user ID - cannot save');
         Get.snackbar(
-          'Error', 
+          'Error',
           'User not logged in',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -161,7 +158,7 @@ class ProfileController extends GetxController {
       if (nameController.text.trim().isEmpty) {
         debugPrint('❌ Name is empty - cannot save');
         Get.snackbar(
-          'Error', 
+          'Error',
           'Name cannot be empty',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
@@ -209,7 +206,7 @@ class ProfileController extends GetxController {
     } catch (e) {
       debugPrint('❌ Error saving profile: $e');
       Get.snackbar(
-        'Error', 
+        'Error',
         'Failed to save profile: $e',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,

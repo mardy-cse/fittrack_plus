@@ -27,7 +27,7 @@ class AuthController extends GetxController {
     passwordController = TextEditingController();
     nameController = TextEditingController();
     confirmPasswordController = TextEditingController();
-    
+
     // Reset state on controller init
     isLoading.value = false;
     isPasswordVisible.value = false;
@@ -75,11 +75,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      // Navigate to home and dispose auth controller
+      // Navigate to home
       Get.offAllNamed('/home');
-      
-      // Dispose the controller after navigation
-      Get.delete<AuthController>(force: true);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -162,11 +159,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      // Navigate to home and dispose auth controller
+      // Navigate to home
       Get.offAllNamed('/home');
-      
-      // Dispose the controller after navigation
-      Get.delete<AuthController>(force: true);
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -214,15 +208,12 @@ class AuthController extends GetxController {
 
       // Navigate to reset password OTP screen
       debugPrint('🧭 Navigating to reset password screen...');
-      Get.toNamed(
-        '/reset-password-otp',
-        arguments: {'email': email},
-      );
+      Get.toNamed('/reset-password-otp', arguments: {'email': email});
       debugPrint('✅ Navigation completed');
     } catch (e) {
       debugPrint('❌ Error in forgotPassword: $e');
       isLoading.value = false;
-      
+
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),

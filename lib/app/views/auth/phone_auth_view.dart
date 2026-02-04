@@ -34,7 +34,7 @@ class PhoneAuthView extends GetView<PhoneAuthController> {
             onPressed: () async {
               await FirebaseDiagnostic.runDiagnostics();
               FirebaseDiagnostic.printSetupGuide();
-              
+
               Get.snackbar(
                 'Diagnostics Running',
                 'Check console/logcat for detailed information',
