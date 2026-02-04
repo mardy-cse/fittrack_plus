@@ -10,11 +10,13 @@ import 'app/views/auth/phone_auth_view.dart';
 import 'app/views/auth/email_link_auth_view.dart';
 import 'app/views/auth/email_otp_view.dart';
 import 'app/views/auth/reset_password_otp_view.dart';
+import 'app/views/auth/profile_setup_view.dart';
 import 'app/bindings/auth_binding.dart';
 import 'app/bindings/phone_auth_binding.dart';
 import 'app/bindings/email_link_auth_binding.dart';
 import 'app/bindings/email_otp_binding.dart';
 import 'app/bindings/reset_password_otp_binding.dart';
+import 'app/bindings/profile_setup_binding.dart';
 import 'app/bindings/home_binding.dart';
 import 'app/bindings/workout_detail_binding.dart';
 import 'app/bindings/start_workout_binding.dart';
@@ -127,6 +129,12 @@ class FitTrackApp extends StatelessWidget {
           page: () => const ResetPasswordOTPView(),
           binding: ResetPasswordOTPBinding(),
           transition: Transition.rightToLeft,
+        ),
+        GetPage(
+          name: '/profile-setup',
+          page: () => const ProfileSetupView(),
+          binding: ProfileSetupBinding(),
+          transition: Transition.fadeIn,
         ),
         GetPage(
           name: '/home',

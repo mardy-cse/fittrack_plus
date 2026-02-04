@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 
 class AuthController extends GetxController {
@@ -75,11 +77,11 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      // Navigate to home
-      Get.offAllNamed('/home');
+      // Check if profile is complete
+      await _checkProfileAndNavigate();
     } catch (e) {
       final errorMessage = e.toString().replaceAll('Exception: ', '');
-      
+
       // Show dialog for better visibility
       Get.dialog(
         Builder(
@@ -102,7 +104,7 @@ class AuthController extends GetxController {
         ),
         barrierDismissible: false,
       );
-      
+
       Get.snackbar(
         'Error',
         errorMessage,
@@ -155,7 +157,7 @@ class AuthController extends GetxController {
       isLoading.value = false;
 
       final errorMessage = e.toString().replaceAll('Exception: ', '');
-      
+
       // Show dialog for better visibility
       Get.dialog(
         Builder(
@@ -178,7 +180,7 @@ class AuthController extends GetxController {
         ),
         barrierDismissible: false,
       );
-      
+
       // Also show snackbar as backup
       Get.snackbar(
         'Error',
@@ -195,7 +197,7 @@ class AuthController extends GetxController {
   Future<void> signInWithGoogle() async {
     try {
       isLoading.value = true;
-      
+
       // Clear form first to avoid confusion
       clearForm();
 
@@ -210,8 +212,8 @@ class AuthController extends GetxController {
         duration: const Duration(seconds: 2),
       );
 
-      // Navigate to home
-      Get.offAllNamed('/home');
+      // Check if profile is complete
+      await _checkProfileAndNavigate();
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -223,6 +225,43 @@ class AuthController extends GetxController {
       );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  // Check if profile is complete and navigate accordingly
+  Future<void> _checkProfileAndNavigate() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (userDoc.exists) {
+        final data = userDoc.data();
+        final age = data?['age'];
+        final gender = data?['gender'];
+        final height = data?['height'];
+        final weight = data?['weight'];
+
+        // Check if all required fields are filled
+        if (age == null || gender == null || height == null || weight == null) {
+          // Navigate to profile setup
+          Get.offAllNamed('/profile-setup');
+        } else {
+          // Navigate to home
+          Get.offAllNamed('/home');
+        }
+      } else {
+        // Navigate to profile setup for new users
+        Get.offAllNamed('/profile-setup');
+      }
+    } catch (e) {
+      debugPrint('Error checking profile: $e');
+      // Default to home on error
+      Get.offAllNamed('/home');
     }
   }
 

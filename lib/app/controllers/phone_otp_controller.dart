@@ -4,9 +4,14 @@ import 'package:get/get.dart';
 
 class PhoneOTPController extends GetxController {
   // OTP Controllers
-  final List<TextEditingController> otpControllers =
-      List.generate(6, (index) => TextEditingController());
-  final List<FocusNode> otpFocusNodes = List.generate(6, (index) => FocusNode());
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (index) => TextEditingController(),
+  );
+  final List<FocusNode> otpFocusNodes = List.generate(
+    6,
+    (index) => FocusNode(),
+  );
 
   // Observable variables
   final phoneNumber = ''.obs;
@@ -22,12 +27,12 @@ class PhoneOTPController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
+
     // Get phone number from arguments
     if (Get.arguments != null && Get.arguments['phoneNumber'] != null) {
       phoneNumber.value = Get.arguments['phoneNumber'];
     }
-    
+
     // Start resend timer
     _startResendTimer();
   }
@@ -49,7 +54,7 @@ class PhoneOTPController extends GetxController {
   void _startResendTimer() {
     canResend.value = false;
     remainingTime.value = 60;
-    
+
     _resendTimer?.cancel();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime.value > 0) {
@@ -88,7 +93,7 @@ class PhoneOTPController extends GetxController {
   // Verify OTP
   Future<void> verifyOTP() async {
     final otp = getOTP();
-    
+
     if (otp.length != 6) {
       Get.snackbar(
         'Invalid OTP',
@@ -181,7 +186,7 @@ class PhoneOTPController extends GetxController {
   void onVerificationComplete() {
     // TODO: Navigate to appropriate screen or complete signup
     debugPrint('Phone verification complete!');
-    
+
     // Example: Navigate to home or complete registration
     Get.offAllNamed('/home');
   }
