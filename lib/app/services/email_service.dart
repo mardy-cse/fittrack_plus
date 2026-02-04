@@ -3,27 +3,27 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 
 /// Email service for sending OTP emails using Resend API
-/// 
+///
 /// Setup Instructions:
 /// 1. Go to https://resend.com and create a free account
 /// 2. Verify your domain or use their test domain (onboarding@resend.dev)
 /// 3. Get your API key from the dashboard
 /// 4. Add the API key to this file (replace 'YOUR_RESEND_API_KEY')
-/// 
+///
 /// Free tier: 100 emails/day, 3000/month
 class EmailService {
   // TODO: Replace with your Resend API key from https://resend.com
   // Get it from: Dashboard > API Keys > Create API Key
   static const String _apiKey = 're_Y4tchBmF_3BDX1yeB3NB11Qv7QDWK2wHM';
-  
+
   // Resend API endpoint
   static const String _baseUrl = 'https://api.resend.com/emails';
-  
+
   // Sender email (must be verified in Resend)
   // For testing, use: onboarding@resend.dev
   // For production, verify your own domain
   static const String _senderEmail = 'FitTrack+ <onboarding@resend.dev>';
-  
+
   /// Send OTP email to user
   Future<bool> sendOTPEmail({
     required String recipientEmail,
@@ -42,10 +42,7 @@ class EmailService {
       }
 
       // Prepare email content
-      final emailBody = _buildEmailHTML(
-        recipientName: recipientName,
-        otp: otp,
-      );
+      final emailBody = _buildEmailHTML(recipientName: recipientName, otp: otp);
 
       // Prepare request
       final response = await http.post(
@@ -78,10 +75,7 @@ class EmailService {
   }
 
   /// Build HTML email template
-  String _buildEmailHTML({
-    required String recipientName,
-    required String otp,
-  }) {
+  String _buildEmailHTML({required String recipientName, required String otp}) {
     return '''
 <!DOCTYPE html>
 <html>

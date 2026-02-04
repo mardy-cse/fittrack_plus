@@ -18,9 +18,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              border: Border.all(color: Colors.white.withOpacity(0.2)),
             ),
             child: const Icon(
               Icons.arrow_back_ios_new,
@@ -240,7 +238,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
       animation: controller.otpFocusNodes[index],
       builder: (context, child) {
         final isFocused = controller.otpFocusNodes[index].hasFocus;
-        
+
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           width: 50,
@@ -283,9 +281,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.zero,
               filled: false,
-              hintStyle: TextStyle(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
             ),
             onChanged: (value) {
               controller.onOTPChanged(index, value);
@@ -308,10 +304,7 @@ class EmailOTPView extends GetView<EmailOTPController> {
         gradient: const LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [
-            Color(0xFF667EEA),
-            Color(0xFF764BA2),
-          ],
+          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [

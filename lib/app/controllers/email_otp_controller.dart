@@ -107,7 +107,7 @@ class EmailOTPController extends GetxController {
 
     try {
       isLoading.value = true;
-      
+
       debugPrint('🔍 Verifying OTP: $otp for email: ${email.value}');
 
       // Verify OTP
@@ -120,7 +120,7 @@ class EmailOTPController extends GetxController {
 
       if (isValid) {
         debugPrint('📝 Creating account...');
-        
+
         // Complete signup
         await _authService.completeEmailSignup(
           email: email.value,
