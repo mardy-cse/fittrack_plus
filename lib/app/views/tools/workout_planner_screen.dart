@@ -90,6 +90,54 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
     await _saveWorkoutPlan();
   }
 
+  Future<void> _generateAIPlan() async {
+    try {
+      isLoading.value = true;
+
+      // Show loading message
+      Get.snackbar(
+        'AI Generating...',
+        'Creating personalized workout plan based on your profile',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: const Color(0xFF4A90E2),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+
+      // Generate AI plan
+      final aiPlan = await _service.generateAIWorkoutPlan();
+
+      if (aiPlan.isEmpty) {
+        throw Exception('Failed to generate plan');
+      }
+
+      workoutPlan.value = aiPlan;
+
+      // Save to database
+      await _saveWorkoutPlan();
+
+      Get.snackbar(
+        'AI Plan Generated! 🤖',
+        'Your personalized weekly workout plan is ready',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+    } catch (e) {
+      debugPrint('Error generating AI plan: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to generate AI plan. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +151,16 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
             : const Color(0xFFFF6B6B),
         foregroundColor: Colors.white,
         actions: [
-          IconButton(icon: const Icon(Icons.save), onPressed: _saveWorkoutPlan),
+          IconButton(
+            icon: const Icon(Icons.auto_awesome),
+            onPressed: _generateAIPlan,
+            tooltip: 'Generate AI Plan',
+          ),
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: _saveWorkoutPlan,
+            tooltip: 'Save Plan',
+          ),
         ],
       ),
       body: Column(
@@ -111,19 +168,67 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
-            color: const Color(0xFF4A90E2).withOpacity(0.1),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [const Color(0xFF4A90E2), const Color(0xFF357ABD)],
+              ),
+            ),
             child: Column(
               children: [
                 const Icon(Icons.calendar_month, size: 60, color: Colors.white),
                 const SizedBox(height: 16),
                 const Text(
                   'Plan Your Week',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'Tap any day to add or edit workout',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  style: TextStyle(fontSize: 14, color: Colors.white70),
+                ),
+                const SizedBox(height: 20),
+                // AI Generate Button
+                Obx(
+                  () => ElevatedButton.icon(
+                    onPressed: isLoading.value ? null : _generateAIPlan,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF4A90E2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 4,
+                    ),
+                    icon: isLoading.value
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFF4A90E2),
+                              ),
+                            ),
+                          )
+                        : const Icon(Icons.auto_awesome, size: 24),
+                    label: Text(
+                      isLoading.value ? 'Generating...' : 'Generate AI Plan',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
