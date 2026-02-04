@@ -133,21 +133,23 @@ class AuthController extends GetxController {
       
       // Show dialog for better visibility
       Get.dialog(
-        AlertDialog(
-          title: const Row(
-            children: [
-              Icon(Icons.error_outline, color: Colors.red),
-              SizedBox(width: 8),
-              Text('Sign Up Failed'),
+        Builder(
+          builder: (context) => AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.error_outline, color: Colors.red),
+                SizedBox(width: 8),
+                Text('Sign Up Failed'),
+              ],
+            ),
+            content: Text(errorMessage),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
             ],
           ),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: const Text('OK'),
-            ),
-          ],
         ),
         barrierDismissible: false,
       );
