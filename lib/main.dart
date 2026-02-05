@@ -30,6 +30,7 @@ import 'app/views/onboarding/onboarding_view.dart';
 import 'app/views/ai_chat/ai_chat_screen.dart';
 import 'app/views/tools/water_tracker_history_screen.dart';
 import 'app/views/help/help_support_screen.dart';
+import 'app/views/settings/settings_screen.dart';
 import 'app/bindings/onboarding_binding.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
@@ -183,6 +184,11 @@ class FitTrackApp extends StatelessWidget {
         GetPage(
           name: '/help-support',
           page: () => const HelpSupportScreen(),
+          transition: Transition.rightToLeft,
+        ),
+        GetPage(
+          name: '/settings',
+          page: () => const SettingsScreen(),
           transition: Transition.rightToLeft,
         ),
       ],

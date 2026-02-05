@@ -33,10 +33,12 @@ class ProfileScreen extends StatelessWidget {
               floating: false,
               pinned: true,
               centerTitle: true,
-              title: Obx(() => Text(
-                controller.isEditMode.value ? 'Edit Profile' : 'Profile',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              )),
+              title: Obx(
+                () => Text(
+                  controller.isEditMode.value ? 'Edit Profile' : 'Profile',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
               actions: [
                 if (!controller.isEditMode.value)
                   IconButton(

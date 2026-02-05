@@ -8,7 +8,7 @@ class HelpSupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -25,19 +25,19 @@ class HelpSupportScreen extends StatelessWidget {
           // Welcome Section
           _buildWelcomeSection(context),
           const SizedBox(height: 24),
-          
+
           // App Features Guide
           _buildAppFeaturesSection(context),
           const SizedBox(height: 32),
-          
+
           // FAQ Section
           _buildFAQSection(context),
           const SizedBox(height: 32),
-          
+
           // Contact Support
           _buildContactSection(context),
           const SizedBox(height: 32),
-          
+
           // App Information
           _buildAppInfoSection(context),
           const SizedBox(height: 20),
@@ -48,7 +48,7 @@ class HelpSupportScreen extends StatelessWidget {
 
   Widget _buildWelcomeSection(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -92,10 +92,7 @@ class HelpSupportScreen extends StatelessWidget {
                     SizedBox(height: 4),
                     Text(
                       'Your comprehensive fitness companion',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
                     ),
                   ],
                 ),
@@ -105,27 +102,20 @@ class HelpSupportScreen extends StatelessWidget {
           const SizedBox(height: 16),
           const Text(
             'This guide will help you master all features and get the most out of your fitness journey. From workout tracking to AI coaching, everything is explained here.',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              height: 1.5,
-            ),
+            style: TextStyle(color: Colors.white, fontSize: 14, height: 1.5),
           ),
         ],
       ),
     );
   }
 
-
-
-
-
   Widget _buildAppFeaturesSection(BuildContext context) {
     final features = [
       FeatureGuide(
         title: '🏠 Home Tab',
         subtitle: 'Your fitness dashboard',
-        description: '''
+        description:
+            '''
 **Main Features:**
 • Daily workout recommendations with AI suggestions
 • Quick access to different workout types
@@ -143,15 +133,17 @@ class HelpSupportScreen extends StatelessWidget {
 • Swipe down to refresh workout suggestions
 • Use the hamburger menu for quick access to AI Coach
 • Your current streak is displayed for motivation
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.home,
         color: const Color(0xFF4A90E2),
       ),
-      
+
       FeatureGuide(
         title: '👤 Profile Management',
         subtitle: 'Customize your fitness profile',
-        description: '''
+        description:
+            '''
 **Profile Features:**
 • Personal information (name, age, height, weight)
 • Fitness level selection
@@ -171,15 +163,17 @@ class HelpSupportScreen extends StatelessWidget {
 • Set accurate height/weight for calorie calculations
 • Choose appropriate fitness level for workout recommendations
 • Set achievable daily goals to build consistency
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.person,
         color: const Color(0xFF50C878),
       ),
-      
+
       FeatureGuide(
         title: '🏋️‍♂️ Workout System',
         subtitle: 'Complete exercise tracking',
-        description: '''
+        description:
+            '''
 **Workout Features:**
 • 25+ different workout types
 • Detailed exercise instructions and animations
@@ -200,15 +194,17 @@ class HelpSupportScreen extends StatelessWidget {
 • **Strength:** Push-ups, Squats, Planks, Sit-ups
 • **Flexibility:** Yoga poses, Stretching routines
 • **HIIT:** High-intensity interval training
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.fitness_center,
         color: Colors.orange,
       ),
-      
+
       FeatureGuide(
         title: '📈 Progress Tracking',
         subtitle: 'Monitor your fitness journey',
-        description: '''
+        description:
+            '''
 **Progress Analytics:**
 • Workout history with detailed stats
 • Streak tracking and achievements
@@ -236,15 +232,17 @@ class HelpSupportScreen extends StatelessWidget {
 🔥 Streak achievements (3, 7, 14, 30+ days)
 ⚡ Calorie burn targets
 🏆 Monthly challenges completion
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.trending_up,
         color: Colors.green,
       ),
-      
+
       FeatureGuide(
         title: '🛠️ Tools Section',
         subtitle: 'Additional fitness tools',
-        description: '''
+        description:
+            '''
 **Water Tracker:**
 • Daily hydration goal (8 glasses default)
 • Quick glass logging with timestamps
@@ -275,15 +273,17 @@ class HelpSupportScreen extends StatelessWidget {
 • Workout planner for custom routines
 • Nutrition calculator (coming soon)
 • Heart rate monitoring integration
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.build,
         color: Colors.purple,
       ),
-      
+
       FeatureGuide(
         title: '🤖 AI Fitness Coach',
         subtitle: 'Your personal trainer',
-        description: '''
+        description:
+            '''
 **FitBot Capabilities:**
 • Personalized workout recommendations
 • Real-time fitness advice and motivation
@@ -319,15 +319,17 @@ class HelpSupportScreen extends StatelessWidget {
 • Mention your current fitness level
 • Provide context about any limitations
 • Ask for step-by-step instructions when needed
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.smart_toy_rounded,
         color: Colors.indigo,
       ),
-      
+
       FeatureGuide(
         title: '🔔 Smart Notifications',
         subtitle: 'Stay motivated and consistent',
-        description: '''
+        description:
+            '''
 **Proactive AI Suggestions:**
 • Morning motivation messages
 • Optimal workout timing recommendations
@@ -354,7 +356,8 @@ class HelpSupportScreen extends StatelessWidget {
 3. Creates personalized motivational content
 4. Sends contextual suggestions
 5. Adapts based on your response patterns
-        '''.trim(),
+        '''
+                .trim(),
         icon: Icons.notifications_active,
         color: Colors.amber,
       ),
@@ -380,25 +383,15 @@ class HelpSupportScreen extends StatelessWidget {
             color: feature.color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            feature.icon,
-            color: feature.color,
-            size: 24,
-          ),
+          child: Icon(feature.icon, color: feature.color, size: 24),
         ),
         title: Text(
           feature.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         subtitle: Text(
           feature.subtitle,
-          style: const TextStyle(
-            color: Colors.grey,
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: Colors.grey, fontSize: 14),
         ),
         children: [
           Container(
@@ -457,10 +450,7 @@ class HelpSupportScreen extends StatelessWidget {
         }
         return Padding(
           padding: const EdgeInsets.only(bottom: 4),
-          child: Text(
-            line,
-            style: const TextStyle(fontSize: 14, height: 1.4),
-          ),
+          child: Text(line, style: const TextStyle(fontSize: 14, height: 1.4)),
         );
       }).toList(),
     );
@@ -468,22 +458,38 @@ class HelpSupportScreen extends StatelessWidget {
 
   Widget _buildFAQSection(BuildContext context) {
     final faqs = [
-      FAQ('How do I track my first workout?', 
-          'Go to Home tab → Choose any workout → Tap "Start Workout" → Follow the timer → Complete and save your session.'),
-      FAQ('Why is my AI coach not responding?',
-          'Check your internet connection and try again. FitBot requires internet to provide personalized responses.'),
-      FAQ('How do I change my fitness level?',
-          'Go to Profile tab → Tap Edit → Select your current fitness level → Save changes. This will update workout recommendations.'),
-      FAQ('Can I export my progress data?',
-          'Currently, you can view all progress within the app. Data export feature is coming in a future update.'),
-      FAQ('How accurate is the calorie counting?',
-          'Calorie estimates are based on your profile data and exercise intensity. Results may vary based on individual metabolism.'),
-      FAQ('How do I reset my progress?',
-          'Contact support for data reset requests. This action cannot be undone, so we require manual verification.'),
-      FAQ('Is my data secure and private?',
-          'Yes! All data is encrypted and stored securely. We never share personal information with third parties.'),
-      FAQ('How often should I work out?',
-          'Start with 3-4 sessions per week. Your AI coach will provide personalized recommendations based on your progress.'),
+      FAQ(
+        'How do I track my first workout?',
+        'Go to Home tab → Choose any workout → Tap "Start Workout" → Follow the timer → Complete and save your session.',
+      ),
+      FAQ(
+        'Why is my AI coach not responding?',
+        'Check your internet connection and try again. FitBot requires internet to provide personalized responses.',
+      ),
+      FAQ(
+        'How do I change my fitness level?',
+        'Go to Profile tab → Tap Edit → Select your current fitness level → Save changes. This will update workout recommendations.',
+      ),
+      FAQ(
+        'Can I export my progress data?',
+        'Currently, you can view all progress within the app. Data export feature is coming in a future update.',
+      ),
+      FAQ(
+        'How accurate is the calorie counting?',
+        'Calorie estimates are based on your profile data and exercise intensity. Results may vary based on individual metabolism.',
+      ),
+      FAQ(
+        'How do I reset my progress?',
+        'Contact support for data reset requests. This action cannot be undone, so we require manual verification.',
+      ),
+      FAQ(
+        'Is my data secure and private?',
+        'Yes! All data is encrypted and stored securely. We never share personal information with third parties.',
+      ),
+      FAQ(
+        'How often should I work out?',
+        'Start with 3-4 sessions per week. Your AI coach will provide personalized recommendations based on your progress.',
+      ),
     ];
 
     return Column(
@@ -507,10 +513,7 @@ class HelpSupportScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(
-              faq.answer,
-              style: const TextStyle(height: 1.5),
-            ),
+            child: Text(faq.answer, style: const TextStyle(height: 1.5)),
           ),
         ],
       ),
@@ -591,10 +594,7 @@ class HelpSupportScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                 ],
               ),
@@ -655,14 +655,8 @@ class HelpSupportScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          Text(
-            value,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(value, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -692,7 +686,7 @@ class HelpSupportScreen extends StatelessWidget {
       path: 'support@fittrackplus.com',
       query: 'subject=FitTrack Plus Support&body=Describe your issue here...',
     );
-    
+
     if (await canLaunchUrl(emailUri)) {
       await launchUrl(emailUri);
     } else {
@@ -716,10 +710,7 @@ class HelpSupportScreen extends StatelessWidget {
           '• App version (1.0.0)',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('OK'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('OK')),
           TextButton(
             onPressed: () {
               Get.back();
@@ -744,10 +735,7 @@ class HelpSupportScreen extends StatelessWidget {
           '• Your use case scenarios',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('OK'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('OK')),
           TextButton(
             onPressed: () {
               Get.back();

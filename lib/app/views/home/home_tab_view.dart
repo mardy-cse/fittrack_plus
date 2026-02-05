@@ -565,12 +565,16 @@ class HomeTabView extends GetView<HomeController> {
                   return Container(
                     height: 240,
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1A1A1A) : Colors.grey[200],
+                      color: isDark
+                          ? const Color(0xFF1A1A1A)
+                          : Colors.grey[200],
                     ),
                     child: Stack(
                       children: [
                         // Cover Image Background
-                        Positioned.fill(child: _buildCoverImage(coverUrl, isDark)),
+                        Positioned.fill(
+                          child: _buildCoverImage(coverUrl, isDark),
+                        ),
                         // Dark gradient overlay for text readability
                         Positioned.fill(
                           child: Container(
@@ -598,7 +602,10 @@ class HomeTabView extends GetView<HomeController> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               // Profile Avatar with border
-                              _buildProfileAvatar(photoUrl, profile?.name ?? 'User'),
+                              _buildProfileAvatar(
+                                photoUrl,
+                                profile?.name ?? 'User',
+                              ),
                               const SizedBox(height: 16),
                               // User Name - Bold and prominent
                               Text(
@@ -631,7 +638,7 @@ class HomeTabView extends GetView<HomeController> {
                     ),
                   );
                 }),
-                
+
                 // Unique Features Section
                 ListTile(
                   leading: Icon(
@@ -640,7 +647,9 @@ class HomeTabView extends GetView<HomeController> {
                   ),
                   title: Text(
                     'AI Fitness Coach',
-                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
                   ),
                   subtitle: Text(
                     'Chat with FitBot',
@@ -654,9 +663,9 @@ class HomeTabView extends GetView<HomeController> {
                     Get.toNamed('/ai-chat');
                   },
                 ),
-                
+
                 const Divider(),
-                
+
                 // App Features Section
                 ListTile(
                   leading: Icon(
@@ -665,15 +674,13 @@ class HomeTabView extends GetView<HomeController> {
                   ),
                   title: Text(
                     'Settings',
-                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pop(context);
-                    Get.snackbar(
-                      'Coming Soon',
-                      'Settings page will be available soon',
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
+                    Get.toNamed('/settings');
                   },
                 ),
                 ListTile(
@@ -683,7 +690,9 @@ class HomeTabView extends GetView<HomeController> {
                   ),
                   title: Text(
                     'Help & Support',
-                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -701,7 +710,7 @@ class HomeTabView extends GetView<HomeController> {
               ],
             ),
           ),
-          
+
           // Bottom Version Section - Fixed at bottom
           Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
@@ -709,20 +718,57 @@ class HomeTabView extends GetView<HomeController> {
               children: [
                 Divider(color: isDark ? Colors.grey[700] : Colors.grey[300]),
                 const SizedBox(height: 12),
-                Text(
-                  'FitTrack Plus',
-                  style: TextStyle(
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Version 1.0.0',
-                  style: TextStyle(
-                    color: isDark ? Colors.grey[500] : Colors.grey[500],
-                    fontSize: 12,
+                // App info with icon on left - centered
+                Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // App Launcher Icon
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.asset(
+                          'assets/icons/app_icon.png',
+                          width: 32,
+                          height: 32,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.fitness_center,
+                              size: 32,
+                              color: isDark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // App name and version
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'FitTrack Plus',
+                            style: TextStyle(
+                              color: isDark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Version 1.0.0',
+                            style: TextStyle(
+                              color: isDark
+                                  ? Colors.grey[500]
+                                  : Colors.grey[500],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
