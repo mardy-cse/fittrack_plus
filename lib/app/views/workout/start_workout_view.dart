@@ -459,21 +459,26 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
 
     if (lowerName.contains('push') || lowerName.contains('push-up')) {
       return 'assets/animations/pushup_improved.json';
-    } else if (lowerName.contains('squat') || lowerName.contains('jump squat')) {
+    } else if (lowerName.contains('squat') ||
+        lowerName.contains('jump squat')) {
       return 'assets/animations/squat_improved.json';
     } else if (lowerName.contains('plank') || lowerName.contains('core')) {
       return 'assets/animations/plank.json';
-    } else if (lowerName.contains('run') || lowerName.contains('jog') || lowerName.contains('cardio')) {
+    } else if (lowerName.contains('run') ||
+        lowerName.contains('jog') ||
+        lowerName.contains('cardio')) {
       return 'assets/animations/running_improved.json';
     } else if (lowerName.contains('jump') || lowerName.contains('jack')) {
       return 'assets/animations/jumping_jacks.json';
     } else if (lowerName.contains('burpee')) {
       return 'assets/animations/burpees.json';
-    } else if (lowerName.contains('mountain') && lowerName.contains('climber')) {
+    } else if (lowerName.contains('mountain') &&
+        lowerName.contains('climber')) {
       return 'assets/animations/mountain_climbers.json';
     } else if (lowerName.contains('lunge')) {
       return 'assets/animations/lunges.json';
-    } else if (lowerName.contains('sit') && (lowerName.contains('up') || lowerName.contains('ups'))) {
+    } else if (lowerName.contains('sit') &&
+        (lowerName.contains('up') || lowerName.contains('ups'))) {
       return 'assets/animations/situps.json';
     } else if (lowerName.contains('crunch') || lowerName.contains('ab')) {
       return 'assets/animations/situps.json';

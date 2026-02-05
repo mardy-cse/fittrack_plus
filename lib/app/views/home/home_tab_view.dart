@@ -18,7 +18,7 @@ class HomeTabView extends GetView<HomeController> {
       appBar: AppBar(
         title: Obx(
           () => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 controller.getGreeting(),
@@ -39,6 +39,7 @@ class HomeTabView extends GetView<HomeController> {
             ],
           ),
         ),
+        centerTitle: true,
         backgroundColor: isDark ? Colors.black : Colors.white,
         elevation: 0,
         leading: Builder(
@@ -50,21 +51,21 @@ class HomeTabView extends GetView<HomeController> {
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.notifications_outlined,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
-            onPressed: () {
-              Get.snackbar(
-                'Coming Soon',
-                'Notifications feature will be available soon',
-                snackPosition: SnackPosition.BOTTOM,
-              );
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.notifications_outlined,
+        //       color: isDark ? Colors.white : Colors.black87,
+        //     ),
+        //     onPressed: () {
+        //       Get.snackbar(
+        //         'Coming Soon',
+        //         'Notifications feature will be available soon',
+        //         snackPosition: SnackPosition.BOTTOM,
+        //       );
+        //     },
+        //   ),
+        // ],
       ),
       drawer: _buildDrawer(context),
       body: RefreshIndicator(

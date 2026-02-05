@@ -640,8 +640,11 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
   // Get animation for specific exercise name
   String _getAnimationForExercise(String exerciseName) {
     final name = exerciseName.toLowerCase();
-    
-    if (name.contains('push') || name.contains('push-up') || name.contains('chest') || name.contains('press')) {
+
+    if (name.contains('push') ||
+        name.contains('push-up') ||
+        name.contains('chest') ||
+        name.contains('press')) {
       return 'assets/animations/pushup_improved.json';
     } else if (name.contains('squat') || name.contains('jump squat')) {
       return 'assets/animations/squat_improved.json';
@@ -649,7 +652,8 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/plank.json';
     } else if (name.contains('run') || name.contains('jog')) {
       return 'assets/animations/running_improved.json';
-    } else if (name.contains('jump') && (name.contains('jack') || name.contains('rope'))) {
+    } else if (name.contains('jump') &&
+        (name.contains('jack') || name.contains('rope'))) {
       return 'assets/animations/jumping_jacks.json';
     } else if (name.contains('burpee')) {
       return 'assets/animations/burpees.json';
@@ -657,11 +661,18 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/mountain_climbers.json';
     } else if (name.contains('lunge')) {
       return 'assets/animations/lunges.json';
-    } else if (name.contains('sit') && (name.contains('up') || name.contains('ups'))) {
+    } else if (name.contains('sit') &&
+        (name.contains('up') || name.contains('ups'))) {
       return 'assets/animations/situps.json';
-    } else if (name.contains('crunch') || name.contains('twist') || name.contains('leg raise')) {
+    } else if (name.contains('crunch') ||
+        name.contains('twist') ||
+        name.contains('leg raise')) {
       return 'assets/animations/situps.json';
-    } else if (name.contains('bicep') || name.contains('curl') || name.contains('dumbbell') || name.contains('tricep') || name.contains('row')) {
+    } else if (name.contains('bicep') ||
+        name.contains('curl') ||
+        name.contains('dumbbell') ||
+        name.contains('tricep') ||
+        name.contains('row')) {
       return 'assets/animations/bicep_curls.json';
     } else if (name.contains('high knee')) {
       return 'assets/animations/running_improved.json';
@@ -676,132 +687,136 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
   }
 
   // Build expandable exercise item
-  Widget _buildExerciseItem(BuildContext context, int index, String exerciseName) {
+  Widget _buildExerciseItem(
+    BuildContext context,
+    int index,
+    String exerciseName,
+  ) {
     final RxBool isExpanded = false.obs;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Obx(() => Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () => isExpanded.value = !isExpanded.value,
-            borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF4A90E2).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${index + 1}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4A90E2),
-                          fontSize: 16,
-                        ),
+
+    return Obx(
+      () => Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () => isExpanded.value = !isExpanded.value,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4A90E2).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      exerciseName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  Icon(
-                    isExpanded.value
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    color: const Color(0xFF4A90E2),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (isExpanded.value)
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF1C1C1E)
-                    : const Color(0xFFF8F9FA),
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color(0xFF4A90E2).withOpacity(0.1),
-                          const Color(0xFF50C878).withOpacity(0.1),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: _buildAnimationWidget(
-                        _getAnimationForExercise(exerciseName),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF4A90E2).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.info_outline,
-                          size: 16,
-                          color: Color(0xFF4A90E2),
-                        ),
-                        const SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            'Follow the animation form for best results',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isDark ? Colors.white70 : Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
+                      child: Center(
+                        child: Text(
+                          '${index + 1}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4A90E2),
+                            fontSize: 16,
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        exerciseName,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Icon(
+                      isExpanded.value
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                      color: const Color(0xFF4A90E2),
+                    ),
+                  ],
+                ),
               ),
             ),
-        ],
+            if (isExpanded.value)
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF1C1C1E)
+                      : const Color(0xFFF8F9FA),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            const Color(0xFF4A90E2).withOpacity(0.1),
+                            const Color(0xFF50C878).withOpacity(0.1),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: _buildAnimationWidget(
+                          _getAnimationForExercise(exerciseName),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4A90E2).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: Color(0xFF4A90E2),
+                          ),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Text(
+                              'Follow the animation form for best results',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: isDark ? Colors.white70 : Colors.black87,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
