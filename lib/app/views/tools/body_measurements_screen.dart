@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 import '../../controllers/home_controller.dart';
 import '../../services/body_measurement_service.dart';
 import '../../models/body_measurement.dart';
@@ -17,10 +18,81 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
   late Map<String, TextEditingController> measurements;
   bool isLoading = true;
 
+  final PageController _pageController = PageController();
+  Timer? _autoSlideTimer;
+  int _currentSlide = 0;
+
+  final List<Map<String, dynamic>> _measurementSlides = [
+    {
+      'image':
+          'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80',
+      'overlay': [
+        Color(0xFF667eea).withOpacity(0.7),
+        Color(0xFF764ba2).withOpacity(0.7),
+      ],
+      'title': 'Track Progress',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80',
+      'overlay': [
+        Color(0xFF11998e).withOpacity(0.7),
+        Color(0xFF38ef7d).withOpacity(0.7),
+      ],
+      'title': 'Body Measurements',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=800&q=80',
+      'overlay': [
+        Color(0xFFee0979).withOpacity(0.7),
+        Color(0xFFff6a00).withOpacity(0.7),
+      ],
+      'title': 'Fitness Goals',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=80',
+      'overlay': [
+        Color(0xFF4facfe).withOpacity(0.7),
+        Color(0xFF00f2fe).withOpacity(0.7),
+      ],
+      'title': 'Body Transformation',
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
     _initializeMeasurements();
+    _startAutoSlide();
+  }
+
+  @override
+  void dispose() {
+    _autoSlideTimer?.cancel();
+    _pageController.dispose();
+    measurements.forEach((key, controller) {
+      controller.dispose();
+    });
+    super.dispose();
+  }
+
+  void _startAutoSlide() {
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_currentSlide < _measurementSlides.length - 1) {
+        _currentSlide++;
+      } else {
+        _currentSlide = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentSlide,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   Future<void> _initializeMeasurements() async {
@@ -60,14 +132,6 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  @override
-  void dispose() {
-    measurements.forEach((key, controller) {
-      controller.dispose();
-    });
-    super.dispose();
   }
 
   @override
@@ -112,145 +176,265 @@ class _BodyMeasurementsScreenState extends State<BodyMeasurementsScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.zero,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Icon(Icons.straighten, size: 80, color: Colors.white),
-            const SizedBox(height: 24),
-            // Quick Stats Card
-            FutureBuilder<List<BodyMeasurement>>(
-              future: _service.loadHistory(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data!.length >= 2) {
-                  return _buildQuickStatsCard(snapshot.data!);
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Track your body progress',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            const SizedBox(height: 32),
-            ...measurements.keys.map((key) {
-              final unit = key == 'Weight' ? 'kg' : 'cm';
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: TextField(
-                  controller: measurements[key],
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: '$key ($unit)',
-                    border: const OutlineInputBorder(),
-                    prefixIcon: Icon(icons[key], color: Colors.white),
-                    helperText: key == 'Weight' ? 'From your profile' : null,
-                  ),
-                ),
-              );
-            }),
-            const SizedBox(height: 24),
+            // Image Slider Header
             SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  debugPrint('Save Measurements button pressed');
-
-                  bool hasData = false;
-                  final data = <String, double>{};
-
-                  measurements.forEach((key, controller) {
-                    if (controller.text.trim().isNotEmpty) {
-                      hasData = true;
-                      final value = double.tryParse(controller.text.trim());
-                      if (value != null) {
-                        data[key] = value;
-                        debugPrint('$key: $value');
-                      }
-                    }
-                  });
-
-                  if (hasData) {
-                    debugPrint('Saving measurements: $data');
-
-                    // Create measurement object
-                    final measurement = BodyMeasurement(
-                      date: DateTime.now(),
-                      weight: data['Weight'],
-                      chest: data['Chest'],
-                      waist: data['Waist'],
-                      hips: data['Hips'],
-                      biceps: data['Biceps'],
-                      thighs: data['Thighs'],
-                      calves: data['Calves'],
-                    );
-
-                    // Save to storage
-                    try {
-                      await _service.saveMeasurement(measurement);
-
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Saved! ✓ Measurements saved successfully',
+              height: 250,
+              child: Stack(
+                children: [
+                  // PageView with background images
+                  PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentSlide = index;
+                      });
+                    },
+                    itemCount: _measurementSlides.length,
+                    itemBuilder: (context, index) {
+                      final slide = _measurementSlides[index];
+                      final overlayColors = (slide['overlay'] as List)
+                          .cast<Color>();
+                      return Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(slide['image'] as String),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: overlayColors,
                             ),
-                            backgroundColor: Colors.green,
-                            duration: Duration(seconds: 2),
                           ),
-                        );
-                      }
-                    } catch (e) {
-                      debugPrint('Error saving: $e');
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error saving: $e'),
-                            backgroundColor: Colors.red,
-                            duration: const Duration(seconds: 2),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withOpacity(0.5),
+                                ],
+                              ),
+                            ),
                           ),
-                        );
-                      }
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter at least one measurement'),
-                        backgroundColor: Colors.orange,
-                        duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  // Static content overlay
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.straighten, size: 70, color: Colors.white),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Body Measurements',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(blurRadius: 10, color: Colors.black45),
+                              Shadow(blurRadius: 20, color: Colors.black26),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Track your body progress',
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Slide indicators
+                  Positioned(
+                    bottom: 12,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                        _measurementSlides.length,
+                        (index) => AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          height: 8,
+                          width: _currentSlide == index ? 24 : 8,
+                          decoration: BoxDecoration(
+                            color: _currentSlide == index
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
                       ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A90E2),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  elevation: 2,
-                ),
-                child: const Text(
-                  'Save Measurements',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF4A90E2).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(24),
               child: Column(
                 children: [
-                  const Icon(Icons.info_outline, color: Colors.white),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Tip: Measure at the same time each week for accurate tracking',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                  // Quick Stats Card
+                  FutureBuilder<List<BodyMeasurement>>(
+                    future: _service.loadHistory(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data!.length >= 2) {
+                        return _buildQuickStatsCard(snapshot.data!);
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  ...measurements.keys.map((key) {
+                    final unit = key == 'Weight' ? 'kg' : 'cm';
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: TextField(
+                        controller: measurements[key],
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: '$key ($unit)',
+                          border: const OutlineInputBorder(),
+                          prefixIcon: Icon(icons[key], color: Colors.white),
+                          helperText: key == 'Weight'
+                              ? 'From your profile'
+                              : null,
+                        ),
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        debugPrint('Save Measurements button pressed');
+
+                        bool hasData = false;
+                        final data = <String, double>{};
+
+                        measurements.forEach((key, controller) {
+                          if (controller.text.trim().isNotEmpty) {
+                            hasData = true;
+                            final value = double.tryParse(
+                              controller.text.trim(),
+                            );
+                            if (value != null) {
+                              data[key] = value;
+                              debugPrint('$key: $value');
+                            }
+                          }
+                        });
+
+                        if (hasData) {
+                          debugPrint('Saving measurements: $data');
+
+                          // Create measurement object
+                          final measurement = BodyMeasurement(
+                            date: DateTime.now(),
+                            weight: data['Weight'],
+                            chest: data['Chest'],
+                            waist: data['Waist'],
+                            hips: data['Hips'],
+                            biceps: data['Biceps'],
+                            thighs: data['Thighs'],
+                            calves: data['Calves'],
+                          );
+
+                          // Save to storage
+                          try {
+                            await _service.saveMeasurement(measurement);
+
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Saved! ✓ Measurements saved successfully',
+                                  ),
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            debugPrint('Error saving: $e');
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error saving: $e'),
+                                  backgroundColor: Colors.red,
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Please enter at least one measurement',
+                              ),
+                              backgroundColor: Colors.orange,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4A90E2),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 2,
+                      ),
+                      child: const Text(
+                        'Save Measurements',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4A90E2).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.info_outline, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Tip: Measure at the same time each week for accurate tracking',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

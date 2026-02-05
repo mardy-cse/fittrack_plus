@@ -167,14 +167,14 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
     final workoutLower = workout.toLowerCase();
 
     // Cardio & Running
-    if (workoutLower.contains('cardio') || 
+    if (workoutLower.contains('cardio') ||
         workoutLower.contains('running') ||
         workoutLower.contains('run')) {
       return Icons.directions_run;
     }
-    
+
     // Upper Body
-    if (workoutLower.contains('upper body') || 
+    if (workoutLower.contains('upper body') ||
         workoutLower.contains('upper') ||
         workoutLower.contains('chest') ||
         workoutLower.contains('push') ||
@@ -186,64 +186,62 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
         workoutLower.contains('tricep')) {
       return Icons.fitness_center;
     }
-    
+
     // Lower Body & Legs
-    if (workoutLower.contains('lower body') || 
+    if (workoutLower.contains('lower body') ||
         workoutLower.contains('lower') ||
         workoutLower.contains('leg') ||
         workoutLower.contains('squat') ||
         workoutLower.contains('glute')) {
       return Icons.accessibility_new;
     }
-    
+
     // Yoga & Stretching & Flexibility
-    if (workoutLower.contains('yoga') || 
+    if (workoutLower.contains('yoga') ||
         workoutLower.contains('stretch') ||
         workoutLower.contains('flexibility') ||
         workoutLower.contains('recovery')) {
       return Icons.self_improvement;
     }
-    
+
     // HIIT & High Intensity
-    if (workoutLower.contains('hiit') || 
+    if (workoutLower.contains('hiit') ||
         workoutLower.contains('interval') ||
         workoutLower.contains('intense')) {
       return Icons.local_fire_department;
     }
-    
+
     // Core & Abs
-    if (workoutLower.contains('core') || 
-        workoutLower.contains('ab')) {
+    if (workoutLower.contains('core') || workoutLower.contains('ab')) {
       return Icons.stars;
     }
-    
+
     // Full Body
-    if (workoutLower.contains('full body') || 
+    if (workoutLower.contains('full body') ||
         workoutLower.contains('total body')) {
       return Icons.accessibility;
     }
-    
+
     // Swimming
     if (workoutLower.contains('swim')) {
       return Icons.pool;
     }
-    
+
     // Cycling
-    if (workoutLower.contains('cycl') || 
-        workoutLower.contains('bike')) {
+    if (workoutLower.contains('cycl') || workoutLower.contains('bike')) {
       return Icons.directions_bike;
     }
-    
+
     // Walking
     if (workoutLower.contains('walk')) {
       return Icons.directions_walk;
     }
-    
+
     // Rest Day
     if (workoutLower.contains('rest')) {
       return Icons.hotel;
     }
-    
+
     // Default
     return Icons.fitness_center;
   }
@@ -259,13 +257,17 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
     if (workoutLower.contains('cardio') || workoutLower.contains('run')) {
       return const Color(0xFFFF6B6B); // Red
     }
-    if (workoutLower.contains('upper') || workoutLower.contains('push') || workoutLower.contains('pull')) {
+    if (workoutLower.contains('upper') ||
+        workoutLower.contains('push') ||
+        workoutLower.contains('pull')) {
       return const Color(0xFF4A90E2); // Blue
     }
     if (workoutLower.contains('lower') || workoutLower.contains('leg')) {
       return const Color(0xFF9B59B6); // Purple
     }
-    if (workoutLower.contains('yoga') || workoutLower.contains('stretch') || workoutLower.contains('recovery')) {
+    if (workoutLower.contains('yoga') ||
+        workoutLower.contains('stretch') ||
+        workoutLower.contains('recovery')) {
       return const Color(0xFF3AB795); // Green
     }
     if (workoutLower.contains('hiit') || workoutLower.contains('interval')) {
@@ -543,7 +545,9 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                             boxShadow: workoutPlan[day] != null
                                 ? [
                                     BoxShadow(
-                                      color: _getWorkoutColor(workoutPlan[day]).withOpacity(0.3),
+                                      color: _getWorkoutColor(
+                                        workoutPlan[day],
+                                      ).withOpacity(0.3),
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
                                     ),
