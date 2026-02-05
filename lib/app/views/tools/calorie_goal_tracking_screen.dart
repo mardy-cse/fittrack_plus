@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../models/calorie_goal.dart';
 import '../../models/daily_calorie_log.dart';
 import '../../services/calorie_goal_service.dart';
+import '../../controllers/home_controller.dart';
 
 class CalorieGoalTrackingScreen extends StatefulWidget {
   final int dailyCalories;
@@ -46,6 +47,13 @@ class _CalorieGoalTrackingScreenState extends State<CalorieGoalTrackingScreen> {
       targetWeightController.text = activeGoal!.targetWeight.toStringAsFixed(1);
       timelineController.text = activeGoal!.timelineWeeks.toString();
       selectedGoalType = activeGoal!.goalType;
+    } else {
+      // If no active goal, pre-fill current weight from profile
+      final controller = Get.find<HomeController>();
+      final user = controller.userProfile.value;
+      if (user?.weight != null) {
+        currentWeightController.text = user!.weight!.toStringAsFixed(1);
+      }
     }
 
     setState(() => isLoading = false);
