@@ -54,8 +54,11 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                     background: Hero(
                       tag: 'workout-${workout.id}',
                       child: workout.imageUrl.isNotEmpty
-                          ? Image.network(
-                              workout.imageUrl,
+                          ? Image(
+                              image: workout.imageUrl.startsWith('http')
+                                  ? NetworkImage(workout.imageUrl)
+                                  : AssetImage(workout.imageUrl)
+                                      as ImageProvider,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
@@ -510,7 +513,9 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                   color: Colors.grey[300],
                   image: workout.imageUrl.isNotEmpty
                       ? DecorationImage(
-                          image: NetworkImage(workout.imageUrl),
+                          image: workout.imageUrl.startsWith('http')
+                              ? NetworkImage(workout.imageUrl)
+                              : AssetImage(workout.imageUrl) as ImageProvider,
                           fit: BoxFit.cover,
                         )
                       : null,

@@ -458,7 +458,9 @@ class HomeTabView extends GetView<HomeController> {
                     ),
                     image: workout.imageUrl.isNotEmpty
                         ? DecorationImage(
-                            image: NetworkImage(workout.imageUrl),
+                            image: workout.imageUrl.startsWith('http')
+                                ? NetworkImage(workout.imageUrl)
+                                : AssetImage(workout.imageUrl) as ImageProvider,
                             fit: BoxFit.cover,
                           )
                         : null,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/bmi_record.dart';
 import '../services/bmi_storage_service.dart';
+import 'home_controller.dart';
 
 class BMIController extends GetxController {
   final BMIStorageService _storageService = Get.find<BMIStorageService>();
@@ -27,6 +28,22 @@ class BMIController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    
+    // Load user profile data
+    try {
+      final homeController = Get.find<HomeController>();
+      final user = homeController.userProfile.value;
+      
+      if (user?.height != null) {
+        heightSlider.value = user!.height!;
+      }
+      if (user?.weight != null) {
+        weightSlider.value = user!.weight!;
+      }
+    } catch (e) {
+      debugPrint('HomeController not found, using default values');
+    }
+    
     loadHistory();
 
     // Sync sliders with text fields
