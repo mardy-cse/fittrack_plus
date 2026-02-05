@@ -149,9 +149,11 @@ class AuthService extends GetxService {
       debugPrint('📋 Existing sign-in methods: $signInMethods');
 
       // If user only has Google sign-in, they need to link email/password
-      if (signInMethods.contains('google.com') && 
+      if (signInMethods.contains('google.com') &&
           !signInMethods.contains('password')) {
-        debugPrint('⚠️  User only has Google sign-in, cannot set password directly');
+        debugPrint(
+          '⚠️  User only has Google sign-in, cannot set password directly',
+        );
         throw Exception(
           'This account was created with Google. Please sign in with Google instead, '
           'or contact support to add password authentication.',
@@ -286,7 +288,9 @@ class AuthService extends GetxService {
         await _userService.createUserProfile(profile);
       } else {
         // Update existing profile with Google account info
-        final existingProfile = await _userService.getUserProfile(userCredential.user!.uid);
+        final existingProfile = await _userService.getUserProfile(
+          userCredential.user!.uid,
+        );
         if (existingProfile != null) {
           final updatedProfile = existingProfile.copyWith(
             name: userCredential.user!.displayName ?? existingProfile.name,

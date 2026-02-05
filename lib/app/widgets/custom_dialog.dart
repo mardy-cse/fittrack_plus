@@ -20,9 +20,7 @@ class CustomDialog {
           backgroundColor: const Color(0xFF1A1F3A),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: Colors.white.withOpacity(0.2),
-            ),
+            side: BorderSide(color: Colors.white.withOpacity(0.2)),
           ),
           title: Text(
             title,
@@ -32,13 +30,11 @@ class CustomDialog {
               fontWeight: FontWeight.w600,
             ),
           ),
-          content: customContent ??
+          content:
+              customContent ??
               Text(
                 content,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 15,
-                ),
+                style: const TextStyle(color: Colors.white70, fontSize: 15),
               ),
           actions: [
             if (cancelText != null)
@@ -47,9 +43,7 @@ class CustomDialog {
                   Navigator.of(dialogContext).pop();
                   onCancel?.call();
                 },
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white70,
-                ),
+                style: TextButton.styleFrom(foregroundColor: Colors.white70),
                 child: Text(cancelText),
               ),
             if (confirmText != null)
@@ -59,7 +53,9 @@ class CustomDialog {
                   onConfirm?.call();
                 },
                 style: TextButton.styleFrom(
-                  foregroundColor: isDestructive ? Colors.red : const Color(0xFF4A90E2),
+                  foregroundColor: isDestructive
+                      ? Colors.red
+                      : const Color(0xFF4A90E2),
                 ),
                 child: Text(confirmText),
               ),
@@ -81,9 +77,7 @@ class CustomDialog {
           backgroundColor: const Color(0xFF1A1F3A),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: Colors.white.withOpacity(0.2),
-            ),
+            side: BorderSide(color: Colors.white.withOpacity(0.2)),
           ),
           child: content,
         );

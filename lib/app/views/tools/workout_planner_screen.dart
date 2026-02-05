@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:async';
 import '../../services/workout_planner_service.dart';
 
 class WorkoutPlannerScreen extends StatefulWidget {
@@ -11,6 +12,48 @@ class WorkoutPlannerScreen extends StatefulWidget {
 
 class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
   final WorkoutPlannerService _service = Get.find<WorkoutPlannerService>();
+  final PageController _pageController = PageController();
+  Timer? _autoSlideTimer;
+  int _currentSlide = 0;
+
+  final List<Map<String, dynamic>> _workoutSlides = [
+    {
+      'image':
+          'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+      'overlay': [
+        Color(0xFF667eea).withOpacity(0.7),
+        Color(0xFF764ba2).withOpacity(0.7),
+      ],
+      'title': 'Strength Training',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&q=80',
+      'overlay': [
+        Color(0xFFf093fb).withOpacity(0.7),
+        Color(0xFFF5576C).withOpacity(0.7),
+      ],
+      'title': 'Cardio Fitness',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=80',
+      'overlay': [
+        Color(0xFF4facfe).withOpacity(0.7),
+        Color(0xFF00f2fe).withOpacity(0.7),
+      ],
+      'title': 'Yoga & Flexibility',
+    },
+    {
+      'image':
+          'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80',
+      'overlay': [
+        Color(0xFF43e97b).withOpacity(0.7),
+        Color(0xFF38f9d7).withOpacity(0.7),
+      ],
+      'title': 'Group Training',
+    },
+  ];
 
   final daysOfWeek = [
     'Monday',
@@ -29,6 +72,31 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
   void initState() {
     super.initState();
     _loadWorkoutPlan();
+    _startAutoSlide();
+  }
+
+  @override
+  void dispose() {
+    _autoSlideTimer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _startAutoSlide() {
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_currentSlide < _workoutSlides.length - 1) {
+        _currentSlide++;
+      } else {
+        _currentSlide = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentSlide,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   Future<void> _loadWorkoutPlan() async {
@@ -156,76 +224,168 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
             onPressed: _generateAIPlan,
             tooltip: 'Generate AI Plan',
           ),
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveWorkoutPlan,
-            tooltip: 'Save Plan',
-          ),
         ],
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [const Color(0xFF4A90E2), const Color(0xFF357ABD)],
-              ),
-            ),
-            child: Column(
+          // Image Slider Header
+          SizedBox(
+            height: 280,
+            child: Stack(
               children: [
-                const Icon(Icons.calendar_month, size: 60, color: Colors.white),
-                const SizedBox(height: 16),
-                const Text(
-                  'Plan Your Week',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                // PageView with only background images (sliding)
+                PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentSlide = index;
+                    });
+                  },
+                  itemCount: _workoutSlides.length,
+                  itemBuilder: (context, index) {
+                    final slide = _workoutSlides[index];
+                    final overlayColors = (slide['overlay'] as List)
+                        .cast<Color>();
+                    return Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(slide['image'] as String),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: overlayColors,
+                          ),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.3),
+                                Colors.black.withOpacity(0.5),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Tap any day to add or edit workout',
-                  style: TextStyle(fontSize: 14, color: Colors.white70),
-                ),
-                const SizedBox(height: 20),
-                // AI Generate Button
-                Obx(
-                  () => ElevatedButton.icon(
-                    onPressed: isLoading.value ? null : _generateAIPlan,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF4A90E2),
+                // Static content on top (not sliding)
+                Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
+                        horizontal: 24,
                         vertical: 16,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 4,
-                    ),
-                    icon: isLoading.value
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF4A90E2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.calendar_month,
+                            size: 60,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Plan Your Week',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(blurRadius: 10, color: Colors.black45),
+                                Shadow(blurRadius: 20, color: Colors.black26),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Tap any day to add or edit workout',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 18),
+                          // AI Generate Button
+                          Obx(
+                            () => ElevatedButton.icon(
+                              onPressed: isLoading.value
+                                  ? null
+                                  : _generateAIPlan,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: const Color(0xFF667eea),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 28,
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                elevation: 8,
+                                shadowColor: Colors.black38,
+                              ),
+                              icon: isLoading.value
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Color(0xFF667eea),
+                                            ),
+                                      ),
+                                    )
+                                  : const Icon(Icons.auto_awesome, size: 22),
+                              label: Text(
+                                isLoading.value
+                                    ? 'Generating...'
+                                    : 'Generate AI Plan',
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          )
-                        : const Icon(Icons.auto_awesome, size: 24),
-                    label: Text(
-                      isLoading.value ? 'Generating...' : 'Generate AI Plan',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Slide indicators
+                Positioned(
+                  bottom: 12,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _workoutSlides.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 8,
+                        width: _currentSlide == index ? 24 : 8,
+                        decoration: BoxDecoration(
+                          color: _currentSlide == index
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ),
                   ),
@@ -328,7 +488,9 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                     TextField(
                                       controller: controller,
                                       autofocus: true,
-                                      style: const TextStyle(color: Colors.white),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
                                       decoration: InputDecoration(
                                         labelText: 'Workout Type',
                                         labelStyle: TextStyle(
@@ -340,19 +502,29 @@ class _WorkoutPlannerScreenState extends State<WorkoutPlannerScreen> {
                                           color: Colors.white.withOpacity(0.5),
                                         ),
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           borderSide: BorderSide(
-                                            color: Colors.white.withOpacity(0.3),
+                                            color: Colors.white.withOpacity(
+                                              0.3,
+                                            ),
                                           ),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           borderSide: BorderSide(
-                                            color: Colors.white.withOpacity(0.3),
+                                            color: Colors.white.withOpacity(
+                                              0.3,
+                                            ),
                                           ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           borderSide: const BorderSide(
                                             color: Color(0xFF4A90E2),
                                           ),

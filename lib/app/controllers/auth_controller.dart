@@ -89,9 +89,7 @@ class AuthController extends GetxController {
             backgroundColor: const Color(0xFF1A1F3A),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              side: BorderSide(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              side: BorderSide(color: Colors.white.withOpacity(0.2)),
             ),
             title: const Row(
               children: [
@@ -109,10 +107,7 @@ class AuthController extends GetxController {
             ),
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 15,
-              ),
+              style: const TextStyle(color: Colors.white70, fontSize: 15),
             ),
             actions: [
               TextButton(
@@ -188,9 +183,7 @@ class AuthController extends GetxController {
             backgroundColor: const Color(0xFF1A1F3A),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              side: BorderSide(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              side: BorderSide(color: Colors.white.withOpacity(0.2)),
             ),
             title: const Row(
               children: [
@@ -208,10 +201,7 @@ class AuthController extends GetxController {
             ),
             content: Text(
               errorMessage,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 15,
-              ),
+              style: const TextStyle(color: Colors.white70, fontSize: 15),
             ),
             actions: [
               TextButton(
