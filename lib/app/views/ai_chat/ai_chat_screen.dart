@@ -278,18 +278,14 @@ class AiChatScreen extends GetView<AiChatController> {
             Obx(() {
               final profileController = Get.find<ProfileController>();
               final photoUrl = profileController.userProfile.value?.photoUrl;
-              
+
               return CircleAvatar(
                 backgroundColor: const Color(0xFF4A90E2),
-                backgroundImage: photoUrl != null && photoUrl.isNotEmpty 
-                    ? NetworkImage(photoUrl) 
+                backgroundImage: photoUrl != null && photoUrl.isNotEmpty
+                    ? NetworkImage(photoUrl)
                     : null,
                 child: photoUrl == null || photoUrl.isEmpty
-                    ? Icon(
-                        Icons.person_rounded,
-                        color: Colors.white,
-                        size: 20,
-                      )
+                    ? Icon(Icons.person_rounded, color: Colors.white, size: 20)
                     : null,
               );
             }),
