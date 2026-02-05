@@ -66,8 +66,12 @@ class AiChatController extends GetxController {
     _scrollToBottom();
 
     try {
+      debugPrint('🤖 Sending message to Gemini AI: $text');
+      
       // Get AI response
       final response = await _geminiService.sendMessage(text);
+
+      debugPrint('✅ Received response from Gemini AI');
 
       // Remove loading message
       messages.removeWhere((msg) => msg.id == 'loading');
@@ -80,14 +84,28 @@ class AiChatController extends GetxController {
         timestamp: DateTime.now(),
       );
       messages.add(aiMessage);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('❌ Error in AI chat: $e');
+      debugPrint('Stack trace: $stackTrace');
+      
       // Remove loading message
       messages.removeWhere((msg) => msg.id == 'loading');
+
+      // Determine user-friendly error message
+      String errorMsg = 'Sorry, I encountered an error. Please try again.';
+      
+      if (e.toString().contains('API key')) {
+        errorMsg = '⚠️ API configuration error. Please check the Gemini API key.';
+      } else if (e.toString().contains('quota')) {
+        errorMsg = '⚠️ API quota exceeded. Please try again later.';
+      } else if (e.toString().contains('network') || e.toString().contains('SocketException')) {
+        errorMsg = '⚠️ Network error. Please check your internet connection.';
+      }
 
       // Add error message
       final errorMessage = ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        text: 'Sorry, I encountered an error. Please try again.',
+        text: errorMsg,
         isUser: false,
         timestamp: DateTime.now(),
       );

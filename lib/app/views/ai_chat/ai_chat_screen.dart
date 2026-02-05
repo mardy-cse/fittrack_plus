@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../controllers/ai_chat_controller.dart';
+import '../../controllers/profile_controller.dart';
 
 class AiChatScreen extends GetView<AiChatController> {
   const AiChatScreen({super.key});
@@ -18,12 +19,13 @@ class AiChatScreen extends GetView<AiChatController> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: const Color(0xFF4A90E2),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 Icons.smart_toy_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: Colors.white,
+                size: 24,
               ),
             ),
             const SizedBox(width: 12),
@@ -194,10 +196,10 @@ class AiChatScreen extends GetView<AiChatController> {
         children: [
           if (!isUser) ...[
             CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              backgroundColor: const Color(0xFF4A90E2),
               child: Icon(
                 Icons.smart_toy_rounded,
-                color: Theme.of(context).colorScheme.primary,
+                color: Colors.white,
                 size: 20,
               ),
             ),
@@ -273,14 +275,24 @@ class AiChatScreen extends GetView<AiChatController> {
           ),
           if (isUser) ...[
             const SizedBox(width: 8),
-            CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-              child: Icon(
-                Icons.person_rounded,
-                color: Theme.of(context).colorScheme.onTertiaryContainer,
-                size: 20,
-              ),
-            ),
+            Obx(() {
+              final profileController = Get.find<ProfileController>();
+              final photoUrl = profileController.userProfile.value?.photoUrl;
+              
+              return CircleAvatar(
+                backgroundColor: const Color(0xFF4A90E2),
+                backgroundImage: photoUrl != null && photoUrl.isNotEmpty 
+                    ? NetworkImage(photoUrl) 
+                    : null,
+                child: photoUrl == null || photoUrl.isEmpty
+                    ? Icon(
+                        Icons.person_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      )
+                    : null,
+              );
+            }),
           ],
         ],
       ),
