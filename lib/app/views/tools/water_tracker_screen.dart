@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/water_intake_log.dart';
 import '../../services/water_tracker_service.dart';
+import '../../widgets/water_body_tracker.dart';
 
 class WaterTrackerScreen extends StatefulWidget {
   const WaterTrackerScreen({super.key});
@@ -18,47 +19,24 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   List<DateTime> timestamps = [];
   bool _isLoading = true;
   DateTime _currentDate = DateTime.now();
-  
-  // Background slider
-  PageController? _pageController;
-  int _currentPage = 0;
-  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: 0);
     _loadTodayData();
     _startDailyResetTimer();
-    _startAutoSlide();
   }
 
   @override
   void dispose() {
-    _pageController?.dispose();
-    _timer?.cancel();
     super.dispose();
   }
-  
-  void _startAutoSlide() {
-    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
-      if (!mounted || _pageController == null || !(_pageController?.hasClients ?? false)) {
-        return;
-      }
-      
-      final nextPage = (_currentPage + 1) % 4;
-      
-      _pageController?.animateToPage(
-        nextPage,
-        duration: const Duration(milliseconds: 800),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
-  
+
   void _editDailyGoal() {
-    TextEditingController goalController = TextEditingController(text: dailyGoal.toString());
-    
+    TextEditingController goalController = TextEditingController(
+      text: dailyGoal.toString(),
+    );
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -240,68 +218,48 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
       ),
       body: Column(
         children: [
-          // Dynamic background slider - Fixed at top
-          SizedBox(
-            height: 200,
-            child: Stack(
-              children: [
-                PageView(
-                  controller: _pageController,
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPage = page;
-                    });
-                  },
-                  children: [
-                    _buildBackgroundSlide(
-                      'assets/images/1140-pouring-water-over-hydration.jpg',
-                      [Colors.blue.withOpacity(0.7), Colors.cyan.withOpacity(0.5)],
-                      'Stay Hydrated, Stay Healthy!',
-                    ),
-                    _buildBackgroundSlide(
-                      'assets/images/617.jpg',
-                      [Colors.lightBlue.withOpacity(0.7), Colors.teal.withOpacity(0.5)],
-                      'Drink Fresh Water Daily',
-                    ),
-                    _buildBackgroundSlide(
-                      'assets/images/4.jpg',
-                      [Colors.cyan.withOpacity(0.7), Colors.blue.withOpacity(0.5)],
-                      'Water is Life!',
-                    ),
-                    _buildBackgroundSlide(
-                      'assets/images/1.jpg',
-                      [Colors.teal.withOpacity(0.7), Colors.lightBlue.withOpacity(0.5)],
-                      'Keep Your Body Refreshed',
-                    ),
-                  ],
-                ),
-                // Slide indicators
-                Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      4,
-                      (index) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4),
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentPage == index
-                              ? Colors.white
-                              : Colors.white.withOpacity(0.4),
-                        ),
-                      ),
-                    ),
-                  ),
+          // Animated Water Body Tracker
+          Container(
+            height: 450,
+            margin: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[900]!
+                      : Colors.blue[50]!,
+                  Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey[850]!
+                      : Colors.cyan[50]!,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
                 ),
               ],
             ),
+            child: Center(
+              child: WaterBodyTracker(
+                waterLevel: dailyGoal > 0
+                    ? (waterGlasses / dailyGoal).clamp(0.0, 1.0)
+                    : 0.0,
+                width: 200,
+                height: 400,
+                bodyColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[400]!
+                    : Colors.grey[700]!,
+                waterColorStart: const Color(0xFF00BCD4),
+                waterColorEnd: const Color(0xFF4DD0E1),
+              ),
+            ),
           ),
-          
+
           // Scrollable Content
           Expanded(
             child: SingleChildScrollView(
@@ -310,21 +268,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.water_drop, size: 120, color: Color(0xFF4A90E2)),
-                    const SizedBox(height: 32),
-                    Text(
-                      '$waterGlasses / $dailyGoal',
-                      style: const TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'glasses',
-                      style: TextStyle(fontSize: 20, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 16),
                     LinearProgressIndicator(
                       value: getProgress(),
                       backgroundColor: Colors.grey[300],
@@ -334,10 +278,14 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '${getProgressPercentage()}% of daily goal',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                      '$waterGlasses/$dailyGoal glasses and ${getProgressPercentage()}% of daily goal',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 32),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -349,7 +297,9 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF4A90E2),
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -358,7 +308,10 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                               icon: const Icon(Icons.remove, size: 20),
                               label: const Text(
                                 'Remove',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
@@ -371,7 +324,9 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF4A90E2),
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -380,7 +335,10 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                               icon: const Icon(Icons.add, size: 20),
                               label: const Text(
                                 'Add Glass',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
@@ -417,15 +375,14 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   '$dailyGoal glasses (${(dailyGoal * 0.25).toStringAsFixed(1)} liters)',
-                                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[700],
+                                  ),
                                 ),
                               ],
                             ),
-                            Icon(
-                              Icons.edit,
-                              color: Colors.cyan[700],
-                              size: 24,
-                            ),
+                            Icon(Icons.edit, color: Colors.cyan[700], size: 24),
                           ],
                         ),
                       ),
@@ -437,50 +394,6 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           ),
         ],
       ),
-    );
-  }
-  
-  Widget _buildBackgroundSlide(String imageUrl, List<Color> gradientColors, String motivatingText) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Image.asset(
-          imageUrl,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              color: Colors.blue,
-            );
-          },
-        ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: gradientColors,
-            ),
-          ),
-        ),
-        Center(
-          child: Text(
-            motivatingText,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  offset: Offset(2, 2),
-                  blurRadius: 4,
-                  color: Colors.black45,
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
     );
   }
 }

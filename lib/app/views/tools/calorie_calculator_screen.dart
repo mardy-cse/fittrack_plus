@@ -28,8 +28,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
 
   final List<Map<String, dynamic>> _calorieSlides = [
     {
-      'image':
-          'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&q=80',
+      'image': 'assets/images/calorie/healthy_nutrition.jpg',
       'overlay': [
         Color(0xFFFF6B6B).withOpacity(0.7),
         Color(0xFFFFE66D).withOpacity(0.7),
@@ -37,8 +36,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
       'title': 'Healthy Nutrition',
     },
     {
-      'image':
-          'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80',
+      'image': 'assets/images/calorie/fresh_nutritious.jpg',
       'overlay': [
         Color(0xFF06beb6).withOpacity(0.7),
         Color(0xFF48b1bf).withOpacity(0.7),
@@ -46,8 +44,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
       'title': 'Fresh & Nutritious',
     },
     {
-      'image':
-          'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80',
+      'image': 'assets/images/calorie/balanced_diet.jpg',
       'overlay': [
         Color(0xFFa8edea).withOpacity(0.7),
         Color(0xFFfed6e3).withOpacity(0.7),
@@ -55,8 +52,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
       'title': 'Balanced Diet',
     },
     {
-      'image':
-          'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
+      'image': 'assets/images/calorie/meal_planning.jpg',
       'overlay': [
         Color(0xFFffecd2).withOpacity(0.7),
         Color(0xFFfcb69f).withOpacity(0.7),
@@ -171,7 +167,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
                       return Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(slide['image'] as String),
+                            image: AssetImage(slide['image'] as String),
                             fit: BoxFit.cover,
                           ),
                         ),
