@@ -32,6 +32,11 @@ class ProfileScreen extends StatelessWidget {
               expandedHeight: 200,
               floating: false,
               pinned: true,
+              centerTitle: true,
+              title: Obx(() => Text(
+                controller.isEditMode.value ? 'Edit Profile' : 'Profile',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )),
               actions: [
                 if (!controller.isEditMode.value)
                   IconButton(
@@ -45,10 +50,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
               ],
               flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  controller.isEditMode.value ? 'Edit Profile' : 'Profile',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
                 background: Stack(
                   fit: StackFit.expand,
                   children: [

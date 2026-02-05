@@ -550,200 +550,183 @@ class HomeTabView extends GetView<HomeController> {
 
     return Drawer(
       backgroundColor: isDark ? const Color(0xFF1C1C1E) : Colors.white,
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
-          Obx(() {
-            final profile = profileController.userProfile.value;
-            final coverUrl = profile?.coverImageUrl;
-            final photoUrl = profile?.photoUrl;
+          // Top Content - Header and Menu Items
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                Obx(() {
+                  final profile = profileController.userProfile.value;
+                  final coverUrl = profile?.coverImageUrl;
+                  final photoUrl = profile?.photoUrl;
 
-            return Container(
-              height: 240,
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1A1A1A) : Colors.grey[200],
-              ),
-              child: Stack(
-                children: [
-                  // Cover Image Background
-                  Positioned.fill(child: _buildCoverImage(coverUrl, isDark)),
-                  // Dark gradient overlay for text readability
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.3),
-                            Colors.black.withOpacity(0.7),
-                            Colors.black.withOpacity(0.9),
-                          ],
-                          stops: const [0.0, 0.5, 1.0],
-                        ),
-                      ),
+                  return Container(
+                    height: 240,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1A1A1A) : Colors.grey[200],
                     ),
-                  ),
-                  // Content with proper spacing
-                  Positioned(
-                    left: 20,
-                    right: 20,
-                    bottom: 20,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                    child: Stack(
                       children: [
-                        // Profile Avatar with border
-                        _buildProfileAvatar(photoUrl, profile?.name ?? 'User'),
-                        const SizedBox(height: 16),
-                        // User Name - Bold and prominent
-                        Text(
-                          controller.getUserName(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                            height: 1.2,
+                        // Cover Image Background
+                        Positioned.fill(child: _buildCoverImage(coverUrl, isDark)),
+                        // Dark gradient overlay for text readability
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withOpacity(0.7),
+                                  Colors.black.withOpacity(0.9),
+                                ],
+                                stops: const [0.0, 0.5, 1.0],
+                              ),
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 6),
-                        // Greeting - Lighter weight
-                        Text(
-                          controller.getGreeting(),
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.85),
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            letterSpacing: 0.3,
+                        // Content with proper spacing
+                        Positioned(
+                          left: 20,
+                          right: 20,
+                          bottom: 20,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Profile Avatar with border
+                              _buildProfileAvatar(photoUrl, profile?.name ?? 'User'),
+                              const SizedBox(height: 16),
+                              // User Name - Bold and prominent
+                              Text(
+                                controller.getUserName(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                  height: 1.2,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 6),
+                              // Greeting - Lighter weight
+                              Text(
+                                controller.getGreeting(),
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.85),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
+                  );
+                }),
+                
+                // Unique Features Section
+                ListTile(
+                  leading: Icon(
+                    Icons.smart_toy_rounded,
+                    color: const Color(0xFF4A90E2),
                   ),
-                ],
-              ),
-            );
-          }),
-          ListTile(
-            leading: Icon(Icons.home, color: const Color(0xFF4A90E2)),
-            title: Text(
-              'Home',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  title: Text(
+                    'AI Fitness Coach',
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  ),
+                  subtitle: Text(
+                    'Chat with FitBot',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.toNamed('/ai-chat');
+                  },
+                ),
+                
+                const Divider(),
+                
+                // App Features Section
+                ListTile(
+                  leading: Icon(
+                    Icons.settings,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                  title: Text(
+                    'Settings',
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.snackbar(
+                      'Coming Soon',
+                      'Settings page will be available soon',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.help_outline,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                  title: Text(
+                    'Help & Support',
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.toNamed('/help-support');
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout, color: Colors.red),
+                  title: Text('Logout', style: TextStyle(color: Colors.red)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _handleLogout(context);
+                  },
+                ),
+              ],
             ),
-            onTap: () => Navigator.pop(context),
           ),
-          ListTile(
-            leading: Icon(Icons.person, color: const Color(0xFF4A90E2)),
-            title: Text(
-              'Profile',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+          
+          // Bottom Version Section - Fixed at bottom
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            child: Column(
+              children: [
+                Divider(color: isDark ? Colors.grey[700] : Colors.grey[300]),
+                const SizedBox(height: 12),
+                Text(
+                  'FitTrack Plus',
+                  style: TextStyle(
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Version 1.0.0',
+                  style: TextStyle(
+                    color: isDark ? Colors.grey[500] : Colors.grey[500],
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
-            onTap: () {
-              Navigator.pop(context);
-              // Navigate to profile tab
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.fitness_center, color: const Color(0xFF4A90E2)),
-            title: Text(
-              'Workouts',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              // Navigate to workouts tab
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.trending_up, color: const Color(0xFF4A90E2)),
-            title: Text(
-              'Progress',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              // Navigate to progress tab
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.build, color: const Color(0xFF4A90E2)),
-            title: Text(
-              'Tools',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              // Navigate to tools tab
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: Icon(
-              Icons.smart_toy_rounded,
-              color: const Color(0xFF4A90E2),
-            ),
-            title: Text(
-              'AI Fitness Coach',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-            ),
-            subtitle: Text(
-              'Chat with FitBot',
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? Colors.grey[400] : Colors.grey[600],
-              ),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Get.toNamed('/ai-chat');
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.settings,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-            ),
-            title: Text(
-              'Settings',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Get.snackbar(
-                'Coming Soon',
-                'Settings page will be available soon',
-                snackPosition: SnackPosition.BOTTOM,
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.help_outline,
-              color: isDark ? Colors.grey[400] : Colors.grey[600],
-            ),
-            title: Text(
-              'Help & Support',
-              style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Get.snackbar(
-                'Coming Soon',
-                'Help & Support will be available soon',
-                snackPosition: SnackPosition.BOTTOM,
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout, color: Colors.red),
-            title: Text('Logout', style: TextStyle(color: Colors.red)),
-            onTap: () {
-              Navigator.pop(context);
-              _handleLogout(context);
-            },
           ),
         ],
       ),
