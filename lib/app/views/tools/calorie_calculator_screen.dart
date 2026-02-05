@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 import '../../controllers/home_controller.dart';
+import '../../services/calorie_goal_service.dart';
 import 'calorie_goal_tracking_screen.dart';
 
 class CalorieCalculatorScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
   final activityLevel = 'moderate'.obs;
   final calorieResult = ''.obs;
   final calculatedCalories = 0.obs;
+  final hasGoal = false.obs;
 
   final List<Map<String, dynamic>> _calorieSlides = [
     {
@@ -78,6 +80,9 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
     );
     gender.value = user?.gender?.toLowerCase() ?? 'male';
 
+    // Check if a goal already exists
+    _checkExistingGoal();
+
     _startAutoSlide();
   }
 
@@ -89,6 +94,17 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
     weightController?.dispose();
     heightController?.dispose();
     super.dispose();
+  }
+
+  Future<void> _checkExistingGoal() async {
+    final service = Get.put(CalorieGoalService());
+    final goal = await service.loadGoal();
+    hasGoal.value = goal != null;
+
+    // If a goal exists and no calories calculated yet, use the goal's target
+    if (goal != null && calculatedCalories.value == 0) {
+      calculatedCalories.value = goal.dailyCalorieTarget;
+    }
   }
 
   void _startAutoSlide() {
@@ -122,19 +138,25 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
         foregroundColor: Colors.white,
         actions: [
           Obx(
-            () => calculatedCalories.value > 0
+            () => (calculatedCalories.value > 0 || hasGoal.value)
                 ? IconButton(
                     icon: const Icon(Icons.track_changes),
-                    tooltip: 'Set Goal',
-                    onPressed: () {
-                      Navigator.push(
+                    tooltip: 'View/Set Goal',
+                    onPressed: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => CalorieGoalTrackingScreen(
-                            dailyCalories: calculatedCalories.value,
+                            dailyCalories: calculatedCalories.value > 0
+                                ? calculatedCalories.value
+                                : 2000, // Default value if no calculation yet
                           ),
                         ),
                       );
+                      // Refresh goal status when returning
+                      if (result != null) {
+                        _checkExistingGoal();
+                      }
                     },
                   )
                 : const SizedBox.shrink(),
@@ -471,8 +493,8 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      Navigator.push(
+                                    onPressed: () async {
+                                      final result = await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
@@ -482,6 +504,10 @@ class _CalorieCalculatorScreenState extends State<CalorieCalculatorScreen> {
                                               ),
                                         ),
                                       );
+                                      // Refresh goal status when returning
+                                      if (result != null) {
+                                        _checkExistingGoal();
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFF4A90E2),
