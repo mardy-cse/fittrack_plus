@@ -28,12 +28,12 @@ class BMIController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
+
     // Load user profile data
     try {
       final homeController = Get.find<HomeController>();
       final user = homeController.userProfile.value;
-      
+
       if (user?.height != null) {
         heightSlider.value = user!.height!;
       }
@@ -43,7 +43,7 @@ class BMIController extends GetxController {
     } catch (e) {
       debugPrint('HomeController not found, using default values');
     }
-    
+
     loadHistory();
 
     // Sync sliders with text fields

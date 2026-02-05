@@ -565,9 +565,7 @@ class HomeTabView extends GetView<HomeController> {
               child: Stack(
                 children: [
                   // Cover Image Background
-                  Positioned.fill(
-                    child: _buildCoverImage(coverUrl, isDark),
-                  ),
+                  Positioned.fill(child: _buildCoverImage(coverUrl, isDark)),
                   // Dark gradient overlay for text readability
                   Positioned.fill(
                     child: Container(

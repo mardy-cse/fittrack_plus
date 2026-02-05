@@ -58,7 +58,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
                               image: workout.imageUrl.startsWith('http')
                                   ? NetworkImage(workout.imageUrl)
                                   : AssetImage(workout.imageUrl)
-                                      as ImageProvider,
+                                        as ImageProvider,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return Container(
@@ -647,11 +647,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.fitness_center,
-          size: 100,
-          color: const Color(0xFF4A90E2),
-        ),
+        Icon(Icons.fitness_center, size: 100, color: const Color(0xFF4A90E2)),
         const SizedBox(height: 16),
         const Text(
           'Ready to workout!',

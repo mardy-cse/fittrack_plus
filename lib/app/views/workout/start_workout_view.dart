@@ -28,78 +28,145 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   }
 
   Widget _buildWorkoutView(BuildContext context) {
-    return Column(
-      children: [
-        // Top Bar with Quit Button
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: controller.quitWorkout,
-              ),
-              Text(
-                controller.workout.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Top Bar with Quit Button
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: controller.quitWorkout,
                 ),
+                Text(
+                  controller.workout.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 48), // For symmetry
+              ],
+            ),
+          ),
+
+          // Progress Bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Obx(
+              () => LinearProgressIndicator(
+                value: controller.progressPercentage,
+                backgroundColor: Colors.grey[800],
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+                minHeight: 8,
               ),
-              const SizedBox(width: 48), // For symmetry
-            ],
-          ),
-        ),
-
-        // Progress Bar
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Obx(
-            () => LinearProgressIndicator(
-              value: controller.progressPercentage,
-              backgroundColor: Colors.grey[800],
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-              minHeight: 8,
             ),
           ),
-        ),
 
-        const SizedBox(height: 32),
+          const SizedBox(height: 32),
 
-        // Current Exercise / Rest Indicator
-        Obx(
-          () => Text(
-            controller.isResting.value ? 'REST TIME' : 'EXERCISE',
-            style: TextStyle(
-              color: controller.isResting.value ? Colors.orange : Colors.green,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2,
+          // Current Exercise / Rest Indicator
+          Obx(
+            () => Text(
+              controller.isResting.value ? 'REST TIME' : 'EXERCISE',
+              style: TextStyle(
+                color: controller.isResting.value
+                    ? Colors.orange
+                    : Colors.green,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
             ),
           ),
-        ),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        // Exercise Name
-        Obx(
-          () => Text(
-            controller.currentExerciseName,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+          // Exercise Name
+          Obx(
+            () => Text(
+              controller.currentExerciseName,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
-        ),
-        const SizedBox(height: 24),
+          const SizedBox(height: 24),
 
-        // Exercise Animation Card
-        Obx(() {
-          if (!controller.isResting.value) {
+          // Exercise Animation Card
+          Obx(() {
+            if (!controller.isResting.value) {
+              return Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Container(
+                  height: 240,
+                  width: 240,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.green.withOpacity(0.2),
+                        Colors.blue.withOpacity(0.2),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      children: [
+                        // Lottie Animation with error handling
+                        Center(
+                          child: _buildAnimationWidget(
+                            _getAnimationForExercise(
+                              controller.currentExerciseName,
+                            ),
+                            !controller.isPaused.value,
+                          ),
+                        ),
+                        // Form tip overlay
+                        Positioned(
+                          bottom: 12,
+                          left: 12,
+                          right: 12,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Text(
+                              'Follow the form',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+            // Rest time card
             return Card(
               elevation: 8,
               shape: RoundedRectangleBorder(
@@ -113,8 +180,8 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.green.withOpacity(0.2),
-                      Colors.blue.withOpacity(0.2),
+                      Colors.orange.withOpacity(0.2),
+                      Colors.red.withOpacity(0.2),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(20),
@@ -123,16 +190,12 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
                   borderRadius: BorderRadius.circular(20),
                   child: Stack(
                     children: [
-                      // Lottie Animation with error handling
                       Center(
                         child: _buildAnimationWidget(
-                          _getAnimationForExercise(
-                            controller.currentExerciseName,
-                          ),
-                          !controller.isPaused.value,
+                          'assets/animations/plank.json',
+                          true,
                         ),
                       ),
-                      // Form tip overlay
                       Positioned(
                         bottom: 12,
                         left: 12,
@@ -143,11 +206,11 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.green.withOpacity(0.9),
+                            color: Colors.orange.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(
-                            'Follow the form',
+                            'Take a breath',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
@@ -162,113 +225,54 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
                 ),
               ),
             );
-          }
-          // Rest time card
-          return Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+          }),
+
+          const SizedBox(height: 24),
+
+          // Timer Circle
+          Obx(() => _buildTimerCircle(context)),
+
+          const SizedBox(height: 24),
+
+          // Stats Row
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Obx(
+                  () => _buildStatCard(
+                    'Time',
+                    controller.formatDuration(controller.totalSeconds.value),
+                    Icons.timer,
+                  ),
+                ),
+                Obx(
+                  () => _buildStatCard(
+                    'Exercises',
+                    '${controller.exercisesCompleted.value}/${controller.workout.exercises.length}',
+                    Icons.fitness_center,
+                  ),
+                ),
+                Obx(
+                  () => _buildStatCard(
+                    'Calories',
+                    '${controller.caloriesBurned.value}',
+                    Icons.local_fire_department,
+                  ),
+                ),
+              ],
             ),
-            child: Container(
-              height: 240,
-              width: 240,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.orange.withOpacity(0.2),
-                    Colors.red.withOpacity(0.2),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: _buildAnimationWidget(
-                        'assets/animations/plank.json',
-                        true,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 12,
-                      left: 12,
-                      right: 12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'Take a breath',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }),
-
-        const Spacer(),
-
-        // Timer Circle
-        Obx(() => _buildTimerCircle(context)),
-
-        const Spacer(),
-
-        // Stats Row
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Obx(
-                () => _buildStatCard(
-                  'Time',
-                  controller.formatDuration(controller.totalSeconds.value),
-                  Icons.timer,
-                ),
-              ),
-              Obx(
-                () => _buildStatCard(
-                  'Exercises',
-                  '${controller.exercisesCompleted.value}/${controller.workout.exercises.length}',
-                  Icons.fitness_center,
-                ),
-              ),
-              Obx(
-                () => _buildStatCard(
-                  'Calories',
-                  '${controller.caloriesBurned.value}',
-                  Icons.local_fire_department,
-                ),
-              ),
-            ],
           ),
-        ),
 
-        const SizedBox(height: 32),
+          const SizedBox(height: 32),
 
-        // Control Buttons
-        Obx(() => _buildControlButtons()),
+          // Control Buttons
+          Obx(() => _buildControlButtons()),
 
-        const SizedBox(height: 32),
-      ],
+          const SizedBox(height: 32),
+        ],
+      ),
     );
   }
 
