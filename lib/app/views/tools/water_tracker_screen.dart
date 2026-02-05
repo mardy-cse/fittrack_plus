@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/water_intake_log.dart';
@@ -12,22 +13,86 @@ class WaterTrackerScreen extends StatefulWidget {
 
 class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   int waterGlasses = 0;
-  final int dailyGoal = 8;
+  int dailyGoal = 8;
   final WaterTrackerService _service = WaterTrackerService();
   List<DateTime> timestamps = [];
   bool _isLoading = true;
   DateTime _currentDate = DateTime.now();
+  
+  // Background slider
+  PageController? _pageController;
+  int _currentPage = 0;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 0);
     _loadTodayData();
     _startDailyResetTimer();
+    _startAutoSlide();
   }
 
   @override
   void dispose() {
+    _pageController?.dispose();
+    _timer?.cancel();
     super.dispose();
+  }
+  
+  void _startAutoSlide() {
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (!mounted || _pageController == null || !(_pageController?.hasClients ?? false)) {
+        return;
+      }
+      
+      final nextPage = (_currentPage + 1) % 4;
+      
+      _pageController?.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+  
+  void _editDailyGoal() {
+    TextEditingController goalController = TextEditingController(text: dailyGoal.toString());
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Daily Goal'),
+        content: TextField(
+          controller: goalController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Glasses per day',
+            hintText: 'Enter number of glasses',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final newGoal = int.tryParse(goalController.text);
+              if (newGoal != null && newGoal > 0) {
+                setState(() {
+                  dailyGoal = newGoal;
+                });
+                _saveData();
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _startDailyResetTimer() {
@@ -173,90 +238,249 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.water_drop, size: 120, color: Colors.white),
-              const SizedBox(height: 32),
-              Text(
-                '$waterGlasses / $dailyGoal',
-                style: const TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.bold,
+      body: Column(
+        children: [
+          // Dynamic background slider - Fixed at top
+          SizedBox(
+            height: 200,
+            child: Stack(
+              children: [
+                PageView(
+                  controller: _pageController,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  children: [
+                    _buildBackgroundSlide(
+                      'assets/images/1140-pouring-water-over-hydration.jpg',
+                      [Colors.blue.withOpacity(0.7), Colors.cyan.withOpacity(0.5)],
+                      'Stay Hydrated, Stay Healthy!',
+                    ),
+                    _buildBackgroundSlide(
+                      'assets/images/617.jpg',
+                      [Colors.lightBlue.withOpacity(0.7), Colors.teal.withOpacity(0.5)],
+                      'Drink Fresh Water Daily',
+                    ),
+                    _buildBackgroundSlide(
+                      'assets/images/4.jpg',
+                      [Colors.cyan.withOpacity(0.7), Colors.blue.withOpacity(0.5)],
+                      'Water is Life!',
+                    ),
+                    _buildBackgroundSlide(
+                      'assets/images/1.jpg',
+                      [Colors.teal.withOpacity(0.7), Colors.lightBlue.withOpacity(0.5)],
+                      'Keep Your Body Refreshed',
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'glasses',
-                style: TextStyle(fontSize: 20, color: Colors.grey),
-              ),
-              const SizedBox(height: 32),
-              LinearProgressIndicator(
-                value: getProgress(),
-                backgroundColor: Colors.grey[300],
-                color: const Color(0xFF4A90E2),
-                minHeight: 20,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                '${getProgressPercentage()}% of daily goal',
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-              ),
-              const SizedBox(height: 48),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FloatingActionButton(
-                    heroTag: 'remove_water_btn',
-                    onPressed: removeGlass,
-                    backgroundColor: const Color(0xFF4A90E2),
-                    child: const Icon(Icons.remove, color: Colors.white),
-                  ),
-                  const SizedBox(width: 32),
-                  FloatingActionButton.extended(
-                    heroTag: 'add_water_btn',
-                    onPressed: addGlass,
-                    backgroundColor: const Color(0xFF4A90E2),
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text(
-                      'Add Glass',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                // Slide indicators
+                Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      4,
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentPage == index
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
+                        ),
+                      ),
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 48),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.cyan.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
                 ),
+              ],
+            ),
+          ),
+          
+          // Scrollable Content
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Daily Goal',
-                      style: TextStyle(
-                        fontSize: 18,
+                    const Icon(Icons.water_drop, size: 120, color: Color(0xFF4A90E2)),
+                    const SizedBox(height: 32),
+                    Text(
+                      '$waterGlasses / $dailyGoal',
+                      style: const TextStyle(
+                        fontSize: 48,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
+                    const Text(
+                      'glasses',
+                      style: TextStyle(fontSize: 20, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 32),
+                    LinearProgressIndicator(
+                      value: getProgress(),
+                      backgroundColor: Colors.grey[300],
+                      color: const Color(0xFF4A90E2),
+                      minHeight: 20,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    const SizedBox(height: 16),
                     Text(
-                      '$dailyGoal glasses (2 liters)',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                      '${getProgressPercentage()}% of daily goal',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 48),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ElevatedButton.icon(
+                              onPressed: removeGlass,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4A90E2),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 2,
+                              ),
+                              icon: const Icon(Icons.remove, size: 20),
+                              label: const Text(
+                                'Remove',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: ElevatedButton.icon(
+                              onPressed: addGlass,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4A90E2),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 2,
+                              ),
+                              icon: const Icon(Icons.add, size: 20),
+                              label: const Text(
+                                'Add Glass',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 48),
+                    InkWell(
+                      onTap: _editDailyGoal,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.cyan.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.cyan.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Daily Goal',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  '$dailyGoal glasses (${(dailyGoal * 0.25).toStringAsFixed(1)} liters)',
+                                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.edit,
+                              color: Colors.cyan[700],
+                              size: 24,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildBackgroundSlide(String imageUrl, List<Color> gradientColors, String motivatingText) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          imageUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: Colors.blue,
+            );
+          },
+        ),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: gradientColors,
+            ),
           ),
         ),
-      ),
+        Center(
+          child: Text(
+            motivatingText,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              shadows: [
+                Shadow(
+                  offset: Offset(2, 2),
+                  blurRadius: 4,
+                  color: Colors.black45,
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 }
