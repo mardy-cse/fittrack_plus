@@ -457,26 +457,30 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   String _getAnimationForExercise(String exerciseName) {
     final lowerName = exerciseName.toLowerCase();
 
-    if (lowerName.contains('plank') ||
-        lowerName.contains('core') ||
-        lowerName.contains('ab')) {
-      return 'assets/animations/plank.json';
-    } else if (lowerName.contains('push') ||
-        lowerName.contains('chest') ||
-        lowerName.contains('press')) {
+    if (lowerName.contains('push') || lowerName.contains('push-up')) {
       return 'assets/animations/pushup_improved.json';
-    } else if (lowerName.contains('squat') ||
-        lowerName.contains('leg') ||
-        lowerName.contains('lunge')) {
+    } else if (lowerName.contains('squat') || lowerName.contains('jump squat')) {
       return 'assets/animations/squat_improved.json';
-    } else if (lowerName.contains('run') ||
-        lowerName.contains('cardio') ||
-        lowerName.contains('jog')) {
+    } else if (lowerName.contains('plank') || lowerName.contains('core')) {
+      return 'assets/animations/plank.json';
+    } else if (lowerName.contains('run') || lowerName.contains('jog') || lowerName.contains('cardio')) {
       return 'assets/animations/running_improved.json';
-    } else if (lowerName.contains('jump') ||
-        lowerName.contains('jack') ||
-        lowerName.contains('burpee')) {
-      return 'assets/animations/jumping_jacks.lottie';
+    } else if (lowerName.contains('jump') || lowerName.contains('jack')) {
+      return 'assets/animations/jumping_jacks.json';
+    } else if (lowerName.contains('burpee')) {
+      return 'assets/animations/burpees.json';
+    } else if (lowerName.contains('mountain') && lowerName.contains('climber')) {
+      return 'assets/animations/mountain_climbers.json';
+    } else if (lowerName.contains('lunge')) {
+      return 'assets/animations/lunges.json';
+    } else if (lowerName.contains('sit') && (lowerName.contains('up') || lowerName.contains('ups'))) {
+      return 'assets/animations/situps.json';
+    } else if (lowerName.contains('crunch') || lowerName.contains('ab')) {
+      return 'assets/animations/situps.json';
+    } else if (lowerName.contains('bicep') || lowerName.contains('curl')) {
+      return 'assets/animations/bicep_curls.json';
+    } else if (lowerName.contains('dumbbell') || lowerName.contains('arm')) {
+      return 'assets/animations/bicep_curls.json';
     } else {
       return 'assets/animations/squat_improved.json';
     }

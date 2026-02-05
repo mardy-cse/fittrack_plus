@@ -36,10 +36,18 @@ class HomeController extends GetxController {
     // _syncStepsData(); // Disabled for emulator
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    // Refresh stats when the controller is ready
+    _updateTodayStats();
+  }
+
   // Sync stats from ProgressController
   void _syncProgressStats() {
     try {
-      final progressController = Get.find<ProgressController>();
+      // Use Get.put to ensure ProgressController is initialized
+      final progressController = Get.put(ProgressController());
 
       // Listen to changes in progress stats
       ever(progressController.totalWorkouts, (_) => _updateTodayStats());
@@ -58,7 +66,8 @@ class HomeController extends GetxController {
   // Calculate today's stats from recent sessions
   void _updateTodayStats() {
     try {
-      final progressController = Get.find<ProgressController>();
+      // Use Get.put to ensure ProgressController is available
+      final progressController = Get.put(ProgressController());
       final today = DateTime.now();
 
       // Filter today's sessions
@@ -181,6 +190,7 @@ class HomeController extends GetxController {
   // Refresh data
   Future<void> refreshData() async {
     await Future.wait([loadUserProfile(), loadWorkouts()]);
+    _updateTodayStats(); // Update today's stats when refreshing
   }
 
   // Logout
