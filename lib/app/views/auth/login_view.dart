@@ -167,18 +167,6 @@ class LoginView extends GetView<AuthController> {
                   icon: Icons.g_mobiledata,
                 ),
 
-                const SizedBox(height: 16),
-
-                // Phone Login Button
-                CustomButton(
-                  text: 'Continue with Phone',
-                  onPressed: () => Get.toNamed('/phone-auth'),
-                  backgroundColor: Colors.white,
-                  textColor: Colors.black87,
-                  outlined: true,
-                  icon: Icons.phone,
-                ),
-
                 const SizedBox(height: 30),
 
                 // Sign Up Link
