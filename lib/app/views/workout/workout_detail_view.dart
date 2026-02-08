@@ -543,26 +543,6 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     }
   }
 
-  IconData _getExerciseIcon(String category) {
-    switch (category.toLowerCase()) {
-      case 'cardio':
-        return Icons.directions_run;
-      case 'strength':
-        return Icons.fitness_center;
-      case 'yoga':
-        return Icons.self_improvement;
-      case 'core':
-      case 'abs':
-        return Icons.accessibility_new;
-      case 'flexibility':
-        return Icons.accessibility;
-      case 'hiit':
-        return Icons.local_fire_department;
-      default:
-        return Icons.sports_gymnastics;
-    }
-  }
-
   String _getExerciseInstruction(String category) {
     switch (category.toLowerCase()) {
       case 'cardio':

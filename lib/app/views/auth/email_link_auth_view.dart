@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/email_link_auth_controller.dart';
 
 class EmailLinkAuthView extends GetView<EmailLinkAuthController> {
-  const EmailLinkAuthView({Key? key}) : super(key: key);
+  const EmailLinkAuthView({super.key});
 
   @override
   Widget build(BuildContext context) {

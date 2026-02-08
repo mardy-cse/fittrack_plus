@@ -337,7 +337,6 @@ class WaterWavePainter extends CustomPainter {
 
     final shinePath = Path();
     final w = size.width;
-    final h = size.height;
     final shineAmplitude = w * 0.02;
     final phaseShift = wavePhase * 2 * pi;
 

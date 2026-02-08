@@ -424,36 +424,6 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     );
   }
 
-  IconData _getExerciseIcon(String exerciseName) {
-    final lowerName = exerciseName.toLowerCase();
-
-    if (lowerName.contains('plank') ||
-        lowerName.contains('core') ||
-        lowerName.contains('ab')) {
-      return Icons.accessibility_new;
-    } else if (lowerName.contains('push') ||
-        lowerName.contains('chest') ||
-        lowerName.contains('press')) {
-      return Icons.fitness_center;
-    } else if (lowerName.contains('squat') ||
-        lowerName.contains('leg') ||
-        lowerName.contains('lunge')) {
-      return Icons.airline_seat_legroom_normal;
-    } else if (lowerName.contains('run') ||
-        lowerName.contains('cardio') ||
-        lowerName.contains('jog')) {
-      return Icons.directions_run;
-    } else if (lowerName.contains('jump') ||
-        lowerName.contains('jack') ||
-        lowerName.contains('burpee')) {
-      return Icons.sports_gymnastics;
-    } else if (lowerName.contains('rest')) {
-      return Icons.self_improvement;
-    } else {
-      return Icons.fitness_center;
-    }
-  }
-
   String _getAnimationForExercise(String exerciseName) {
     final lowerName = exerciseName.toLowerCase();
 

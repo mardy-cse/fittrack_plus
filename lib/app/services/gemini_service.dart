@@ -61,7 +61,7 @@ User: $message''';
 
       debugPrint('📥 Received response from Gemini (${text.length} chars)');
       return text;
-    } catch (e, stackTrace) {
+    } catch (e) {
       debugPrint(
         '❌ Gemini API failed, using personalized fallback response: $e',
       );
@@ -72,8 +72,6 @@ User: $message''';
   }
 
   Future<String> _getPersonalizedFallbackResponse(String message) async {
-    final lowerMessage = message.toLowerCase();
-
     try {
       // Get comprehensive user data for intelligent responses
       final comprehensiveData = await _getComprehensiveUserData();
@@ -151,12 +149,10 @@ User: $message''';
   // Comprehensive user data methods
   Future<Map<String, dynamic>> _getUserProfileData() async {
     try {
-      ProfileController? profileController;
-
       try {
-        profileController = Get.find<ProfileController>();
+        Get.find<ProfileController>();
       } catch (e) {
-        profileController = Get.put(ProfileController());
+        Get.put(ProfileController());
       }
 
       final user = FirebaseAuth.instance.currentUser;
@@ -310,18 +306,20 @@ $healthMetrics
         lowerMessage.contains('how many glasses water') ||
         lowerMessage.contains('water intake today')) {
       final glasses = fitnessData['waterGlasses'] ?? 0;
-      return '💧 **Today you\'ve had ${glasses} glasses of water.** ${glasses >= 8 ? '🎉 Great hydration!' : 'Keep drinking more!'}';
+      return '💧 **Today you\'ve had $glasses glasses of water.** ${glasses >= 8 ? '🎉 Great hydration!' : 'Keep drinking more!'}';
     }
 
     if (lowerMessage.contains('am i hydrated') ||
         lowerMessage.contains('hydration enough') ||
         lowerMessage.contains('enough water')) {
       final percentage = fitnessData['hydrationPercentage'] ?? 0;
-      if (percentage >= 100)
-        return '💧 **Yes! You\'re perfectly hydrated** (${percentage}% of daily goal)';
-      if (percentage >= 75)
-        return '💧 **Almost there!** You\'re ${percentage}% hydrated - just a bit more!';
-      return '💧 **Need more water.** You\'re only ${percentage}% hydrated. Drink up! 🥛';
+      if (percentage >= 100) {
+        return '💧 **Yes! You\'re perfectly hydrated** ($percentage% of daily goal)';
+      }
+      if (percentage >= 75) {
+        return '💧 **Almost there!** You\'re $percentage% hydrated - just a bit more!';
+      }
+      return '💧 **Need more water.** You\'re only $percentage% hydrated. Drink up! 🥛';
     }
 
     // Workout related specific questions
@@ -329,7 +327,7 @@ $healthMetrics
         lowerMessage.contains('ajke koto workout') ||
         lowerMessage.contains('workouts completed today')) {
       final workouts = fitnessData['todayWorkouts'] ?? 0;
-      return '🏋️ **Today you completed ${workouts} workout${workouts == 1 ? '' : 's'}.** ${workouts > 0 ? 'Excellent work! 💪' : 'Ready to start your first one?'}';
+      return '🏋️ **Today you completed $workouts workout${workouts == 1 ? '' : 's'}.** ${workouts > 0 ? 'Excellent work! 💪' : 'Ready to start your first one?'}';
     }
 
     if (lowerMessage.contains('did i workout today') ||
@@ -337,7 +335,7 @@ $healthMetrics
         lowerMessage.contains('worked out today')) {
       final workouts = fitnessData['todayWorkouts'] ?? 0;
       return workouts > 0
-          ? '✅ **Yes! You worked out today.** ${workouts} session${workouts == 1 ? '' : 's'} completed! 🔥'
+          ? '✅ **Yes! You worked out today.** $workouts session${workouts == 1 ? '' : 's'} completed! 🔥'
           : '❌ **No workouts today yet.** Ready to start? 💪';
     }
 
@@ -347,7 +345,7 @@ $healthMetrics
         lowerMessage.contains('streak kemon') ||
         lowerMessage.contains('how many days streak')) {
       final streak = fitnessData['currentStreak'] ?? 0;
-      return '🔥 **Your current streak is ${streak} days!** ${_getStreakMotivation(streak)}';
+      return '🔥 **Your current streak is $streak days!** ${_getStreakMotivation(streak)}';
     }
 
     // Calorie related questions
@@ -355,7 +353,7 @@ $healthMetrics
         lowerMessage.contains('calories burned today') ||
         lowerMessage.contains('ajke koto calorie')) {
       final calories = fitnessData['todayCalories'] ?? 0;
-      return '🔥 **Today you burned ${calories} calories!** ${calories > 200
+      return '🔥 **Today you burned $calories calories!** ${calories > 200
           ? 'Great burn! 🚀'
           : calories > 0
           ? 'Good start! ⚡'
@@ -367,7 +365,7 @@ $healthMetrics
         lowerMessage.contains('workout time today') ||
         lowerMessage.contains('exercise duration')) {
       final minutes = fitnessData['todayMinutes'] ?? 0;
-      return '⏱️ **Today\'s exercise time: ${minutes} minutes.** ${minutes >= 30
+      return '⏱️ **Today\'s exercise time: $minutes minutes.** ${minutes >= 30
           ? 'Perfect duration! 🎯'
           : minutes > 0
           ? 'Good start! Keep building! ⚡'
@@ -395,10 +393,12 @@ $healthMetrics
       final waterGoal = (fitnessData['hydrationPercentage'] ?? 0) >= 100;
       final workoutGoal = (fitnessData['todayWorkouts'] ?? 0) > 0;
 
-      if (waterGoal && workoutGoal)
+      if (waterGoal && workoutGoal) {
         return '🎯 **Yes! Meeting both water and workout goals today!** 🌟';
-      if (waterGoal)
+      }
+      if (waterGoal) {
         return '💧 **Water goal achieved!** Still need to workout. 🏋️';
+      }
       if (workoutGoal) return '💪 **Workout goal met!** Need more water. 💧';
       return '⏳ **Working toward goals.** Keep pushing! 🚀';
     }
@@ -408,7 +408,7 @@ $healthMetrics
         (lowerMessage.contains('workout') ||
             lowerMessage.contains('progress'))) {
       final weeklyProgress = fitnessData['weeklyGoalProgress'] ?? '0/5';
-      return '📅 **This week\'s workouts: ${weeklyProgress}** ${weeklyProgress.startsWith('5') ? 'Weekly goal achieved! 🏆' : 'Keep going! 💪'}';
+      return '📅 **This week\'s workouts: $weeklyProgress** ${weeklyProgress.startsWith('5') ? 'Weekly goal achieved! 🏆' : 'Keep going! 💪'}';
     }
 
     // Last workout question
@@ -421,7 +421,9 @@ $healthMetrics
           final lastSession = controller.recentSessions.first;
           return '🏋️ **Last workout: ${lastSession.workoutTitle}** (${(lastSession.durationSeconds / 60).round()} min, ${lastSession.caloriesBurned} cal)';
         }
-      } catch (e) {}
+      } catch (e) {
+        debugPrint('Error loading data: $e');
+      }
       return '🏋️ **No recent workouts found.** Ready to start? 💪';
     }
 
@@ -431,7 +433,7 @@ $healthMetrics
         lowerMessage.contains('age koto')) {
       final age = profileData['age'] ?? 0;
       return age > 0
-          ? '🎂 **You are ${age} years old.**'
+          ? '🎂 **You are $age years old.**'
           : 'Please update your age in profile.';
     }
 
@@ -440,7 +442,7 @@ $healthMetrics
         lowerMessage.contains('height koto')) {
       final height = profileData['height'] ?? 0.0;
       return height > 0
-          ? '📏 **Your height is ${height} cm.**'
+          ? '📏 **Your height is $height cm.**'
           : 'Please update your height in profile.';
     }
 
@@ -449,7 +451,7 @@ $healthMetrics
         lowerMessage.contains('weight koto')) {
       final weight = profileData['weight'] ?? 0.0;
       return weight > 0
-          ? '⚖️ **Your weight is ${weight} kg.**'
+          ? '⚖️ **Your weight is $weight kg.**'
           : 'Please update your weight in profile.';
     }
 
@@ -457,14 +459,14 @@ $healthMetrics
     if (lowerMessage.contains('fitness level') ||
         lowerMessage.contains('how fit am i')) {
       final level = profileData['fitnessLevel'] ?? 'Beginner';
-      return '💪 **Your fitness level: ${level}** ${_getFitnessLevelMotivation(level)}';
+      return '💪 **Your fitness level: $level** ${_getFitnessLevelMotivation(level)}';
     }
 
     // Daily calorie needs
     if (lowerMessage.contains('daily calorie need') ||
         lowerMessage.contains('how many calories need')) {
       final dailyCalories = _calculateDailyCalories(profileData);
-      return '🔥 **Your daily calorie needs: ${dailyCalories} kcal** (based on your profile)';
+      return '🔥 **Your daily calorie needs: $dailyCalories kcal** (based on your profile)';
     }
 
     // Simple yes/no questions
@@ -594,7 +596,7 @@ $healthMetrics
       final dailyCalorieNeeds = _calculateDailyCalories(profileData);
 
       return '''• BMI: ${bmi.toStringAsFixed(1)} (${_getBMICategory(bmi)})
-• Daily Calorie Needs: ${dailyCalorieNeeds} kcal
+• Daily Calorie Needs: $dailyCalorieNeeds kcal
 • Hydration Status: ${fitnessData['hydrationPercentage']}%
 • Activity Level: ${_getActivityLevel(fitnessData)}''';
     } catch (e) {
@@ -693,8 +695,6 @@ $healthMetrics
     String lowerMessage,
     Map<String, dynamic> profileData,
   ) {
-    final name = profileData['name'] ?? 'there';
-
     if (lowerMessage.contains('thank') ||
         lowerMessage.contains('thnk') ||
         lowerMessage.contains('dhonnobad')) {
@@ -803,7 +803,7 @@ $healthMetrics
     return '''💧 **Advanced Hydration Analysis for ${profileData['name']}**
 
 **Today's Status:**
-🥛 **${glasses}** glasses consumed (**${percentage}%** of goal)
+🥛 **$glasses** glasses consumed (**$percentage%** of goal)
 🎯 Goal: $goal glasses (${goal * 250}ml)
 📊 Recommended for your weight (${weight}kg): ${recommendedIntake}ml
 
@@ -823,140 +823,6 @@ ${_getHydrationInsight(percentage)}
 
 ${glasses >= goal ? '🌟 Excellent hydration! Your body is optimized for performance!' : '💪 Every glass counts toward your fitness goals!'}
 ''';
-  }
-
-  String _generateWaterResponse(Map<String, dynamic> userData, String message) {
-    final waterGlasses = userData['waterGlasses'] ?? 0;
-    final dailyGoal = 8; // Default water goal
-
-    if (message.contains('koi') ||
-        message.contains('how many') ||
-        message.contains('kitna')) {
-      return '''💧 **Today's Water Intake**
-
-🥛 You've had **$waterGlasses glasses** of water today!
-🎯 Daily Goal: $dailyGoal glasses
-
-${_getWaterMotivation(waterGlasses, dailyGoal)}
-
-**Benefits of staying hydrated:**
-✅ Better workout performance
-✅ Improved recovery
-✅ Enhanced metabolism
-✅ Clearer skin
-
-${waterGlasses < dailyGoal ? 'Keep it up! Every glass counts! 💪' : 'Excellent hydration! You\'re doing great! 🌟'}''';
-    }
-
-    return _getFallbackResponse(message);
-  }
-
-  String _generateProgressResponse(
-    Map<String, dynamic> userData,
-    String message,
-  ) {
-    final workouts = userData['todayWorkouts'] ?? 0;
-    final calories = userData['todayCalories'] ?? 0;
-    final minutes = userData['totalMinutes'] ?? 0;
-    final streak = userData['currentStreak'] ?? 0;
-
-    return '''📊 **Your Fitness Progress Today**
-
-🏋️ Workouts Completed: **$workouts**
-🔥 Calories Burned: **$calories kcal**
-⏱️ Total Exercise Time: **$minutes minutes**
-🔥 Current Streak: **$streak days**
-
-${_getProgressMotivation(workouts, streak)}
-
-**Today's Achievements:**
-${workouts > 0 ? '✅ Workout completed - Great job!' : '⏳ No workouts yet - Ready to start?'}
-${calories > 200
-        ? '✅ Good calorie burn!'
-        : calories > 0
-        ? '⚡ Getting started!'
-        : '💪 Time to move!'}
-
-${_getNextActionSuggestion(workouts, userData)}''';
-  }
-
-  String _generateStatsResponse(Map<String, dynamic> userData, String message) {
-    final streak = userData['currentStreak'] ?? 0;
-    final totalWorkouts = userData['todayWorkouts'] ?? 0;
-    final calories = userData['todayCalories'] ?? 0;
-
-    return '''🎯 **Your Fitness Stats**
-
-🔥 Current Streak: **$streak days**
-💪 Total Workouts: **$totalWorkouts**
-⚡ Calories Burned: **$calories kcal**
-
-${_getStreakMessage(streak)}
-
-**Keep Going:**
-• Consistency is key to results!
-• Every workout counts toward your goals
-• You're building healthy habits! 
-
-${streak > 0 ? 'Your dedication is paying off! 🌟' : 'Start your streak today! Every journey begins with one step! 💪'}''';
-  }
-
-  String _getWaterMotivation(int current, int goal) {
-    final percentage = (current / goal * 100).round();
-
-    if (current >= goal) {
-      return '🎉 **Goal Achieved!** Excellent hydration today!';
-    } else if (current >= goal * 0.75) {
-      return '🚀 **Almost there!** Just ${goal - current} more glasses to go!';
-    } else if (current >= goal * 0.5) {
-      return '💪 **Halfway there!** Keep drinking water throughout the day!';
-    } else {
-      return '🌟 **Getting started!** Remember to drink water regularly!';
-    }
-  }
-
-  String _getProgressMotivation(int workouts, int streak) {
-    if (workouts > 0 && streak > 7) {
-      return '🔥 **You\'re on fire!** Amazing consistency!';
-    } else if (workouts > 0) {
-      return '💪 **Great work today!** Building those healthy habits!';
-    } else if (streak > 0) {
-      return '⚡ **Keep your streak alive!** Time for today\'s workout!';
-    } else {
-      return '🌟 **Ready to start?** Every fitness journey begins with one workout!';
-    }
-  }
-
-  String _getNextActionSuggestion(int workouts, Map<String, dynamic> userData) {
-    if (workouts == 0) {
-      return '''
-**Suggested Actions:**
-• Start with a 15-minute workout
-• Try some basic exercises like squats or push-ups
-• Set a small goal for today!''';
-    } else {
-      return '''
-**Keep the momentum:**
-• Stay hydrated after your workout
-• Plan tomorrow\'s session
-• Track your progress!''';
-    }
-  }
-
-  String _getStreakMessage(int streak) {
-    if (streak >= 30) {
-      return '🏆 **INCREDIBLE!** 30+ day streak! You\'re a fitness champion!';
-    } else if (streak >= 14) {
-      return '🔥 **AMAZING!** 2+ weeks of consistency! You\'re building real habits!';
-    } else if (streak >= 7) {
-      return '⭐ **EXCELLENT!** One week streak! You\'re on the right track!';
-    } else if (streak >= 3) {
-      return '💪 **GOOD START!** Keep this momentum going!';
-    } else if (streak > 0) {
-      return '🌟 **Every day counts!** Building your fitness habit!';
-    } else {
-      return '🚀 **Ready to begin!** Start your fitness streak today!';
-    }
   }
 
   String _getFallbackResponse(String message) {
@@ -1111,14 +977,18 @@ Include macronutrient recommendations and meal timing tips.
 
   // Additional comprehensive response methods
   String _getHydrationInsight(int percentage) {
-    if (percentage >= 100)
+    if (percentage >= 100) {
       return '🏆 **Perfect hydration!** Your body is functioning optimally!';
-    if (percentage >= 75)
+    }
+    if (percentage >= 75) {
       return '🚀 **Great progress!** You\'re almost at peak hydration!';
-    if (percentage >= 50)
+    }
+    if (percentage >= 50) {
       return '💪 **Good start!** Keep drinking consistently throughout the day!';
-    if (percentage >= 25)
+    }
+    if (percentage >= 25) {
       return '⚡ **Building up!** Increase intake for better energy and focus!';
+    }
     return '🌟 **Every drop counts!** Start with small, frequent sips!';
   }
 
@@ -1194,7 +1064,7 @@ ${_getProgressivePlan(fitnessLevel, age, profileData)}
 **Recovery Tips:**
 ${_getRecoveryTips(age, currentStreak)}
 
-Ready to crush today\'s workout? Your body is prepared for the next level! 🚀
+Ready to crush today's workout? Your body is prepared for the next level! 🚀
 ''';
   }
 
@@ -1213,12 +1083,12 @@ Ready to crush today\'s workout? Your body is prepared for the next level! 🚀
 
 **📋 Vital Statistics:**
 • Age: **$age** years
-• Height: **${height}** cm
-• Weight: **${weight}** kg
+• Height: **$height** cm
+• Weight: **$weight** kg
 • BMI: **${bmi.toStringAsFixed(1)}** (${_getBMICategory(bmi)})
 
 **📊 Metabolic Profile:**
-• Daily Calorie Needs: **${dailyCalories}** kcal
+• Daily Calorie Needs: **$dailyCalories** kcal
 • Current Activity Level: **${_getActivityLevel(fitnessData)}**
 • Hydration Status: **${fitnessData['hydrationPercentage'] ?? 0}%**
 
@@ -1266,7 +1136,7 @@ ${_getGoalProgressionPlan(profileData, currentStreak)}
 **🏆 Celebration Milestones:**
 ${_getCelebrationMilestones(currentStreak, fitnessData)}
 
-Remember: Goals are achieved through consistent small actions. You\'re already on the right path! 🌟
+Remember: Goals are achieved through consistent small actions. You're already on the right path! 🌟
 ''';
   }
 
@@ -1285,9 +1155,9 @@ Remember: Goals are achieved through consistent small actions. You\'re already o
 
 **📊 Your Nutritional Profile:**
 • Age: **$age** years
-• Weight: **${weight}** kg
+• Weight: **$weight** kg
 • Gender: **$gender**
-• Daily Calorie Needs: **${dailyCalories}** kcal
+• Daily Calorie Needs: **$dailyCalories** kcal
 • Calories Burned Today: **$todayCalories** kcal
 
 **🍽️ Macronutrient Breakdown:**
@@ -1323,27 +1193,27 @@ Hi **${profileData['name'] ?? 'there'}**! I have complete access to your fitness
 
 **📊 What I Know About You:**
 • Complete profile (age: ${profileData['age']}, fitness level: ${profileData['fitnessLevel']})
-• Today\'s progress (${fitnessData['todayWorkouts']} workouts, ${fitnessData['waterGlasses']} glasses water)
+• Today's progress (${fitnessData['todayWorkouts']} workouts, ${fitnessData['waterGlasses']} glasses water)
 • ${fitnessData['currentStreak']} day streak, ${fitnessData['totalSessions']} total sessions
 • Health metrics (BMI, calorie needs, activity level)
 • Workout history and performance trends
 
 **💬 Ask Me Anything:**
-• **Progress Questions:** \"What\'s my streak?\" \"How am I doing this week?\"
-• **Water Tracking:** \"How much water have I had?\" \"Am I hydrated enough?\"
-• **Workout Plans:** \"What workout should I do today?\" \"Plan my week\"
-• **Nutrition Advice:** \"What should I eat?\" \"Meal recommendations\"
-• **Health Analysis:** \"Check my BMI\" \"How are my fitness levels?\"
-• **Goal Setting:** \"Am I meeting my goals?\" \"What should I focus on?\"
+• **Progress Questions:** "What's my streak?" "How am I doing this week?"
+• **Water Tracking:** "How much water have I had?" "Am I hydrated enough?"
+• **Workout Plans:** "What workout should I do today?" "Plan my week"
+• **Nutrition Advice:** "What should I eat?" "Meal recommendations"
+• **Health Analysis:** "Check my BMI" "How are my fitness levels?"
+• **Goal Setting:** "Am I meeting my goals?" "What should I focus on?"
 
 **🎯 Try These Queries:**
-• \"Analyze my progress this week\"
-• \"Suggest a workout based on my fitness level\"  
-• \"What\'s my health status?\"
-• \"How can I improve my performance?\"
-• \"Plan my nutrition for today\"
+• "Analyze my progress this week"
+• "Suggest a workout based on my fitness level"  
+• "What's my health status?"
+• "How can I improve my performance?"
+• "Plan my nutrition for today"
 
-I\'m like having Gemini AI but with complete knowledge of YOUR fitness journey! What would you like to explore? 🚀
+I'm like having Gemini AI but with complete knowledge of YOUR fitness journey! What would you like to explore? 🚀
 ''';
   }
 
@@ -1393,14 +1263,18 @@ I\'m like having Gemini AI but with complete knowledge of YOUR fitness journey! 
     final streak = fitnessData['currentStreak'] ?? 0;
     final todayWorkouts = fitnessData['todayWorkouts'] ?? 0;
 
-    if (hydration < 50)
+    if (hydration < 50) {
       recommendations.add('💧 Increase water intake for better performance');
-    if (streak < 3)
+    }
+    if (streak < 3) {
       recommendations.add('🎯 Focus on consistency - aim for 3+ day streak');
-    if (todayWorkouts == 0)
+    }
+    if (todayWorkouts == 0) {
       recommendations.add('🏋️ Schedule a workout session today');
-    if (fitnessData['averageWorkoutDuration'] < 20)
+    }
+    if (fitnessData['averageWorkoutDuration'] < 20) {
       recommendations.add('⏰ Gradually increase workout duration');
+    }
 
     return recommendations.isEmpty
         ? '🌟 You\'re doing great! Keep up the excellent work!'
@@ -1410,19 +1284,21 @@ I\'m like having Gemini AI but with complete knowledge of YOUR fitness journey! 
   String _getNextMilestones(int streak, int totalSessions) {
     List<String> milestones = [];
 
-    if (streak < 7)
+    if (streak < 7) {
       milestones.add('🎯 7-day streak (${7 - streak} days to go)');
-    else if (streak < 14)
+    } else if (streak < 14) {
       milestones.add('🎯 2-week streak (${14 - streak} days to go)');
-    else if (streak < 30)
+    } else if (streak < 30) {
       milestones.add('🎯 30-day streak (${30 - streak} days to go)');
+    }
 
-    if (totalSessions < 10)
+    if (totalSessions < 10) {
       milestones.add('🏅 10 total sessions (${10 - totalSessions} to go)');
-    else if (totalSessions < 25)
+    } else if (totalSessions < 25) {
       milestones.add('🏅 25 total sessions (${25 - totalSessions} to go)');
-    else if (totalSessions < 50)
+    } else if (totalSessions < 50) {
       milestones.add('🏅 50 total sessions (${50 - totalSessions} to go)');
+    }
 
     return milestones.join('\n• ');
   }
