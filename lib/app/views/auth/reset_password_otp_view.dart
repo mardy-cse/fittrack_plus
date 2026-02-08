@@ -18,9 +18,7 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              border: Border.all(color: Colors.white.withOpacity(0.2)),
             ),
             child: const Icon(
               Icons.arrow_back_ios_new,
@@ -135,10 +133,7 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
         // OTP Input Fields
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(
-            6,
-            (index) => _buildOTPField(context, index),
-          ),
+          children: List.generate(6, (index) => _buildOTPField(context, index)),
         ),
 
         const SizedBox(height: 50),
@@ -191,16 +186,11 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
             );
           } else {
             return Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
-                ),
+                border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
               child: Text(
                 'Resend OTP in ${controller.remainingTime.value}s',
@@ -359,9 +349,7 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.2),
-          ),
+          border: Border.all(color: Colors.white.withOpacity(0.2)),
         ),
         child: TextField(
           controller: controller,
@@ -369,9 +357,7 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
           style: const TextStyle(color: Colors.white, fontSize: 16),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(
-              color: Colors.white.withOpacity(0.4),
-            ),
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
             prefixIcon: Icon(
               Icons.lock_outline,
               color: Colors.white.withOpacity(0.6),
@@ -440,9 +426,7 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.zero,
               filled: false,
-              hintStyle: TextStyle(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
             ),
             onChanged: (value) {
               controller.onOTPChanged(index, value);
@@ -465,10 +449,7 @@ class ResetPasswordOTPView extends GetView<ResetPasswordOTPController> {
         gradient: const LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [
-            Color(0xFF667EEA),
-            Color(0xFF764BA2),
-          ],
+          colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [

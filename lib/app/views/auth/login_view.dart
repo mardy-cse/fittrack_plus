@@ -29,19 +29,13 @@ class LoginView extends GetView<AuthController> {
                   child: Center(
                     child: Hero(
                       tag: 'app_logo',
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).primaryColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Icon(
-                          Icons.fitness_center,
-                          size: 60,
-                          color: Theme.of(context).primaryColor,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image.asset(
+                          'assets/icons/app_icon.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
