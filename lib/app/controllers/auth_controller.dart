@@ -64,6 +64,82 @@ class AuthController extends GetxController {
         password: passwordController.text,
       );
 
+      // Check if email is verified
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null && !user.emailVerified) {
+        isLoading.value = false;
+
+        // Sign out the user
+        await FirebaseAuth.instance.signOut();
+
+        // Show verification required dialog
+        Get.dialog(
+          AlertDialog(
+            backgroundColor: const Color(0xFF1A1F3A),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(color: Colors.white.withOpacity(0.2)),
+            ),
+            title: const Row(
+              children: [
+                Icon(Icons.mark_email_unread, color: Colors.orange),
+                SizedBox(width: 8),
+                Text(
+                  'Email Not Verified',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            content: const Text(
+              'Please verify your email address before logging in. Check your inbox for the verification link.',
+              style: TextStyle(color: Colors.white70, fontSize: 15),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  // Resend verification email
+                  try {
+                    await user.sendEmailVerification();
+                    Get.back();
+                    Get.snackbar(
+                      'Email Sent',
+                      'Verification email has been resent!',
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  } catch (e) {
+                    Get.snackbar(
+                      'Error',
+                      'Failed to resend verification email',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                  }
+                },
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF4A90E2),
+                ),
+                child: const Text('Resend Email'),
+              ),
+              TextButton(
+                onPressed: () => Get.back(),
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF4A90E2),
+                ),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+          barrierDismissible: false,
+        );
+        return;
+      }
+
       // Clear form after successful login
       clearForm();
 
@@ -135,7 +211,7 @@ class AuthController extends GetxController {
     }
   }
 
-  // Sign up with email and password (with OTP verification)
+  // Sign up with email and password
   Future<void> signUp() async {
     if (isLoading.value) return;
 
@@ -146,30 +222,113 @@ class AuthController extends GetxController {
       final password = passwordController.text;
       final name = nameController.text.trim();
 
-      // Send OTP to email and get OTP for development mode
-      final otp = await _authService.signUpWithEmailOTP(
+      // Create account directly
+      await _authService.signUpWithEmail(
         email: email,
         password: password,
         name: name,
       );
 
+      // Sign out user immediately so they can't access app without verification
+      await FirebaseAuth.instance.signOut();
+
+      // Clear form
+      clearForm();
+
       isLoading.value = false;
 
-      // Show OTP in development mode
-      Get.snackbar(
-        'OTP Sent! 📧',
-        'Development Mode - Your OTP: $otp\n(Check console for details)',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 15),
+      // Show success dialog
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: const Color(0xFF1A1F3A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: Colors.white.withOpacity(0.2)),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.mark_email_read, color: Color(0xFF4A90E2), size: 32),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Verification Email Sent',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '📧 Please check your inbox and confirm your email to sign in.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: const Color(0xFF4A90E2).withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: Color(0xFF4A90E2),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Check your spam folder if you don\'t see it',
+                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Close dialog
+                Get.offAllNamed('/login'); // Go to login
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: const Color(0xFF4A90E2),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
       );
-
-      // Navigate to email OTP screen
-      Get.toNamed(
-        '/email-otp',
-        arguments: {'email': email, 'password': password, 'name': name},
-      );
+      return;
     } catch (e) {
       isLoading.value = false;
 
@@ -300,16 +459,14 @@ class AuthController extends GetxController {
     }
   }
 
-  // Forgot password - Send OTP
+  // Forgot password - Send reset email
   Future<void> forgotPassword(String email) async {
     try {
       debugPrint('🔑 Forgot password initiated for: $email');
       isLoading.value = true;
 
-      // Send OTP for password reset
-      debugPrint('📤 Sending OTP...');
-      final otp = await _authService.sendForgotPasswordOTP(email);
-      debugPrint('✅ OTP received: $otp');
+      // Send password reset email via Firebase
+      await _authService.sendPasswordResetEmail(email);
 
       // Close dialog first
       debugPrint('🚪 Closing dialog...');
@@ -320,21 +477,55 @@ class AuthController extends GetxController {
 
       isLoading.value = false;
 
-      // Show OTP in development mode
-      debugPrint('📱 Showing OTP snackbar...');
-      Get.snackbar(
-        'OTP Sent! 📧',
-        'Development Mode - Your OTP: $otp',
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-        duration: const Duration(seconds: 15),
+      // Show success dialog
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: const Color(0xFF1A1F3A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: Colors.white.withOpacity(0.2)),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.mark_email_read, color: Color(0xFF4A90E2), size: 32),
+              SizedBox(width: 12),
+              Text(
+                'Password Reset Email Sent',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          content: const Text(
+            'We\'ve sent a password reset link to your email. Please check your inbox and follow the instructions.',
+            style: TextStyle(color: Colors.white, fontSize: 15, height: 1.5),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              style: TextButton.styleFrom(
+                backgroundColor: const Color(0xFF4A90E2),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
       );
-
-      // Navigate to reset password OTP screen
-      debugPrint('🧭 Navigating to reset password screen...');
-      Get.toNamed('/reset-password-otp', arguments: {'email': email});
-      debugPrint('✅ Navigation completed');
     } catch (e) {
       debugPrint('❌ Error in forgotPassword: $e');
       isLoading.value = false;

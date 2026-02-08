@@ -59,6 +59,9 @@ class AuthService extends GetxService {
 
         // Update display name
         await credential.user!.updateDisplayName(name);
+
+        // Send email verification
+        await credential.user!.sendEmailVerification();
       }
 
       return credential;
@@ -96,15 +99,20 @@ class AuthService extends GetxService {
     }
   }
 
-  // Reset password (old email link method)
-  Future<void> resetPassword(String email) async {
+  // Send password reset email
+  Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     } catch (e) {
-      throw Exception('Failed to reset password: $e');
+      throw Exception('Failed to send password reset email: $e');
     }
+  }
+
+  // Reset password (alias for sendPasswordResetEmail)
+  Future<void> resetPassword(String email) async {
+    return sendPasswordResetEmail(email);
   }
 
   // Forgot Password - Send OTP for password reset
