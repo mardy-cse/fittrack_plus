@@ -390,36 +390,68 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
 
   Widget _buildCompletedView() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.check_circle, color: Colors.green, size: 100),
-          const SizedBox(height: 24),
-          const Text(
-            'Workout Complete!',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.check_circle, color: Colors.green, size: 100),
+            const SizedBox(height: 24),
+            const Text(
+              'Workout Complete! 🎉',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          Obx(
-            () => _buildStatCard(
-              'Duration',
-              controller.formatDuration(controller.totalSeconds.value),
-              Icons.timer,
+            const SizedBox(height: 32),
+            Obx(
+              () => _buildStatCard(
+                'Duration',
+                controller.formatDuration(controller.totalSeconds.value),
+                Icons.timer,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Obx(
-            () => _buildStatCard(
-              'Calories',
-              '${controller.caloriesBurned.value} kcal',
-              Icons.local_fire_department,
+            const SizedBox(height: 16),
+            Obx(
+              () => _buildStatCard(
+                'Calories',
+                '${controller.caloriesBurned.value} kcal',
+                Icons.local_fire_department,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            Obx(
+              () => _buildStatCard(
+                'Exercises',
+                '${controller.exercisesCompleted.value}/${controller.workout.exercises.length}',
+                Icons.fitness_center,
+              ),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Get.back(); // Go back to previous screen
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4A90E2),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 48,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'Done',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

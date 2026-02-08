@@ -215,42 +215,7 @@ class StartWorkoutController extends GetxController {
         sessionId!,
         updatedSession.toMap(),
       );
-
-      // Show completion dialog
-      _showCompletionDialog();
     }
-  }
-
-  // Show completion dialog
-  void _showCompletionDialog() {
-    Get.dialog(
-      AlertDialog(
-        title: const Text('Workout Complete! 🎉'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Duration: ${formatDuration(totalSeconds.value)}'),
-            const SizedBox(height: 8),
-            Text(
-              'Exercises: ${exercisesCompleted.value}/${workout.exercises.length}',
-            ),
-            const SizedBox(height: 8),
-            Text('Calories Burned: ${caloriesBurned.value} kcal'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back(); // Close dialog
-              Get.back(); // Go back to previous screen
-            },
-            child: const Text('Done'),
-          ),
-        ],
-      ),
-      barrierDismissible: false,
-    );
   }
 
   // Quit workout
