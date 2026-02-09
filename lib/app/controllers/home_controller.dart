@@ -46,8 +46,8 @@ class HomeController extends GetxController {
   // Sync stats from ProgressController
   void _syncProgressStats() {
     try {
-      // Use Get.put to ensure ProgressController is initialized
-      final progressController = Get.put(ProgressController());
+      // Get the already initialized ProgressController
+      final progressController = Get.find<ProgressController>();
 
       // Listen to changes in progress stats
       ever(progressController.totalWorkouts, (_) => _updateTodayStats());
@@ -66,8 +66,8 @@ class HomeController extends GetxController {
   // Calculate today's stats from recent sessions
   void _updateTodayStats() {
     try {
-      // Use Get.put to ensure ProgressController is available
-      final progressController = Get.put(ProgressController());
+      // Get the already initialized ProgressController
+      final progressController = Get.find<ProgressController>();
       final today = DateTime.now();
 
       // Filter today's sessions

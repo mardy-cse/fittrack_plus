@@ -28,6 +28,7 @@ import 'app/views/tools/water_tracker_history_screen.dart';
 import 'app/views/help/help_support_screen.dart';
 import 'app/views/settings/settings_screen.dart';
 import 'app/bindings/onboarding_binding.dart';
+import 'app/controllers/progress_controller.dart';
 import 'app/services/user_service.dart';
 import 'app/services/auth_service.dart';
 import 'app/services/workout_service.dart';
@@ -144,6 +145,13 @@ class FitTrackApp extends StatelessWidget {
           name: '/all-workouts',
           page: () => const AllWorkoutsScreen(),
           transition: Transition.rightToLeft,
+          binding: BindingsBuilder(() {
+            // ProgressController is already initialized via HomeBinding
+            // Just ensure it exists, don't recreate
+            if (!Get.isRegistered<ProgressController>()) {
+              Get.lazyPut<ProgressController>(() => ProgressController());
+            }
+          }),
         ),
         GetPage(
           name: '/bmi',

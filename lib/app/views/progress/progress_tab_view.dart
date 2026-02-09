@@ -9,8 +9,8 @@ class ProgressTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize controller
-    final controller = Get.put(ProgressController());
+    // Get existing controller instance
+    final controller = Get.find<ProgressController>();
 
     return Obx(() {
       if (controller.isLoading.value && controller.allSessions.isEmpty) {

@@ -30,10 +30,14 @@ class WorkoutLogService extends GetxService {
     Map<String, dynamic> updates,
   ) async {
     try {
+      debugPrint('Updating session $sessionId with: $updates');
+
       await _firestore
           .collection('workout_sessions')
           .doc(sessionId)
-          .update(updates);
+          .set(updates, SetOptions(merge: true));
+
+      debugPrint('Session $sessionId updated successfully');
       return true;
     } catch (e) {
       debugPrint('Error updating workout session: $e');

@@ -9,54 +9,60 @@ class AllWorkoutsScreen extends GetView<ProgressController> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: isDark ? Colors.black : Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('All Workouts'),
-        backgroundColor: isDark ? Colors.black : const Color(0xFF4A90E2),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
+    return WillPopScope(
+      onWillPop: () async {
+        Get.back();
+        return false; // Let GetX handle navigation
+      },
+      child: Scaffold(
+        backgroundColor: isDark ? Colors.black : Colors.grey[50],
+        appBar: AppBar(
+          title: const Text('All Workouts'),
+          backgroundColor: isDark ? Colors.black : const Color(0xFF4A90E2),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Get.back(),
+          ),
         ),
-      ),
-      body: Obx(() {
-        if (controller.allSessions.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.fitness_center_rounded,
-                  size: 64,
-                  color: isDark ? Colors.grey[700] : Colors.grey[400],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'No workouts yet',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+        body: Obx(() {
+          if (controller.allSessions.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.fitness_center_rounded,
+                    size: 64,
+                    color: isDark ? Colors.grey[700] : Colors.grey[400],
                   ),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: controller.allSessions.length,
-          itemBuilder: (context, index) {
-            final session = controller.allSessions[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _buildWorkoutCard(context, session, isDark),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No workouts yet',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
             );
-          },
-        );
-      }),
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: controller.allSessions.length,
+            itemBuilder: (context, index) {
+              final session = controller.allSessions[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _buildWorkoutCard(context, session, isDark),
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 

@@ -96,7 +96,7 @@ User: $message''';
     try {
       // Get all fitness tracking data
       WaterTrackerService? waterService;
-      ProgressController? progressController;
+      late ProgressController progressController;
 
       try {
         waterService = Get.find<WaterTrackerService>();
@@ -104,11 +104,8 @@ User: $message''';
         waterService = WaterTrackerService();
       }
 
-      try {
-        progressController = Get.find<ProgressController>();
-      } catch (e) {
-        progressController = Get.put(ProgressController());
-      }
+      // ProgressController is now guaranteed to exist via bindings
+      progressController = Get.find<ProgressController>();
 
       // Today's data
       final todayWaterLog = await waterService.getTodayLog();
@@ -122,13 +119,13 @@ User: $message''';
             .round(),
 
         // Today's workout data
-        'todayWorkouts': progressController?.totalWorkouts.value ?? 0,
-        'todayCalories': progressController?.totalCalories.value ?? 0,
-        'todayMinutes': progressController?.totalMinutes.value ?? 0,
+        'todayWorkouts': progressController.totalWorkouts.value,
+        'todayCalories': progressController.totalCalories.value,
+        'todayMinutes': progressController.totalMinutes.value,
 
         // Overall progress
-        'currentStreak': progressController?.currentStreak.value ?? 0,
-        'totalSessions': progressController?.recentSessions.length ?? 0,
+        'currentStreak': progressController.currentStreak.value,
+        'totalSessions': progressController.recentSessions.length,
         'weeklyGoalProgress': _getWeeklyProgress(progressController),
 
         // Performance trends
@@ -524,24 +521,22 @@ $healthMetrics
     };
   }
 
-  String _getWeeklyProgress(ProgressController? controller) {
-    if (controller == null) return '0/5';
+  String _getWeeklyProgress(ProgressController controller) {
     return '${controller.recentSessions.length}/${5}';
   }
 
-  int _getAverageWorkoutDuration(ProgressController? controller) {
-    if (controller == null || controller.recentSessions.isEmpty) return 0;
+  int _getAverageWorkoutDuration(ProgressController controller) {
+    if (controller.recentSessions.isEmpty) return 0;
     return (controller.totalMinutes.value / controller.recentSessions.length)
         .round();
   }
 
-  String _getMostActiveDay(ProgressController? controller) {
-    if (controller == null || controller.recentSessions.isEmpty) return 'None';
+  String _getMostActiveDay(ProgressController controller) {
+    if (controller.recentSessions.isEmpty) return 'None';
     return 'Monday'; // Would analyze actual session patterns
   }
 
-  String _getImprovementTrend(ProgressController? controller) {
-    if (controller == null) return 'Starting journey';
+  String _getImprovementTrend(ProgressController controller) {
     final streak = controller.currentStreak.value;
     if (streak >= 7) return 'Excellent consistency! 📈';
     if (streak >= 3) return 'Building momentum! 📊';

@@ -58,6 +58,14 @@ class ProgressController extends GetxController {
               'ProgressController: Real-time update - ${sessions.length} sessions',
             );
 
+            // Debug: Check each session's isCompleted status
+            for (var session in sessions) {
+              debugPrint(
+                'Session: ${session.workoutTitle}, isCompleted: ${session.isCompleted}, '
+                'calories: ${session.caloriesBurned}, duration: ${session.durationSeconds}s',
+              );
+            }
+
             allSessions.value = sessions;
             recentSessions.value = sessions.take(10).toList();
 
@@ -122,6 +130,19 @@ class ProgressController extends GetxController {
   void _calculateStats() {
     final completedSessions = allSessions.where((s) => s.isCompleted).toList();
 
+    debugPrint(
+      '📊 ProgressController._calculateStats: Total sessions: ${allSessions.length}, '
+      'Completed sessions: ${completedSessions.length}',
+    );
+
+    // Debug each session
+    for (var session in allSessions) {
+      debugPrint(
+        '  - ${session.workoutTitle}: isCompleted=${session.isCompleted}, '
+        'calories=${session.caloriesBurned}, duration=${session.durationSeconds}s',
+      );
+    }
+
     totalWorkouts.value = completedSessions.length;
     totalCalories.value = completedSessions.fold(
       0,
@@ -130,6 +151,11 @@ class ProgressController extends GetxController {
     totalMinutes.value = completedSessions.fold(
       0,
       (sum, s) => sum + (s.durationSeconds ~/ 60),
+    );
+
+    debugPrint(
+      '📈 Final Stats: Workouts: ${totalWorkouts.value}, '
+      'Calories: ${totalCalories.value}, Minutes: ${totalMinutes.value}',
     );
   }
 

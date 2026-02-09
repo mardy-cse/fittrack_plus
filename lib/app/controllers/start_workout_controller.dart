@@ -6,6 +6,7 @@ import '../models/workout.dart';
 import '../models/workout_session.dart';
 import '../services/workout_log_service.dart';
 import '../services/auth_service.dart';
+import 'progress_controller.dart';
 
 class StartWorkoutController extends GetxController {
   final WorkoutLogService _workoutLogService = Get.find<WorkoutLogService>();
@@ -211,10 +212,32 @@ class StartWorkoutController extends GetxController {
         completedExercises: workout.exercises,
       );
 
-      await _workoutLogService.updateWorkoutSession(
+      debugPrint(
+        'Completing workout: ${workout.title}, Session ID: $sessionId, '
+        'Duration: ${totalSeconds.value}s, Calories: ${caloriesBurned.value}, isCompleted: true',
+      );
+
+      final success = await _workoutLogService.updateWorkoutSession(
         sessionId!,
         updatedSession.toMap(),
       );
+
+      if (success) {
+        debugPrint('✅ Workout session updated successfully in Firestore');
+        // Update local session
+        currentSession.value = updatedSession;
+
+        // Force refresh progress controller to ensure stats update
+        try {
+          final progressController = Get.find<ProgressController>();
+          await progressController.refreshData();
+          debugPrint('✅ Progress controller refreshed');
+        } catch (e) {
+          debugPrint('⚠️ Could not refresh progress controller: $e');
+        }
+      } else {
+        debugPrint('❌ Failed to update workout session in Firestore');
+      }
     }
   }
 

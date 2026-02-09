@@ -10,6 +10,11 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        // Allow back navigation if workout is completed
+        if (controller.isCompleted.value) {
+          return true;
+        }
+        // Otherwise show quit confirmation
         controller.quitWorkout();
         return false;
       },
