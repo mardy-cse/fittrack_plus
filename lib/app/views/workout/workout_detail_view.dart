@@ -583,8 +583,12 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
 
   Widget _buildAnimationWidget(String assetPath) {
     try {
-      // Check if it's a GIF file
-      if (assetPath.toLowerCase().endsWith('.gif')) {
+      // Check if it's an image file (GIF, WebP, PNG, JPG)
+      if (assetPath.toLowerCase().endsWith('.gif') ||
+          assetPath.toLowerCase().endsWith('.webp') ||
+          assetPath.toLowerCase().endsWith('.png') ||
+          assetPath.toLowerCase().endsWith('.jpg') ||
+          assetPath.toLowerCase().endsWith('.jpeg')) {
         return Image.asset(
           assetPath,
           width: 280,
@@ -646,7 +650,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('tree pose') || name.contains('vrksasana')) {
       return 'assets/animations/tree_pose.gif'; // ✅ Tree Pose GIF animation
     } else if (name.contains('savasana') || name.contains('corpse pose')) {
-      return 'assets/animations/plank.json'; // TODO: Add savasana animation
+      return 'assets/animations/savasana.webp'; // ✅ Savasana WebP image
     } else if (name.contains('push') ||
         name.contains('push-up') ||
         name.contains('chest') ||

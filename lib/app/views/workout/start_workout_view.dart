@@ -476,7 +476,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     } else if (lowerName.contains('tree pose')) {
       return 'assets/animations/tree_pose.gif'; // ✅ Tree Pose GIF
     } else if (lowerName.contains('savasana')) {
-      return 'assets/animations/plank.json';
+      return 'assets/animations/savasana.webp'; // ✅ Savasana WebP
     } else if (lowerName.contains('push') || lowerName.contains('push-up')) {
       return 'assets/animations/pushup_improved.json';
     } else if (lowerName.contains('squat') ||
@@ -512,8 +512,12 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   }
 
   Widget _buildAnimationWidget(String assetPath, bool shouldAnimate) {
-    // Check if it's a GIF file
-    if (assetPath.toLowerCase().endsWith('.gif')) {
+    // Check if it's an image file (GIF, WebP, PNG, JPG)
+    if (assetPath.toLowerCase().endsWith('.gif') ||
+        assetPath.toLowerCase().endsWith('.webp') ||
+        assetPath.toLowerCase().endsWith('.png') ||
+        assetPath.toLowerCase().endsWith('.jpg') ||
+        assetPath.toLowerCase().endsWith('.jpeg')) {
       return Image.asset(
         assetPath,
         width: 200,
