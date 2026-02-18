@@ -659,7 +659,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('squat') || name.contains('jump squat')) {
       return 'assets/animations/squat_improved.json';
     } else if (name.contains('plank')) {
-      return 'assets/animations/plank.json';
+      return 'assets/animations/plank.gif'; // ✅ Plank GIF animation
     } else if (name.contains('run') || name.contains('jog')) {
       return 'assets/animations/running_improved.json';
     } else if (name.contains('jump') &&

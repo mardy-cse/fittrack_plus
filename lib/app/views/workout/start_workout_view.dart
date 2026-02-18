@@ -483,7 +483,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         lowerName.contains('jump squat')) {
       return 'assets/animations/squat_improved.json';
     } else if (lowerName.contains('plank') || lowerName.contains('core')) {
-      return 'assets/animations/plank.json';
+      return 'assets/animations/plank.gif'; // ✅ Plank GIF
     } else if (lowerName.contains('run') ||
         lowerName.contains('jog') ||
         lowerName.contains('cardio')) {
