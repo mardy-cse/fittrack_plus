@@ -479,6 +479,27 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/animations/mountain_climbers_real.gif';
     }
 
+    // Pilates exercises
+    if (lowerName.contains('hundred')) {
+      return 'assets/animations/pilates_hundred.gif';
+    }
+    if (lowerName.contains('roll') && lowerName.contains('up')) {
+      return 'assets/animations/roll_up.gif';
+    }
+    if (lowerName.contains('single') &&
+        lowerName.contains('leg') &&
+        lowerName.contains('stretch')) {
+      return 'assets/animations/single_leg_stretch.gif';
+    }
+    if (lowerName.contains('double') &&
+        lowerName.contains('leg') &&
+        lowerName.contains('stretch')) {
+      return 'assets/animations/double_leg_stretch.gif';
+    }
+    if (lowerName.contains('spine') && lowerName.contains('stretch')) {
+      return 'assets/animations/spine_stretch.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

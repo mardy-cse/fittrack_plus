@@ -109,7 +109,7 @@
     "title": "Pilates Basics",
     "description": "Low-impact workout focusing on core strength, flexibility, and posture",
     "imageUrl": "assets/images/workout_6.jpg",
-    "animationAsset": "assets/animations/plank.json",
+    "animationAsset": "assets/animations/pilates_hundred.gif",
     "durationSeconds": 260,
     "level": "Beginner",
     "tags": ["pilates", "core", "flexibility", "low-impact"],

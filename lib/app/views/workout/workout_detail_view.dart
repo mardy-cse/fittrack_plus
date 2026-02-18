@@ -658,6 +658,32 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/mountain_climbers_real.gif';
     }
 
+    // Pilates exercises
+    if (name.contains('hundred')) {
+      debugPrint('✅ Matched The Hundred -> pilates_hundred.gif');
+      return 'assets/animations/pilates_hundred.gif';
+    }
+    if (name.contains('roll') && name.contains('up')) {
+      debugPrint('✅ Matched Roll Up -> roll_up.gif');
+      return 'assets/animations/roll_up.gif';
+    }
+    if (name.contains('single') &&
+        name.contains('leg') &&
+        name.contains('stretch')) {
+      debugPrint('✅ Matched Single Leg Stretch -> single_leg_stretch.gif');
+      return 'assets/animations/single_leg_stretch.gif';
+    }
+    if (name.contains('double') &&
+        name.contains('leg') &&
+        name.contains('stretch')) {
+      debugPrint('✅ Matched Double Leg Stretch -> double_leg_stretch.gif');
+      return 'assets/animations/double_leg_stretch.gif';
+    }
+    if (name.contains('spine') && name.contains('stretch')) {
+      debugPrint('✅ Matched Spine Stretch -> spine_stretch.gif');
+      return 'assets/animations/spine_stretch.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation
