@@ -197,7 +197,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
                     children: [
                       Center(
                         child: _buildAnimationWidget(
-                          'assets/animations/plank.json',
+                          'assets/animations/rest_time.jpg',
                           true,
                         ),
                       ),
