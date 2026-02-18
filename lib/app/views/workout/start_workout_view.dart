@@ -601,6 +601,20 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/images/exercises/box_jumps.gif';
     }
 
+    // Full Body Power exercises
+    if (lowerName.contains('deadlift')) {
+      return 'assets/images/exercises/deadlifts.gif';
+    }
+    if (lowerName.contains('bench') && lowerName.contains('press')) {
+      return 'assets/images/exercises/bench_press.gif';
+    }
+    if (lowerName.contains('pull') && lowerName.contains('up')) {
+      return 'assets/images/exercises/pull_ups.gif';
+    }
+    if (lowerName.contains('kettlebell') && lowerName.contains('swing')) {
+      return 'assets/images/exercises/kettlebell_swings.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

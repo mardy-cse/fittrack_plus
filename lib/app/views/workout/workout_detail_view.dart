@@ -816,6 +816,24 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/images/exercises/box_jumps.gif';
     }
 
+    // Full Body Power exercises
+    if (name.contains('deadlift')) {
+      debugPrint('✅ Matched Deadlifts -> deadlifts.gif');
+      return 'assets/images/exercises/deadlifts.gif';
+    }
+    if (name.contains('bench') && name.contains('press')) {
+      debugPrint('✅ Matched Bench Press -> bench_press.gif');
+      return 'assets/images/exercises/bench_press.gif';
+    }
+    if (name.contains('pull') && name.contains('up')) {
+      debugPrint('✅ Matched Pull-ups -> pull_ups.gif');
+      return 'assets/images/exercises/pull_ups.gif';
+    }
+    if (name.contains('kettlebell') && name.contains('swing')) {
+      debugPrint('✅ Matched Kettlebell Swings -> kettlebell_swings.gif');
+      return 'assets/images/exercises/kettlebell_swings.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation

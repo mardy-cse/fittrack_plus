@@ -86,9 +86,9 @@
   {
     "id": "workout_5",
     "title": "Full Body Power",
-    "description": "Complete full-body workout combining strength and cardio for maximum results",
+    "description": "Complete full-body workout combining strength and cardio for maximum results. Build total body strength and explosive power.",
     "imageUrl": "assets/images/workout_5.jpg",
-    "animationAsset": "assets/animations/squat.json",
+    "animationAsset": "assets/images/exercises/squats.gif",
     "durationSeconds": 260,
     "level": "Advanced",
     "tags": ["full-body", "strength", "cardio", "intense"],
