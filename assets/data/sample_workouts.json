@@ -67,7 +67,7 @@
     "title": "Core Crusher",
     "description": "Targeted ab workout to strengthen your core and improve stability",
     "imageUrl": "assets/images/workout_4.jpg",
-    "animationAsset": "assets/animations/plank.json",
+    "animationAsset": "assets/animations/plank.gif",
     "durationSeconds": 260,
     "level": "Beginner",
     "tags": ["core", "abs", "stability", "bodyweight"],

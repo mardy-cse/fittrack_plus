@@ -637,6 +637,14 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
   // Get animation for specific exercise name
   String _getAnimationForExercise(String exerciseName) {
     final name = exerciseName.toLowerCase();
+    debugPrint('🔍 Exercise: "$exerciseName" -> lowercase: "$name"');
+
+    // Core exercises - check these first
+    if (name.contains('bicycle') &&
+        (name.contains('crunch') || name.contains('crunches'))) {
+      debugPrint('✅ Matched Bicycle Crunches -> plank.gif');
+      return 'assets/animations/plank.gif';
+    }
 
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
@@ -659,6 +667,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('squat') || name.contains('jump squat')) {
       return 'assets/animations/squat_improved.json';
     } else if (name.contains('plank')) {
+      debugPrint('✅ Matched Plank -> plank.gif');
       return 'assets/animations/plank.gif'; // ✅ Plank GIF animation
     } else if (name.contains('run') || name.contains('jog')) {
       return 'assets/animations/running_improved.json';
@@ -668,18 +677,17 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('burpee')) {
       return 'assets/animations/burpees.json';
     } else if (name.contains('mountain') && name.contains('climber')) {
-      return 'assets/animations/mountain_climbers.json';
+      return 'assets/animations/plank.gif';
     } else if (name.contains('lunge')) {
       return 'assets/animations/lunges.json';
     } else if (name.contains('sit') &&
         (name.contains('up') || name.contains('ups'))) {
       return 'assets/animations/situps.json';
-    } else if (name.contains('bicycle') && name.contains('crunch')) {
-      return 'assets/animations/bicycle_crunches.gif'; // ✅ Bicycle Crunches GIF
     } else if (name.contains('crunch') ||
         name.contains('twist') ||
         name.contains('leg raise')) {
-      return 'assets/animations/situps.json';
+      debugPrint('✅ Matched crunch/twist/leg raise -> plank.gif');
+      return 'assets/animations/plank.gif';
     } else if (name.contains('bicep') ||
         name.contains('curl') ||
         name.contains('dumbbell') ||

@@ -464,6 +464,12 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   String _getAnimationForExercise(String exerciseName) {
     final lowerName = exerciseName.toLowerCase();
 
+    // Core exercises - check these first
+    if (lowerName.contains('bicycle') &&
+        (lowerName.contains('crunch') || lowerName.contains('crunches'))) {
+      return 'assets/animations/plank.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {
@@ -494,16 +500,17 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/animations/burpees.json';
     } else if (lowerName.contains('mountain') &&
         lowerName.contains('climber')) {
-      return 'assets/animations/mountain_climbers.json';
+      return 'assets/animations/plank.gif';
     } else if (lowerName.contains('lunge')) {
       return 'assets/animations/lunges.json';
     } else if (lowerName.contains('sit') &&
         (lowerName.contains('up') || lowerName.contains('ups'))) {
       return 'assets/animations/situps.json';
-    } else if (lowerName.contains('bicycle') && lowerName.contains('crunch')) {
-      return 'assets/animations/bicycle_crunches.gif'; // ✅ Bicycle Crunches GIF
-    } else if (lowerName.contains('crunch') || lowerName.contains('ab')) {
-      return 'assets/animations/situps.json';
+    } else if (lowerName.contains('crunch') ||
+        lowerName.contains('ab') ||
+        lowerName.contains('twist') ||
+        lowerName.contains('raise')) {
+      return 'assets/animations/plank.gif';
     } else if (lowerName.contains('bicep') || lowerName.contains('curl')) {
       return 'assets/animations/bicep_curls.json';
     } else if (lowerName.contains('dumbbell') || lowerName.contains('arm')) {
