@@ -4,7 +4,7 @@
     "title": "Morning Yoga Flow",
     "description": "Start your day with a refreshing yoga session to improve flexibility and mindfulness",
     "imageUrl": "assets/images/workout_1.jpg",
-    "animationAsset": "assets/animations/plank.json",
+    "animationAsset": "assets/animations/sun_salutation.json",
     "durationSeconds": 260,
     "level": "Beginner",
     "tags": ["yoga", "flexibility", "morning", "mindfulness"],
