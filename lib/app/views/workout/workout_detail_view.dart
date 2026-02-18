@@ -708,6 +708,26 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/childs_pose.gif';
     }
 
+    // Meditation exercises
+    if (name.contains('breathing') && name.contains('exercise')) {
+      debugPrint('✅ Matched Breathing Exercises -> breathing_exercises.gif');
+      return 'assets/animations/breathing_exercises.gif';
+    }
+    if (name.contains('body') && name.contains('scan')) {
+      debugPrint('✅ Matched Body Scan -> body_scan.gif');
+      return 'assets/animations/body_scan.gif';
+    }
+    if (name.contains('guided') && name.contains('visualization')) {
+      debugPrint('✅ Matched Guided Visualization -> guided_visualization.gif');
+      return 'assets/animations/guided_visualization.gif';
+    }
+    if (name.contains('loving') && name.contains('kindness')) {
+      debugPrint(
+        '✅ Matched Loving-Kindness Meditation -> loving_kindness_meditation.gif',
+      );
+      return 'assets/animations/loving_kindness_meditation.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation
@@ -720,7 +740,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('tree pose') || name.contains('vrksasana')) {
       return 'assets/animations/tree_pose.gif'; // ✅ Tree Pose GIF animation
     } else if (name.contains('savasana') || name.contains('corpse pose')) {
-      return 'assets/animations/savasana.webp'; // ✅ Savasana WebP image
+      return 'assets/animations/savasana_meditation.gif'; // ✅ Savasana GIF
     } else if (name.contains('push') ||
         name.contains('push-up') ||
         name.contains('chest') ||

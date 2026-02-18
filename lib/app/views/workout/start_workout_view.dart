@@ -519,6 +519,20 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/animations/childs_pose.gif';
     }
 
+    // Meditation exercises
+    if (lowerName.contains('breathing') && lowerName.contains('exercise')) {
+      return 'assets/animations/breathing_exercises.gif';
+    }
+    if (lowerName.contains('body') && lowerName.contains('scan')) {
+      return 'assets/animations/body_scan.gif';
+    }
+    if (lowerName.contains('guided') && lowerName.contains('visualization')) {
+      return 'assets/animations/guided_visualization.gif';
+    }
+    if (lowerName.contains('loving') && lowerName.contains('kindness')) {
+      return 'assets/animations/loving_kindness_meditation.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {
@@ -531,7 +545,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     } else if (lowerName.contains('tree pose')) {
       return 'assets/animations/tree_pose.gif'; // ✅ Tree Pose GIF
     } else if (lowerName.contains('savasana')) {
-      return 'assets/animations/savasana.webp'; // ✅ Savasana WebP
+      return 'assets/animations/savasana_meditation.gif'; // ✅ Savasana GIF
     } else if (lowerName.contains('push') || lowerName.contains('push-up')) {
       return 'assets/animations/pushup_improved.json';
     } else if (lowerName.contains('squat') ||

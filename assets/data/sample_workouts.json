@@ -193,7 +193,7 @@
     "title": "Evening Meditation",
     "description": "Wind down your day with calming meditation and breathing exercises",
     "imageUrl": "assets/images/workout_10.jpg",
-    "animationAsset": "assets/animations/plank.json",
+    "animationAsset": "assets/animations/breathing_exercises.gif",
     "durationSeconds": 260,
     "level": "Beginner",
     "tags": ["meditation", "relaxation", "mindfulness", "evening"],
