@@ -550,6 +550,23 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/animations/tricep_dips.gif';
     }
 
+    // Leg Day exercises - check these before generic matches
+    if (lowerName.contains('squat') && !lowerName.contains('jump')) {
+      return 'assets/images/exercises/squats.gif';
+    }
+    if (lowerName.contains('lunge')) {
+      return 'assets/images/exercises/lunges.gif';
+    }
+    if (lowerName.contains('leg') && lowerName.contains('press')) {
+      return 'assets/images/exercises/leg_press.gif';
+    }
+    if (lowerName.contains('hamstring') && lowerName.contains('curl')) {
+      return 'assets/images/exercises/hamstring_curls.webp';
+    }
+    if (lowerName.contains('calf') && lowerName.contains('raise')) {
+      return 'assets/images/exercises/calf_raises.webp';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

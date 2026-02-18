@@ -128,9 +128,9 @@
   {
     "id": "workout_7",
     "title": "Leg Day Intensity",
-    "description": "Heavy leg workout to build strength and muscle in your lower body",
+    "description": "Heavy leg workout to build strength and muscle in your lower body. Focus on proper form and controlled movements for maximum results.",
     "imageUrl": "assets/images/workout_7.jpg",
-    "animationAsset": "assets/animations/squat.json",
+    "animationAsset": "assets/images/exercises/squats.gif",
     "durationSeconds": 260,
     "level": "Intermediate",
     "tags": ["legs", "strength", "lower-body", "muscle"],

@@ -109,6 +109,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/calorie/
+    - assets/images/exercises/
     - assets/animations/
     - assets/icons/
     - assets/data/

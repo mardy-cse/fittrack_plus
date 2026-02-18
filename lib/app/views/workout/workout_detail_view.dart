@@ -750,6 +750,28 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/tricep_dips.gif';
     }
 
+    // Leg Day exercises - check these before generic matches
+    if (name.contains('squat') && !name.contains('jump')) {
+      debugPrint('✅ Matched Squats -> squats.gif');
+      return 'assets/images/exercises/squats.gif';
+    }
+    if (name.contains('lunge')) {
+      debugPrint('✅ Matched Lunges -> lunges.gif');
+      return 'assets/images/exercises/lunges.gif';
+    }
+    if (name.contains('leg') && name.contains('press')) {
+      debugPrint('✅ Matched Leg Press -> leg_press.gif');
+      return 'assets/images/exercises/leg_press.gif';
+    }
+    if (name.contains('hamstring') && name.contains('curl')) {
+      debugPrint('✅ Matched Hamstring Curls -> hamstring_curls.webp');
+      return 'assets/images/exercises/hamstring_curls.webp';
+    }
+    if (name.contains('calf') && name.contains('raise')) {
+      debugPrint('✅ Matched Calf Raises -> calf_raises.webp');
+      return 'assets/images/exercises/calf_raises.webp';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation
