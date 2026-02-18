@@ -472,7 +472,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         lowerName.contains('down dog')) {
       return 'assets/animations/downward_dog.gif'; // ✅ GIF animation
     } else if (lowerName.contains('warrior')) {
-      return 'assets/animations/lunges.json';
+      return 'assets/animations/warrior_pose.gif'; // ✅ Warrior Pose GIF
     } else if (lowerName.contains('tree pose')) {
       return 'assets/animations/plank.json';
     } else if (lowerName.contains('savasana')) {
