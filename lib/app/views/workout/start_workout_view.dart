@@ -467,7 +467,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     // Core exercises - check these first
     if (lowerName.contains('bicycle') &&
         (lowerName.contains('crunch') || lowerName.contains('crunches'))) {
-      return 'assets/animations/plank.gif';
+      return 'assets/animations/bicycle_crunches_real.gif';
     }
 
     // Yoga exercises

@@ -642,8 +642,8 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     // Core exercises - check these first
     if (name.contains('bicycle') &&
         (name.contains('crunch') || name.contains('crunches'))) {
-      debugPrint('✅ Matched Bicycle Crunches -> plank.gif');
-      return 'assets/animations/plank.gif';
+      debugPrint('✅ Matched Bicycle Crunches -> bicycle_crunches_real.gif');
+      return 'assets/animations/bicycle_crunches_real.gif';
     }
 
     // Yoga exercises
