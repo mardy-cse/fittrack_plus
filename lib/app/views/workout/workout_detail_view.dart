@@ -772,6 +772,28 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/images/exercises/calf_raises.webp';
     }
 
+    // Boxing exercises
+    if (name.contains('jab') && name.contains('cross')) {
+      debugPrint('✅ Matched Jab-Cross Combo -> jab_cross_combo.webp');
+      return 'assets/images/exercises/jab_cross_combo.webp';
+    }
+    if (name.contains('hook') && name.contains('punch')) {
+      debugPrint('✅ Matched Hook Punches -> hook_punches.gif');
+      return 'assets/images/exercises/hook_punches.gif';
+    }
+    if (name.contains('uppercut')) {
+      debugPrint('✅ Matched Uppercuts -> uppercuts.gif');
+      return 'assets/images/exercises/uppercuts.gif';
+    }
+    if (name.contains('speed') && name.contains('bag')) {
+      debugPrint('✅ Matched Speed Bag -> speed_bag.gif');
+      return 'assets/images/exercises/speed_bag.gif';
+    }
+    if (name.contains('jump') && name.contains('rope')) {
+      debugPrint('✅ Matched Jump Rope -> jump_rope.gif');
+      return 'assets/images/exercises/jump_rope.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation

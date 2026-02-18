@@ -567,6 +567,23 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/images/exercises/calf_raises.webp';
     }
 
+    // Boxing exercises
+    if (lowerName.contains('jab') && lowerName.contains('cross')) {
+      return 'assets/images/exercises/jab_cross_combo.webp';
+    }
+    if (lowerName.contains('hook') && lowerName.contains('punch')) {
+      return 'assets/images/exercises/hook_punches.gif';
+    }
+    if (lowerName.contains('uppercut')) {
+      return 'assets/images/exercises/uppercuts.gif';
+    }
+    if (lowerName.contains('speed') && lowerName.contains('bag')) {
+      return 'assets/images/exercises/speed_bag.gif';
+    }
+    if (lowerName.contains('jump') && lowerName.contains('rope')) {
+      return 'assets/images/exercises/jump_rope.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

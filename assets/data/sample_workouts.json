@@ -170,9 +170,9 @@
   {
     "id": "workout_9",
     "title": "Boxing Cardio",
-    "description": "High-energy boxing workout to improve cardio, coordination, and power",
+    "description": "High-energy boxing workout to improve cardio, coordination, and power. Master punching techniques and footwork for a full-body cardio blast.",
     "imageUrl": "assets/images/workout_9.jpg",
-    "animationAsset": "assets/animations/running.json",
+    "animationAsset": "assets/images/exercises/jab_cross_combo.webp",
     "durationSeconds": 260,
     "level": "Intermediate",
     "tags": ["boxing", "cardio", "coordination", "power"],
