@@ -500,6 +500,8 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     } else if (lowerName.contains('sit') &&
         (lowerName.contains('up') || lowerName.contains('ups'))) {
       return 'assets/animations/situps.json';
+    } else if (lowerName.contains('bicycle') && lowerName.contains('crunch')) {
+      return 'assets/animations/bicycle_crunches.gif'; // ✅ Bicycle Crunches GIF
     } else if (lowerName.contains('crunch') || lowerName.contains('ab')) {
       return 'assets/animations/situps.json';
     } else if (lowerName.contains('bicep') || lowerName.contains('curl')) {

@@ -674,6 +674,8 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('sit') &&
         (name.contains('up') || name.contains('ups'))) {
       return 'assets/animations/situps.json';
+    } else if (name.contains('bicycle') && name.contains('crunch')) {
+      return 'assets/animations/bicycle_crunches.gif'; // ✅ Bicycle Crunches GIF
     } else if (name.contains('crunch') ||
         name.contains('twist') ||
         name.contains('leg raise')) {
