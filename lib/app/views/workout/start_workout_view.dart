@@ -500,6 +500,25 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/animations/spine_stretch.gif';
     }
 
+    // Stretching & Mobility exercises
+    if (lowerName.contains('hamstring') && lowerName.contains('stretch')) {
+      return 'assets/animations/hamstring_stretch.gif';
+    }
+    if (lowerName.contains('hip') &&
+        lowerName.contains('flexor') &&
+        lowerName.contains('stretch')) {
+      return 'assets/animations/hip_flexor_stretch.gif';
+    }
+    if (lowerName.contains('shoulder') && lowerName.contains('stretch')) {
+      return 'assets/animations/shoulder_stretch.gif';
+    }
+    if (lowerName.contains('cat') && lowerName.contains('cow')) {
+      return 'assets/animations/cat_cow_stretch.gif';
+    }
+    if (lowerName.contains('child') && lowerName.contains('pose')) {
+      return 'assets/animations/childs_pose.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

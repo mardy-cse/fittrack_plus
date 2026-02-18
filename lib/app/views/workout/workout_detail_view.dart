@@ -684,6 +684,30 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/spine_stretch.gif';
     }
 
+    // Stretching & Mobility exercises
+    if (name.contains('hamstring') && name.contains('stretch')) {
+      debugPrint('✅ Matched Hamstring Stretch -> hamstring_stretch.gif');
+      return 'assets/animations/hamstring_stretch.gif';
+    }
+    if (name.contains('hip') &&
+        name.contains('flexor') &&
+        name.contains('stretch')) {
+      debugPrint('✅ Matched Hip Flexor Stretch -> hip_flexor_stretch.gif');
+      return 'assets/animations/hip_flexor_stretch.gif';
+    }
+    if (name.contains('shoulder') && name.contains('stretch')) {
+      debugPrint('✅ Matched Shoulder Stretch -> shoulder_stretch.gif');
+      return 'assets/animations/shoulder_stretch.gif';
+    }
+    if (name.contains('cat') && name.contains('cow')) {
+      debugPrint('✅ Matched Cat-Cow Stretch -> cat_cow_stretch.gif');
+      return 'assets/animations/cat_cow_stretch.gif';
+    }
+    if (name.contains('child') && name.contains('pose')) {
+      debugPrint('✅ Matched Child\'s Pose -> childs_pose.gif');
+      return 'assets/animations/childs_pose.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation

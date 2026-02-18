@@ -151,7 +151,7 @@
     "title": "Stretching & Mobility",
     "description": "Improve flexibility and range of motion with guided stretching exercises",
     "imageUrl": "assets/images/workout_8.jpg",
-    "animationAsset": "assets/animations/plank.json",
+    "animationAsset": "assets/animations/hamstring_stretch.gif",
     "durationSeconds": 260,
     "level": "Beginner",
     "tags": ["stretching", "flexibility", "mobility", "recovery"],
