@@ -114,8 +114,8 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Container(
-                  height: 240,
-                  width: 240,
+                  height: 320,
+                  width: 320,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -674,13 +674,13 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         assetPath.toLowerCase().endsWith('.jpeg')) {
       return Image.asset(
         assetPath,
-        width: 200,
-        height: 200,
+        width: 280,
+        height: 280,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           return Icon(
             Icons.fitness_center,
-            size: 120,
+            size: 150,
             color: Colors.white.withOpacity(0.7),
           );
         },
@@ -689,8 +689,8 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     // Otherwise use Lottie animation
     return Lottie.asset(
       assetPath,
-      width: 200,
-      height: 200,
+      width: 280,
+      height: 280,
       fit: BoxFit.contain,
       repeat: true,
       animate: shouldAnimate,
@@ -698,7 +698,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         // Fallback to icon if animation fails
         return Icon(
           Icons.fitness_center,
-          size: 120,
+          size: 150,
           color: Colors.white.withOpacity(0.7),
         );
       },
