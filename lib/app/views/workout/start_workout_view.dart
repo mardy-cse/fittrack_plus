@@ -474,7 +474,7 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
     } else if (lowerName.contains('warrior')) {
       return 'assets/animations/warrior_pose.gif'; // ✅ Warrior Pose GIF
     } else if (lowerName.contains('tree pose')) {
-      return 'assets/animations/plank.json';
+      return 'assets/animations/tree_pose.gif'; // ✅ Tree Pose GIF
     } else if (lowerName.contains('savasana')) {
       return 'assets/animations/plank.json';
     } else if (lowerName.contains('push') || lowerName.contains('push-up')) {

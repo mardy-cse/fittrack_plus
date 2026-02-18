@@ -644,7 +644,7 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
     } else if (name.contains('warrior') || name.contains('virabhadrasana')) {
       return 'assets/animations/warrior_pose.gif'; // ✅ Warrior Pose GIF animation
     } else if (name.contains('tree pose') || name.contains('vrksasana')) {
-      return 'assets/animations/plank.json'; // TODO: Add tree pose animation
+      return 'assets/animations/tree_pose.gif'; // ✅ Tree Pose GIF animation
     } else if (name.contains('savasana') || name.contains('corpse pose')) {
       return 'assets/animations/plank.json'; // TODO: Add savasana animation
     } else if (name.contains('push') ||
