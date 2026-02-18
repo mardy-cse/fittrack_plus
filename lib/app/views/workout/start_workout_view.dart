@@ -533,6 +533,23 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/animations/loving_kindness_meditation.gif';
     }
 
+    // Strength Training - Upper Body exercises
+    if (lowerName.contains('push') && lowerName.contains('up')) {
+      return 'assets/animations/pushups_real.gif';
+    }
+    if (lowerName.contains('dumbbell') && lowerName.contains('row')) {
+      return 'assets/animations/dumbbell_rows.gif';
+    }
+    if (lowerName.contains('shoulder') && lowerName.contains('press')) {
+      return 'assets/animations/shoulder_press.gif';
+    }
+    if (lowerName.contains('bicep') && lowerName.contains('curl')) {
+      return 'assets/animations/bicep_curls_real.gif';
+    }
+    if (lowerName.contains('tricep') && lowerName.contains('dip')) {
+      return 'assets/animations/tricep_dips.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

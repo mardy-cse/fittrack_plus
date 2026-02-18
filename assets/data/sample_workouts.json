@@ -46,7 +46,7 @@
     "title": "Strength Training - Upper Body",
     "description": "Build muscle and strength in your chest, back, shoulders, and arms",
     "imageUrl": "assets/images/workout_3.jpg",
-    "animationAsset": "assets/animations/pushup.json",
+    "animationAsset": "assets/animations/pushups_real.gif",
     "durationSeconds": 260,
     "level": "Intermediate",
     "tags": ["strength", "upper-body", "muscle", "weights"],

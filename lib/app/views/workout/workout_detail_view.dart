@@ -728,6 +728,28 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/animations/loving_kindness_meditation.gif';
     }
 
+    // Strength Training - Upper Body exercises
+    if (name.contains('push') && name.contains('up')) {
+      debugPrint('✅ Matched Push-ups -> pushups_real.gif');
+      return 'assets/animations/pushups_real.gif';
+    }
+    if (name.contains('dumbbell') && name.contains('row')) {
+      debugPrint('✅ Matched Dumbbell Rows -> dumbbell_rows.gif');
+      return 'assets/animations/dumbbell_rows.gif';
+    }
+    if (name.contains('shoulder') && name.contains('press')) {
+      debugPrint('✅ Matched Shoulder Press -> shoulder_press.gif');
+      return 'assets/animations/shoulder_press.gif';
+    }
+    if (name.contains('bicep') && name.contains('curl')) {
+      debugPrint('✅ Matched Bicep Curls -> bicep_curls_real.gif');
+      return 'assets/animations/bicep_curls_real.gif';
+    }
+    if (name.contains('tricep') && name.contains('dip')) {
+      debugPrint('✅ Matched Tricep Dips -> tricep_dips.gif');
+      return 'assets/animations/tricep_dips.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation
