@@ -649,6 +649,14 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       debugPrint('✅ Matched Russian Twists -> russian_twists.gif');
       return 'assets/animations/russian_twists.gif';
     }
+    if (name.contains('leg') && name.contains('raise')) {
+      debugPrint('✅ Matched Leg Raises -> leg_raises.gif');
+      return 'assets/animations/leg_raises.gif';
+    }
+    if (name.contains('mountain') && name.contains('climber')) {
+      debugPrint('✅ Matched Mountain Climbers -> mountain_climbers_real.gif');
+      return 'assets/animations/mountain_climbers_real.gif';
+    }
 
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
