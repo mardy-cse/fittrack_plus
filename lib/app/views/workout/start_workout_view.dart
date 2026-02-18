@@ -469,6 +469,9 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
         (lowerName.contains('crunch') || lowerName.contains('crunches'))) {
       return 'assets/animations/bicycle_crunches_real.gif';
     }
+    if (lowerName.contains('russian') && lowerName.contains('twist')) {
+      return 'assets/animations/russian_twists.gif';
+    }
 
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
