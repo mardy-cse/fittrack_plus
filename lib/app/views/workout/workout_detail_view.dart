@@ -794,6 +794,28 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
       return 'assets/images/exercises/jump_rope.gif';
     }
 
+    // HIIT Cardio exercises
+    if (name.contains('burpee')) {
+      debugPrint('✅ Matched Burpees -> burpees.gif');
+      return 'assets/images/exercises/burpees.gif';
+    }
+    if (name.contains('mountain') && name.contains('climber')) {
+      debugPrint('✅ Matched Mountain Climbers -> mountain_climbers.gif');
+      return 'assets/images/exercises/mountain_climbers.gif';
+    }
+    if (name.contains('jump') && name.contains('squat')) {
+      debugPrint('✅ Matched Jump Squats -> jump_squats.gif');
+      return 'assets/images/exercises/jump_squats.gif';
+    }
+    if (name.contains('high') && name.contains('knee')) {
+      debugPrint('✅ Matched High Knees -> high_knees.gif');
+      return 'assets/images/exercises/high_knees.gif';
+    }
+    if (name.contains('box') && name.contains('jump')) {
+      debugPrint('✅ Matched Box Jumps -> box_jumps.gif');
+      return 'assets/images/exercises/box_jumps.gif';
+    }
+
     // Yoga exercises
     if (name.contains('sun salutation') || name.contains('surya namaskar')) {
       return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation

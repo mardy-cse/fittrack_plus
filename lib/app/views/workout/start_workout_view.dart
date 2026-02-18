@@ -584,6 +584,23 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
       return 'assets/images/exercises/jump_rope.gif';
     }
 
+    // HIIT Cardio exercises
+    if (lowerName.contains('burpee')) {
+      return 'assets/images/exercises/burpees.gif';
+    }
+    if (lowerName.contains('mountain') && lowerName.contains('climber')) {
+      return 'assets/images/exercises/mountain_climbers.gif';
+    }
+    if (lowerName.contains('jump') && lowerName.contains('squat')) {
+      return 'assets/images/exercises/jump_squats.gif';
+    }
+    if (lowerName.contains('high') && lowerName.contains('knee')) {
+      return 'assets/images/exercises/high_knees.gif';
+    }
+    if (lowerName.contains('box') && lowerName.contains('jump')) {
+      return 'assets/images/exercises/box_jumps.gif';
+    }
+
     // Yoga exercises
     if (lowerName.contains('sun salutation') ||
         lowerName.contains('surya namaskar')) {

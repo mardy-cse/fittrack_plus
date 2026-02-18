@@ -23,9 +23,9 @@
   {
     "id": "workout_2",
     "title": "HIIT Cardio Blast",
-    "description": "High-intensity interval training to burn calories and boost metabolism",
+    "description": "High-intensity interval training to burn calories and boost metabolism. Push your limits with explosive plyometric exercises.",
     "imageUrl": "assets/images/workout_2.jpg",
-    "animationAsset": "assets/animations/jumping_jacks.lottie",
+    "animationAsset": "assets/images/exercises/burpees.gif",
     "durationSeconds": 260,
     "level": "Advanced",
     "tags": ["hiit", "cardio", "fat-burn", "intense"],
