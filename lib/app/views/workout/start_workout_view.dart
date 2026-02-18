@@ -464,7 +464,20 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   String _getAnimationForExercise(String exerciseName) {
     final lowerName = exerciseName.toLowerCase();
 
-    if (lowerName.contains('push') || lowerName.contains('push-up')) {
+    // Yoga exercises
+    if (lowerName.contains('sun salutation') ||
+        lowerName.contains('surya namaskar')) {
+      return 'assets/animations/sun_salutation.json';
+    } else if (lowerName.contains('downward dog') ||
+        lowerName.contains('down dog')) {
+      return 'assets/animations/downward_dog.gif'; // ✅ GIF animation
+    } else if (lowerName.contains('warrior')) {
+      return 'assets/animations/lunges.json';
+    } else if (lowerName.contains('tree pose')) {
+      return 'assets/animations/plank.json';
+    } else if (lowerName.contains('savasana')) {
+      return 'assets/animations/plank.json';
+    } else if (lowerName.contains('push') || lowerName.contains('push-up')) {
       return 'assets/animations/pushup_improved.json';
     } else if (lowerName.contains('squat') ||
         lowerName.contains('jump squat')) {
@@ -499,6 +512,23 @@ class StartWorkoutView extends GetView<StartWorkoutController> {
   }
 
   Widget _buildAnimationWidget(String assetPath, bool shouldAnimate) {
+    // Check if it's a GIF file
+    if (assetPath.toLowerCase().endsWith('.gif')) {
+      return Image.asset(
+        assetPath,
+        width: 200,
+        height: 200,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(
+            Icons.fitness_center,
+            size: 120,
+            color: Colors.white.withOpacity(0.7),
+          );
+        },
+      );
+    }
+    // Otherwise use Lottie animation
     return Lottie.asset(
       assetPath,
       width: 200,

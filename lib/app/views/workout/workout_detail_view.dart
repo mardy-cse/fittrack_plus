@@ -583,6 +583,19 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
 
   Widget _buildAnimationWidget(String assetPath) {
     try {
+      // Check if it's a GIF file
+      if (assetPath.toLowerCase().endsWith('.gif')) {
+        return Image.asset(
+          assetPath,
+          width: 280,
+          height: 280,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildFallbackIcon();
+          },
+        );
+      }
+      // Otherwise use Lottie animation
       return Lottie.asset(
         assetPath,
         width: 280,
@@ -621,7 +634,20 @@ class WorkoutDetailView extends GetView<WorkoutDetailController> {
   String _getAnimationForExercise(String exerciseName) {
     final name = exerciseName.toLowerCase();
 
-    if (name.contains('push') ||
+    // Yoga exercises
+    if (name.contains('sun salutation') || name.contains('surya namaskar')) {
+      return 'assets/animations/sun_salutation.json'; // ✅ Yogasana animation
+    } else if (name.contains('downward dog') ||
+        name.contains('down dog') ||
+        name.contains('adho mukha')) {
+      return 'assets/animations/downward_dog.gif'; // ✅ GIF animation
+    } else if (name.contains('warrior') || name.contains('virabhadrasana')) {
+      return 'assets/animations/lunges.json'; // Warrior pose similar to lunge stance
+    } else if (name.contains('tree pose') || name.contains('vrksasana')) {
+      return 'assets/animations/plank.json'; // TODO: Add tree pose animation
+    } else if (name.contains('savasana') || name.contains('corpse pose')) {
+      return 'assets/animations/plank.json'; // TODO: Add savasana animation
+    } else if (name.contains('push') ||
         name.contains('push-up') ||
         name.contains('chest') ||
         name.contains('press')) {
